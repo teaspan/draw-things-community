@@ -638,7 +638,7 @@ public final class ImageGenerationServiceImpl: ImageGenerationServiceProvider {
       if needsToComputeHash.contains(file) {
         let filePath = ModelZoo.filePathForModelDownloaded(file)
         if let fileData = try? Data(
-          contentsOf: URL(fileURLWithPath: filePath), options: .mappedIfSafe)
+          contentsOf: URL(fileURLWithPath: filePath), options: .mappedIfLocal)
         {
           let computedHash = Data(SHA256.hash(data: fileData))
           hashes.append(computedHash)
@@ -903,7 +903,7 @@ public final class ImageGenerationServiceImpl: ImageGenerationServiceProvider {
     -> Bool
   {
     do {
-      let fileData = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+      let fileData = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfLocal)
       let computedHash = Data(SHA256.hash(data: fileData))
       self.logger.info("expectedHash: \(expectedHash.map { String(format: "%02x", $0) }.joined())")
       self.logger.info("computedHash: \(computedHash.map { String(format: "%02x", $0) }.joined())")
