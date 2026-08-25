@@ -10,7 +10,7 @@ swift_library(
     deps = [
         "@SwiftCollections//:Collections",
         "@SwiftNumerics//:Numerics",
-        "@ccv//lib:ccv",
+        "@s4nnc//nnc:C_ccv",
         "@s4nnc//nnc",
         "@swift-atomics//:SwiftAtomics",
     ],
