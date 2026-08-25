@@ -6,7 +6,7 @@ swift_library(
     module_name = "ImageSegmentation",
     visibility = ["//visibility:public"],
     deps = [
-        "@ccv//lib:ccv",
+        "@s4nnc//nnc:C_ccv",
         "@s4nnc//nnc",
     ],
 )

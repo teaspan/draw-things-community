@@ -44,7 +44,7 @@ swift_library(
         "//Libraries/WeightsCache",
         "//Vendors/ZIPFoundation",
         "@SwiftNumerics//:Numerics",
-        "@ccv//lib:ccv",
+        "@s4nnc//nnc:C_ccv",
         "@s4nnc//nnc",
         "@swift-atomics//:SwiftAtomics",
         "@swift-fickling//:fickling",
