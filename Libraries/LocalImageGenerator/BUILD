@@ -49,7 +49,7 @@ swift_library(
         "//Libraries/Upscaler",
         "@SwiftCrypto//:Crypto",
         "@SwiftLog//:Logging",
-        "@ccv//lib:ccv",
+        "@s4nnc//nnc:C_ccv",
         "@s4nnc//nnc",
     ] + select({
         ":ios_or_macos_build": [
