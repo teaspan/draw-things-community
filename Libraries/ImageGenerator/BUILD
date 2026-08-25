@@ -9,7 +9,7 @@ swift_library(
         "//Libraries/DataModels",
         "//Libraries/ModelZoo",
         "//Libraries/SwiftDiffusion",
-        "@ccv//lib:ccv",
+        "@s4nnc//nnc:C_ccv",
         "@s4nnc//nnc",
     ],
 )
