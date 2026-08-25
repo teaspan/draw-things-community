@@ -31,7 +31,7 @@ public struct GRPCFileUploader {
       throw GRPCFileUploaderError.notConnected
     }
 
-    guard let fileData = try? Data(contentsOf: fileUrl, options: .mappedIfSafe) else {
+    guard let fileData = try? Data(contentsOf: fileUrl, options: .alwaysMapped) else {
       throw GRPCFileUploaderError.cannotReadFile
     }
 
