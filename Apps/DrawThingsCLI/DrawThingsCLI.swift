@@ -5201,7 +5201,7 @@ extension DrawThingsCLI {
           )
         } progress: { progress in
           let percent = min(100, max(0, Int((progress * 100).rounded(.down))))
-          if percent >= lastPrintedPercent + 5 || percent == 100 {
+          if percent >= lastPrintedPercent + 5 || (percent == 100 && lastPrintedPercent < 100) {
             print("Importing: \(percent)%")
             lastPrintedPercent = percent
           }
