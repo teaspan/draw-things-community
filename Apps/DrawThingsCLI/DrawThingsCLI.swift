@@ -1634,13 +1634,13 @@ private func defaultImportedModelDisplayName(for artifactURL: URL) -> String {
 
 private func defaultImportScale(for version: ModelVersion, artifactFileName: String) -> UInt16 {
   switch version {
-  case .hunyuanVideo, .wan21_14b, .wan22_5b, .longcatVideoAvatar1_5:
+  case .hunyuanVideo, .wan21_14b, .wan22_5b, .longcatVideoAvatar1_5, .ltx2_3:
     return 12
   case .wan21_1_3b:
     return 8
   case .sdxlBase, .sdxlRefiner, .ssd1b, .hiDreamI1, .hiDreamO1, .qwenImage, .zImage, .ernieImage,
     .wurstchenStageC, .wurstchenStageB, .sd3, .sd3Large, .auraflow, .flux1, .flux2, .flux2_9b,
-    .flux2_4b, .cosmos2_5_2b, .ltx2, .ltx2_3, .ideogram4, .krea2:
+    .flux2_4b, .cosmos2_5_2b, .ltx2, .ideogram4, .krea2:
     return 16
   case .pixart:
     return artifactFileName.contains("512") ? 8 : 16
