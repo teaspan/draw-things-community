@@ -339,6 +339,9 @@ struct gRPCServerCLI: ParsableCommand {
   @Flag(help: "Offload some weights to CPU during inference.")
   var cpuOffload = false
 
+  @Flag(help: "Run LoRAs as separate matmuls rather than merging them into the model weights.")
+  var separateLora = false
+
   @Flag(help: "Prefer to fread by overriding system preferences.")
   var freadPreferred = false
 
@@ -488,6 +491,9 @@ struct gRPCServerCLI: ParsableCommand {
     }
     if cpuOffload {
       DeviceCapability.memoryCapacity = .medium  // This will trigger logic to offload some weights to CPU during inference.
+    }
+    if separateLora {
+      ModelZoo.isSeparateLoRAPreferred = true
     }
     if freadPreferred {
       DeviceCapability.isFreadPreferred = true  // This will not do mmap but use fread when needed.
