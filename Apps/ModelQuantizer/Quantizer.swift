@@ -46,8 +46,10 @@ struct Quantizer: ParsableCommand {
             continue
           }
 
-          // First convert the tensor to FP16, and then to q8p.
-          let fp16 = Tensor<FloatType>(from: tensor)
+          // First convert the tensor to FP16 unless it is BF16, and then to its codec.
+          let fp16: AnyTensor =
+            tensor.dataType == .Float16 || tensor.dataType == .BFloat16
+            ? tensor : Tensor<FloatType>(from: tensor)
           let shape = fp16.shape
           let squeezedDims = shape.reduce(0) { $1 > 1 ? 1 + $0 : $0 }
           switch version {
