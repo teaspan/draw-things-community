@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "ec0ce12817c9e3b8ab8d4e289aec699525e39803",
-  "head": "6ba7f8dc0d236fd27b003c3c54b11d27a8b3414d",
+  "prev": "4595ff7d5cf2e50bb91034c5bcbf839df5c63051",
+  "head": "11b33590a7d360572b51539b69f327274d8c91fe",
   "applied": [
     "dti-split-tool",
     "fp8-sidecar-archive",
@@ -9,8 +9,7 @@
     "linux-portability",
     "linux-raw-video-output",
     "ltx23-base-import",
-    "nnc-shared-library",
-    "refresh-temp"
+    "nnc-shared-library"
   ],
   "unapplied": [
     "no-advertising-flag",
@@ -41,7 +40,7 @@
       "oid": "75f7c4a08eaebc93ad8ec318fa11e76a193dc836"
     },
     "nnc-shared-library": {
-      "oid": "33f46818ee697b90148eb0207bc171a34c6ae2c8"
+      "oid": "11b33590a7d360572b51539b69f327274d8c91fe"
     },
     "no-advertising-flag": {
       "oid": "737b75cfd13d01dae081a98b3f66d6851542ead0"
@@ -51,9 +50,6 @@
     },
     "quantizer-codec-flag": {
       "oid": "bcb39f0d89c57a93b49502913b069c7f907e062e"
-    },
-    "refresh-temp": {
-      "oid": "6ba7f8dc0d236fd27b003c3c54b11d27a8b3414d"
     },
     "separate-lora-flag": {
       "oid": "14504bab5eae9434b0f2df63b4fa0fd1ad1cc5ce"
