@@ -3259,7 +3259,7 @@ public struct LoRATrainer {
               var tensor = Tensor<Float16>(.CPU, format: format, shape: shape)
               tensor.withUnsafeMutableBytes {
                 let size = shape.reduce(MemoryLayout<Float16>.size, *)
-                memset($0.baseAddress, 0, size)
+                memset($0.baseAddress!, 0, size)
               }
               return .final(tensor)
             #else
@@ -3269,7 +3269,7 @@ public struct LoRATrainer {
             var tensor = Tensor<Float32>(.CPU, format: format, shape: shape)
             tensor.withUnsafeMutableBytes {
               let size = shape.reduce(MemoryLayout<Float32>.size, *)
-              memset($0.baseAddress, 0, size)
+              memset($0.baseAddress!, 0, size)
             }
             return .final(tensor)
           case .Float64, .Int32, .Int64, .UInt8:
@@ -3683,7 +3683,7 @@ public struct LoRATrainer {
               var tensor = Tensor<Float16>(.CPU, format: format, shape: shape)
               tensor.withUnsafeMutableBytes {
                 let size = shape.reduce(MemoryLayout<Float16>.size, *)
-                memset($0.baseAddress, 0, size)
+                memset($0.baseAddress!, 0, size)
               }
               return .final(tensor)
             #else
@@ -3693,7 +3693,7 @@ public struct LoRATrainer {
             var tensor = Tensor<Float32>(.CPU, format: format, shape: shape)
             tensor.withUnsafeMutableBytes {
               let size = shape.reduce(MemoryLayout<Float32>.size, *)
-              memset($0.baseAddress, 0, size)
+              memset($0.baseAddress!, 0, size)
             }
             return .final(tensor)
           case .Float64, .Int32, .Int64, .UInt8:
@@ -4019,7 +4019,7 @@ public struct LoRATrainer {
               var tensor = Tensor<Float16>(.CPU, format: format, shape: shape)
               tensor.withUnsafeMutableBytes {
                 let size = shape.reduce(MemoryLayout<Float16>.size, *)
-                memset($0.baseAddress, 0, size)
+                memset($0.baseAddress!, 0, size)
               }
               return .final(tensor)
             #else
@@ -4029,7 +4029,7 @@ public struct LoRATrainer {
             var tensor = Tensor<Float32>(.CPU, format: format, shape: shape)
             tensor.withUnsafeMutableBytes {
               let size = shape.reduce(MemoryLayout<Float32>.size, *)
-              memset($0.baseAddress, 0, size)
+              memset($0.baseAddress!, 0, size)
             }
             return .final(tensor)
           case .Float64, .Int32, .Int64, .UInt8:
@@ -4408,7 +4408,7 @@ public struct LoRATrainer {
               var tensor = Tensor<Float16>(.CPU, format: format, shape: shape)
               tensor.withUnsafeMutableBytes {
                 let size = shape.reduce(MemoryLayout<Float16>.size, *)
-                memset($0.baseAddress, 0, size)
+                memset($0.baseAddress!, 0, size)
               }
               return .final(tensor)
             #else
@@ -4418,7 +4418,7 @@ public struct LoRATrainer {
             var tensor = Tensor<Float32>(.CPU, format: format, shape: shape)
             tensor.withUnsafeMutableBytes {
               let size = shape.reduce(MemoryLayout<Float32>.size, *)
-              memset($0.baseAddress, 0, size)
+              memset($0.baseAddress!, 0, size)
             }
             return .final(tensor)
           case .Float64, .Int32, .Int64, .UInt8:
@@ -4832,7 +4832,7 @@ public struct LoRATrainer {
               var tensor = Tensor<Float16>(.CPU, format: format, shape: shape)
               tensor.withUnsafeMutableBytes {
                 let size = shape.reduce(MemoryLayout<Float16>.size, *)
-                memset($0.baseAddress, 0, size)
+                memset($0.baseAddress!, 0, size)
               }
               return .final(tensor)
             #else
@@ -4842,7 +4842,7 @@ public struct LoRATrainer {
             var tensor = Tensor<Float32>(.CPU, format: format, shape: shape)
             tensor.withUnsafeMutableBytes {
               let size = shape.reduce(MemoryLayout<Float32>.size, *)
-              memset($0.baseAddress, 0, size)
+              memset($0.baseAddress!, 0, size)
             }
             return .final(tensor)
           case .Float64, .Int32, .Int64, .UInt8:
@@ -5248,7 +5248,7 @@ public struct LoRATrainer {
               var tensor = Tensor<Float16>(.CPU, format: format, shape: shape)
               tensor.withUnsafeMutableBytes {
                 let size = shape.reduce(MemoryLayout<Float16>.size, *)
-                memset($0.baseAddress, 0, size)
+                memset($0.baseAddress!, 0, size)
               }
               return .final(tensor)
             #else
@@ -5258,7 +5258,7 @@ public struct LoRATrainer {
             var tensor = Tensor<Float32>(.CPU, format: format, shape: shape)
             tensor.withUnsafeMutableBytes {
               let size = shape.reduce(MemoryLayout<Float32>.size, *)
-              memset($0.baseAddress, 0, size)
+              memset($0.baseAddress!, 0, size)
             }
             return .final(tensor)
           case .Float64, .Int32, .Int64, .UInt8:
@@ -5638,7 +5638,7 @@ public struct LoRATrainer {
               var tensor = Tensor<Float16>(.CPU, format: format, shape: shape)
               tensor.withUnsafeMutableBytes {
                 let size = shape.reduce(MemoryLayout<Float16>.size, *)
-                memset($0.baseAddress, 0, size)
+                memset($0.baseAddress!, 0, size)
               }
               return .final(tensor)
             #else
@@ -5648,7 +5648,7 @@ public struct LoRATrainer {
             var tensor = Tensor<Float32>(.CPU, format: format, shape: shape)
             tensor.withUnsafeMutableBytes {
               let size = shape.reduce(MemoryLayout<Float32>.size, *)
-              memset($0.baseAddress, 0, size)
+              memset($0.baseAddress!, 0, size)
             }
             return .final(tensor)
           case .Float64, .Int32, .Int64, .UInt8:
@@ -5962,7 +5962,7 @@ public struct LoRATrainer {
         DynamicGraph.flags.remove(.disableMFAAppleNeuralEngine)
       }
     }
-    graph.openStore(session, flags: .readOnly) { sessionStore in
+    graph.openStore(session, flags: .readOnly) { (sessionStore: DynamicGraph.Store) -> Void in
       if version == .flux1 {
         trainFlux1(
           graph: graph, firstStage: firstStage, sessionStore: sessionStore,
@@ -6485,7 +6485,7 @@ public struct LoRATrainer {
                   var tensor = Tensor<Float16>(.CPU, format: format, shape: shape)
                   tensor.withUnsafeMutableBytes {
                     let size = shape.reduce(MemoryLayout<Float16>.size, *)
-                    memset($0.baseAddress, 0, size)
+                    memset($0.baseAddress!, 0, size)
                   }
                   return .final(tensor)
                 #else
@@ -6495,7 +6495,7 @@ public struct LoRATrainer {
                 var tensor = Tensor<Float32>(.CPU, format: format, shape: shape)
                 tensor.withUnsafeMutableBytes {
                   let size = shape.reduce(MemoryLayout<Float32>.size, *)
-                  memset($0.baseAddress, 0, size)
+                  memset($0.baseAddress!, 0, size)
                 }
                 return .final(tensor)
               case .Float64, .Int32, .Int64, .UInt8:
@@ -6578,7 +6578,7 @@ public struct LoRATrainer {
                     var tensor = Tensor<Float16>(.CPU, format: format, shape: shape)
                     tensor.withUnsafeMutableBytes {
                       let size = shape.reduce(MemoryLayout<Float16>.size, *)
-                      memset($0.baseAddress, 0, size)
+                      memset($0.baseAddress!, 0, size)
                     }
                     return .final(tensor)
                   #else
@@ -6588,7 +6588,7 @@ public struct LoRATrainer {
                   var tensor = Tensor<Float32>(.CPU, format: format, shape: shape)
                   tensor.withUnsafeMutableBytes {
                     let size = shape.reduce(MemoryLayout<Float32>.size, *)
-                    memset($0.baseAddress, 0, size)
+                    memset($0.baseAddress!, 0, size)
                   }
                   return .final(tensor)
                 case .Float64, .Int32, .Int64, .UInt8:
@@ -6735,7 +6735,7 @@ public struct LoRATrainer {
                   var tensor = Tensor<Float16>(.CPU, format: format, shape: shape)
                   tensor.withUnsafeMutableBytes {
                     let size = shape.reduce(MemoryLayout<Float16>.size, *)
-                    memset($0.baseAddress, 0, size)
+                    memset($0.baseAddress!, 0, size)
                   }
                   return .final(tensor)
                 #else
@@ -6745,7 +6745,7 @@ public struct LoRATrainer {
                 var tensor = Tensor<Float32>(.CPU, format: format, shape: shape)
                 tensor.withUnsafeMutableBytes {
                   let size = shape.reduce(MemoryLayout<Float32>.size, *)
-                  memset($0.baseAddress, 0, size)
+                  memset($0.baseAddress!, 0, size)
                 }
                 return .final(tensor)
               case .Float64, .Int32, .Int64, .UInt8:
@@ -6800,7 +6800,7 @@ public struct LoRATrainer {
                 var tensor = Tensor<Float16>(.CPU, format: format, shape: shape)
                 tensor.withUnsafeMutableBytes {
                   let size = shape.reduce(MemoryLayout<Float16>.size, *)
-                  memset($0.baseAddress, 0, size)
+                  memset($0.baseAddress!, 0, size)
                 }
                 return .final(tensor)
               #else
@@ -6810,7 +6810,7 @@ public struct LoRATrainer {
               var tensor = Tensor<Float32>(.CPU, format: format, shape: shape)
               tensor.withUnsafeMutableBytes {
                 let size = shape.reduce(MemoryLayout<Float32>.size, *)
-                memset($0.baseAddress, 0, size)
+                memset($0.baseAddress!, 0, size)
               }
               return .final(tensor)
             case .Float64, .Int32, .Int64, .UInt8:

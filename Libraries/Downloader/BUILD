@@ -7,6 +7,10 @@ swift_library(
     visibility = ["//visibility:public"],
     deps = [
         "//Libraries/ModelZoo",
+        "@SwiftCrypto//:CCryptoBoringSSL",
+        "@SwiftCrypto//:CCryptoBoringSSLShims",
+        "@SwiftCrypto//:Crypto",
+        "@SwiftCrypto//:CryptoBoringWrapper",
     ],
 )
 
