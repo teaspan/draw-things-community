@@ -135,8 +135,15 @@ public final class ModelImporter {
     let isLongCatVideoAvatar = stateDict.keys.contains {
       $0.contains("blocks.47.audio_cross_attn.kv_linear.")
     }
+    let isLTX2_3 =
+      stateDict.keys.contains {
+        $0.contains("transformer_blocks.47.audio_attn1.")
+      }
+      && stateDict.keys.contains {
+        $0.contains("transformer_blocks.0.prompt_scale_shift_table")
+      }
     var isPixArtSigmaXL =
-      !isSD3Large && !isLongCatVideoAvatar
+      !isSD3Large && !isLongCatVideoAvatar && !isLTX2_3
       && stateDict.keys.contains {
         $0.contains("blocks.27.cross_attn.kv_") || $0.contains("transformer_blocks.27.attn2.to_")
       }
@@ -304,6 +311,12 @@ public final class ModelImporter {
       modifier = .none
       inputDim = 16
       expectedTotalAccess = 1550
+      isDiffusersFormat = false
+    } else if isLTX2_3 {
+      modelVersion = .ltx2_3
+      modifier = .kontext
+      inputDim = 128
+      expectedTotalAccess = 5746
       isDiffusersFormat = false
     } else if isPixArtSigmaXL {
       modelVersion = .pixart
@@ -832,7 +845,10 @@ public final class ModelImporter {
     case .krea2:
       conditionalLength = 2560
       batchSize = 1
-    case .ltx2, .ltx2_3, .seedvr2_3b, .seedvr2_7b:
+    case .ltx2_3:
+      conditionalLength = 6144
+      batchSize = 1
+    case .ltx2, .seedvr2_3b, .seedvr2_7b:
       fatalError()
     case .kandinsky21, .wurstchenStageB:
       fatalError()
@@ -1121,7 +1137,25 @@ public final class ModelImporter {
           + (0..<(34 * 4 + 1)).map { _ in
             graph.variable(.CPU, .WC(1, 4_608), of: FloatType.self)
           }
-      case .ltx2, .ltx2_3, .seedvr2_3b, .seedvr2_7b:
+      case .ltx2_3:
+        let (rotaryEmbedding, rotaryEmbeddingAudio, rotaryEmbeddingVideoToAudio) =
+          LTX2VideoAudioRotaryPositionEmbedding(
+            time: 16, height: 16, width: 16, audioTime: 121,
+            channels: (4096, 2048), numberOfHeads: 32)
+        cArr =
+          [
+            graph.variable(.CPU, format: .NHWC, shape: [1, 121, 128], of: FloatType.self),
+            graph.variable(Tensor<FloatType>(from: rotaryEmbedding)),
+            graph.variable(Tensor<FloatType>(from: rotaryEmbeddingAudio)),
+            graph.variable(Tensor<FloatType>(from: rotaryEmbeddingVideoToAudio)),
+          ]
+          + LTX2FixedOutputShapes(
+            time: 16, textLength: 1024, audioFrames: 121, timesteps: 1, channels: (4096, 2048),
+            layers: 48, textCrossAttentionAdaLN: true, KV: false
+          ).map {
+            graph.variable(.CPU, format: .NHWC, shape: $0, of: FloatType.self)
+          }
+      case .ltx2, .seedvr2_3b, .seedvr2_7b:
         fatalError()
       case .kandinsky21, .v1, .v2:
         break
@@ -1407,7 +1441,72 @@ public final class ModelImporter {
             prefix: "dit",
             mapping: textFusionMapper(isDiffusersFormat ? .diffusers : .generativeModels)
           ))
-      case .ltx2, .ltx2_3, .seedvr2_3b, .seedvr2_7b:
+      case .ltx2_3:
+        (unetMapper, unet) = LTX2(
+          time: 16, h: 16, w: 16, textLength: 1024, audioFrames: 121, channels: (4096, 2048),
+          layers: 48, tokenModulation: false, KV: false, usesFlashAttention: .scale1,
+          useGatedAttention: true,
+          textCrossAttentionAdaLN: true)
+        unetReader = nil
+        (unetFixedMapper, unetFixed) = LTX2Fixed(
+          time: 16, textLength: 1024, audioFrames: 121, timesteps: 1, channels: (4096, 2048),
+          layers: 48, contextProjection: false, textCrossAttentionAdaLN: true, KV: false,
+          usesFlashAttention: .scale1)
+        let (videoConnector, videoConnectorMapper) = Embedding1DConnector(
+          prefix: "model.diffusion_model.video_embeddings_connector", layers: 8, batchSize: 1,
+          tokenLength: 1024, headDimension: 128, numberOfHeads: 32, usesFlashAttention: true,
+          useGatedAttention: true
+        )
+        let (audioConnector, audioConnectorMapper) = Embedding1DConnector(
+          prefix: "model.diffusion_model.audio_embeddings_connector", layers: 8, batchSize: 1,
+          tokenLength: 1024, headDimension: 64, numberOfHeads: 32, usesFlashAttention: true,
+          useGatedAttention: true
+        )
+        let videoRotaryEmbedding1D = graph.variable(
+          Tensor<FloatType>(
+            from: LTX2RotaryPositionEmbedding1D(
+              tokenLength: 1024, maxLength: 4096, channels: 4096, headDimension: 128
+            )))
+        let audioRotaryEmbedding1D = graph.variable(
+          Tensor<FloatType>(
+            from: LTX2RotaryPositionEmbedding1D(
+              tokenLength: 1024, maxLength: 4096, channels: 2048, headDimension: 64
+            )))
+        let videoHiddenStates = graph.variable(.CPU, .HWC(1, 1024, 4096), of: FloatType.self)
+        let audioHiddenStates = graph.variable(.CPU, .HWC(1, 1024, 2048), of: FloatType.self)
+        videoConnector.compile(inputs: videoHiddenStates, videoRotaryEmbedding1D)
+        audioConnector.compile(inputs: audioHiddenStates, audioRotaryEmbedding1D)
+        additionalMappings.append(
+          (prefix: "text_video_connector", mapping: videoConnectorMapper(.generativeModels)))
+        additionalMappings.append(
+          (prefix: "text_audio_connector", mapping: audioConnectorMapper(.generativeModels)))
+        let textFeatureInput = Input()
+        let textVideoAggregateEmbed = Dense(count: 4096, name: "video_aggregate_embed")
+        let textAudioAggregateEmbed = Dense(count: 2048, name: "audio_aggregate_embed")
+        let concat = Concat(axis: 1)
+        concat.flags = [.disableOpt]
+        let textFeatureExtractor = Model(
+          [textFeatureInput],
+          [
+            concat([
+              textVideoAggregateEmbed(textFeatureInput), textAudioAggregateEmbed(textFeatureInput),
+            ])
+          ]
+        )
+        let textFeatureExtractorInput = graph.variable(.CPU, .WC(1, 3840 * 49), of: FloatType.self)
+        textFeatureExtractor.compile(inputs: textFeatureExtractorInput)
+        var textFeatureExtractorMapping = ModelWeightMapping()
+        textFeatureExtractorMapping["text_embedding_projection.video_aggregate_embed.weight"] =
+          ModelWeightElement([textVideoAggregateEmbed.weight.name], isBF16: true)
+        textFeatureExtractorMapping["text_embedding_projection.video_aggregate_embed.bias"] =
+          ModelWeightElement([textVideoAggregateEmbed.bias.name], isBF16: true)
+        textFeatureExtractorMapping["text_embedding_projection.audio_aggregate_embed.weight"] =
+          ModelWeightElement([textAudioAggregateEmbed.weight.name], isBF16: true)
+        textFeatureExtractorMapping["text_embedding_projection.audio_aggregate_embed.bias"] =
+          ModelWeightElement([textAudioAggregateEmbed.bias.name], isBF16: true)
+        additionalMappings.append(
+          (prefix: "text_feature_extractor", mapping: textFeatureExtractorMapping))
+      case .ltx2, .seedvr2_3b, .seedvr2_7b:
         fatalError()
       case .kandinsky21, .wurstchenStageB:
         fatalError()
@@ -1592,7 +1691,10 @@ public final class ModelImporter {
             ).reshaped(.HWC(1, 1, 256))),
         ]
         tEmb = nil
-      case .ltx2, .ltx2_3, .seedvr2_3b, .seedvr2_7b:
+      case .ltx2_3:
+        crossattn = [graph.variable(.CPU, .HWC(1, 1, 256), of: FloatType.self)]
+        tEmb = nil
+      case .ltx2, .seedvr2_3b, .seedvr2_7b:
         fatalError()
       case .v1, .v2, .kandinsky21, .wurstchenStageB:
         crossattn = []
@@ -1746,6 +1848,14 @@ public final class ModelImporter {
             stateDict[String(key.dropFirst(6))] = value
           }
         }
+      } else if modelVersion == .ltx2_3 {
+        for (key, value) in stateDict {
+          if key.hasPrefix("model.diffusion_model.") {
+            stateDict[String(key.dropFirst(22))] = value
+          } else if key.hasPrefix("model.") {
+            stateDict[String(key.dropFirst(6))] = value
+          }
+        }
       }
       // In case it is not on high performance device and it is SDXL model, read the parameters directly from the mapping.
       if let unetReader = unetReader {
@@ -1874,6 +1984,21 @@ public final class ModelImporter {
               try archive.with(capPadTokenDescriptor) { tensor in
                 let tensor = Tensor<FloatType>(from: tensor)
                 store.write("cap_pad_token", tensor: tensor)
+              }
+            }
+            if modelVersion == .ltx2_3,
+              let videoRegistersDescriptor = stateDict[
+                "video_embeddings_connector.learnable_registers"],
+              let audioRegistersDescriptor = stateDict[
+                "audio_embeddings_connector.learnable_registers"]
+            {
+              try archive.with(videoRegistersDescriptor) { tensor in
+                let tensor = Tensor<FloatType>(from: tensor)
+                store.write("text_video_connector_learnable_registers", tensor: tensor)
+              }
+              try archive.with(audioRegistersDescriptor) { tensor in
+                let tensor = Tensor<FloatType>(from: tensor)
+                store.write("text_audio_connector_learnable_registers", tensor: tensor)
               }
             }
             var consumed = Set<String>()
@@ -2202,7 +2327,11 @@ public final class ModelImporter {
           if $0.keys.count != 581 {
             throw Error.tensorWritesFailed
           }
-        case .ltx2, .ltx2_3, .seedvr2_3b, .seedvr2_7b:
+        case .ltx2_3:
+          if $0.keys.count != 5746 {
+            throw Error.tensorWritesFailed
+          }
+        case .ltx2, .seedvr2_3b, .seedvr2_7b:
           fatalError()
         case .kandinsky21, .wurstchenStageB:
           fatalError()
@@ -2831,7 +2960,25 @@ extension ModelImporter {
       }
       // For FLUX.2, the hires fix trigger scale is 2 of the finetune scale.
       specification.hiresFixScale = finetuneScale * 2
-    case .ltx2, .ltx2_3, .seedvr2_3b, .seedvr2_7b:
+    case .ltx2_3:
+      if specification.textEncoder == nil {
+        specification.textEncoder = "gemma_3_12b_it_qat_q8p.ckpt"
+      }
+      if specification.autoencoder == nil {
+        specification.autoencoder = "ltx_2.3_audio_video_vae_f16.ckpt"
+      }
+      if specification.clipEncoder == nil {
+        specification.clipEncoder = "\(fileName)_f16.ckpt"
+      }
+      specification.objective = .u(conditionScale: 1000)
+      specification.noiseDiscretization = .rf(
+        .init(sigmaMin: 0, sigmaMax: 1, conditionScale: 1_000))
+      specification.latentsUpscalers = [
+        .init(file: "ltx_2.3_spatial_upscaler_x2_1.1_f16.ckpt", scale: .x2),
+        .init(file: "ltx_2.3_spatial_upscaler_x1.5_f16.ckpt", scale: .x1_5),
+      ]
+      specification.hiresFixScale = finetuneScale * 2
+    case .ltx2, .seedvr2_3b, .seedvr2_7b:
       fatalError()
     case .kandinsky21, .wurstchenStageB:
       fatalError()
