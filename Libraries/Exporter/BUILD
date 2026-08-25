@@ -7,7 +7,7 @@ swift_library(
     visibility = ["//visibility:public"],
     deps = [
         "//Libraries/SwiftDiffusion",
-        "@ccv//lib:ccv",
+        "@s4nnc//nnc:C_ccv",
         "@s4nnc//nnc",
     ],
 )
