@@ -3493,7 +3493,10 @@ public struct ModelZoo: DownloadZoo {
     return false
   }
 
+  public static var isSeparateLoRAPreferred = false
+
   public static func isQuantizedModel(_ name: String) -> Bool {
+    guard !isSeparateLoRAPreferred else { return true }
     let filePath = Self.filePathForModelDownloaded(name)
     let fileSize = (try? URL(fileURLWithPath: filePath).resourceValues(forKeys: [.fileSizeKey]))?
       .fileSize
