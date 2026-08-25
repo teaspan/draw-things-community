@@ -3189,6 +3189,7 @@ private enum TerminalImageRenderer {
     }
 
     func update(tensor: Tensor<FloatType>) {
+      #if canImport(CoreGraphics)
       let previewImages = ImageConverter.cgImages(
         fromLatent: tensor, canUseTAESD: true, version: modelVersion)
       guard let previewImage = previewImages.0.first else { return }
@@ -3211,6 +3212,7 @@ private enum TerminalImageRenderer {
           context: context, data: image.data, size: image.size, columns: previewColumns,
           rows: previewRows)
       }
+      #endif
     }
 
     func renderFinalImage(path: String) throws -> Bool {
@@ -3622,6 +3624,7 @@ private enum TerminalImageRenderer {
     #endif
   }
 
+  #if canImport(CoreGraphics)
   private static func rgbaData(from cgImage: CGImage) -> (data: Data, size: PixelSize)? {
     let width = cgImage.width
     let height = cgImage.height
@@ -3639,6 +3642,9 @@ private enum TerminalImageRenderer {
     return (Data(bytes), PixelSize(width: width, height: height))
   }
 
+  #endif
+
+  #if canImport(CoreGraphics)
   private static func pngData(from cgImage: CGImage) -> Data? {
     #if canImport(ImageIO)
       guard
@@ -3657,6 +3663,7 @@ private enum TerminalImageRenderer {
       return nil
     #endif
   }
+  #endif
 
   private static func base64Chunks(_ encoded: String, chunkSize: Int) -> [Substring] {
     guard !encoded.isEmpty else { return [] }
