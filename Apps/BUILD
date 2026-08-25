@@ -119,3 +119,13 @@ swift_binary(
         ":DrawThingsCLIExecutable",
     ],
 )
+
+swift_binary(
+    name = "dtiSplit",
+    srcs = glob(["dtiSplit/*.swift"]),
+    deps = [
+        "//Libraries/SwiftLLM",
+        "@SwiftArgumentParser//:ArgumentParser",
+        "@s4nnc//nnc",
+    ],
+)
