@@ -64,7 +64,7 @@ private enum DrawThingsCLIError: LocalizedError {
     case .invalidModelsDirectory(let path):
       return "Models directory path is not valid: \(path)"
     case .invalidOutputPath(let path):
-      return "Output path extension must be .png, .mov, or .mp4: \(path)"
+      return "Output path extension must be .png, .mov, .mp4, or .nut: \(path)"
     case .invalidConfigurationJSON:
       return "Failed to parse configuration override JSON"
     case .invalidLoRAConfigurationJSON:
@@ -590,9 +590,9 @@ struct GenerateOutputOptions: ParsableArguments {
   @Option(
     name: .shortAndLong,
     help: ArgumentHelp(
-      "Output path (.png, .mov, or .mp4).",
+      "Output path (.png, .mov, .mp4, or .nut).",
       discussion:
-        "Use .png for image output and .mov/.mp4 for video-capable models. If omitted, the CLI previews the result inline in supported interactive terminals and does not write a file."
+        "Use .png for image output and .mov/.mp4 for video-capable models. Use .nut to write the clip raw, as lossless rgb48le video and float32 audio in a NUT container that ffmpeg, ffplay and mpv read directly. Where the platform has no system video encoder, .mov/.mp4 write the .nut as well. If omitted, the CLI previews the result inline in supported interactive terminals and does not write a file."
     ))
   var output: String?
 
@@ -1952,6 +1952,7 @@ private final class LocalGenerationRunner {
   private enum OutputDestination {
     case png(URL)
     case video(URL, containerExtension: String)
+    case rawVideo(URL)
   }
 
   private final class GenerationTimingTracker {
@@ -2060,7 +2061,8 @@ private final class LocalGenerationRunner {
     let outputPaths = try saveOutputs(
       tensorResult.images, audio: tensorResult.audio?.first ?? fallbackAudio,
       outputPath: outputPath,
-      configuration: configuration, videoFormat: videoFormat)
+      configuration: configuration, videoFormat: videoFormat,
+      prompt: prompt, negativePrompt: negativePrompt)
     return GenerationRunResult(outputPaths: outputPaths, timing: tensorResult.timing)
   }
 
@@ -2112,9 +2114,19 @@ private final class LocalGenerationRunner {
 
   func saveOutputs(
     _ tensors: [Tensor<FloatType>], audio: Tensor<Float>?, outputPath: String,
-    configuration: GenerationConfiguration, videoFormat: VideoExportFormat?
+    configuration: GenerationConfiguration, videoFormat: VideoExportFormat?,
+    prompt: String = "", negativePrompt: String = ""
   ) throws -> [String] {
     let destination = try normalizedOutputDestination(outputPath)
+    let framesPerSecond = ModelZoo.framesPerSecondForModel(configuration.model ?? "")
+    let audioSampleRate = audio.map { _ in
+      Double(ModelZoo.audioSampleRateForModel(configuration.model ?? ""))
+    }
+    var metadata = [(String, String)]()
+    if !prompt.isEmpty { metadata.append(("prompt", prompt)) }
+    if !negativePrompt.isEmpty { metadata.append(("negative_prompt", negativePrompt)) }
+    if let model = configuration.model { metadata.append(("model", model)) }
+    metadata.append(("seed", "\(configuration.seed)"))
     switch destination {
     case .png(let outputURL):
       if videoFormat != nil {
@@ -2122,14 +2134,18 @@ private final class LocalGenerationRunner {
       }
       return try savePNGOutputs(tensors, outputURL: outputURL)
     case .video(let outputURL, let containerExtension):
-      let framesPerSecond = ModelZoo.framesPerSecondForModel(configuration.model ?? "")
-      let audioSampleRate = audio.map { _ in
-        Double(ModelZoo.audioSampleRateForModel(configuration.model ?? ""))
-      }
       let path = try writeVideo(
         tensors: tensors, to: outputURL, containerExtension: containerExtension,
         framesPerSecond: framesPerSecond, videoFormat: videoFormat ?? .h264, audio: audio,
-        audioSampleRate: audioSampleRate)
+        audioSampleRate: audioSampleRate, metadata: metadata)
+      return [path]
+    case .rawVideo(let outputURL):
+      if videoFormat != nil {
+        throw ValidationError("--video-format can only be used with .mov or .mp4 output")
+      }
+      let path = try writeNutVideo(
+        tensors: tensors, to: outputURL, framesPerSecond: framesPerSecond, audio: audio,
+        audioSampleRate: audioSampleRate, metadata: metadata, announce: false)
       return [path]
     }
   }
@@ -2146,6 +2162,8 @@ private final class LocalGenerationRunner {
       destination = .png(url)
     case "mov", "mp4":
       destination = .video(url, containerExtension: ext)
+    case "nut":
+      destination = .rawVideo(url)
     default:
       throw DrawThingsCLIError.invalidOutputPath(url.path)
     }
@@ -2157,7 +2175,7 @@ private final class LocalGenerationRunner {
   private func writeVideo(
     tensors: [Tensor<FloatType>], to outputURL: URL, containerExtension: String,
     framesPerSecond: Double, videoFormat: VideoExportFormat, audio: Tensor<Float>?,
-    audioSampleRate: Double?
+    audioSampleRate: Double?, metadata: [(String, String)] = []
   ) throws -> String {
     #if canImport(AVFoundation) && canImport(CoreMedia) && canImport(CoreVideo)
       guard let first = tensors.first else {
@@ -2341,8 +2359,115 @@ private final class LocalGenerationRunner {
       if let finishError { throw finishError }
       return outputURL.path
     #else
-      throw DrawThingsCLIError.unsupportedVideoOutput(outputURL.path)
+      return try writeNutVideo(
+        tensors: tensors, to: outputURL.deletingPathExtension().appendingPathExtension("nut"),
+        framesPerSecond: framesPerSecond, audio: audio, audioSampleRate: audioSampleRate,
+        metadata: metadata, announce: true)
     #endif
+  }
+
+  private func writeNutVideo(
+    tensors: [Tensor<FloatType>], to nutURL: URL, framesPerSecond: Double, audio: Tensor<Float>?,
+    audioSampleRate: Double?, metadata: [(String, String)], announce: Bool
+  ) throws -> String {
+    guard let first = tensors.first else {
+      throw DrawThingsCLIError.generationFailed
+    }
+    let firstShape = try imageTensorShape(first)
+    guard firstShape.channels >= 3 else {
+      throw DrawThingsCLIError.unsupportedTensorShape("\(first.shape)")
+    }
+    let frameRate = nutRational(fromFrameRate: framesPerSecond)
+    var audioStream: NutMuxer.AudioStream? = nil
+    var sampleCount = 0
+    if let audio, let audioSampleRate {
+      sampleCount = try stereoSampleCount(audio)
+      audioStream = .pcmF32le(sampleRate: Int(audioSampleRate.rounded()), channels: 2)
+    }
+    let muxer = try NutMuxer(
+      url: nutURL,
+      video: .rgb48le(width: firstShape.width, height: firstShape.height, frameRate: frameRate),
+      audio: audioStream, metadata: metadata)
+    var samplesWritten = 0
+    for (index, tensor) in tensors.enumerated() {
+      let shape = try imageTensorShape(tensor)
+      guard shape.width == firstShape.width, shape.height == firstShape.height,
+        shape.channels >= 3
+      else {
+        throw DrawThingsCLIError.unsupportedTensorShape(
+          "Inconsistent frame dimensions: expected \(firstShape.width)x\(firstShape.height), got \(shape.width)x\(shape.height)"
+        )
+      }
+      try muxer.writeFrame(streamId: 0, pts: index, data: rgb48Frame(tensor, shape: shape))
+      if let audio, let audioStream {
+        let end = min(
+          sampleCount, ((index + 1) * audioStream.sampleRate * frameRate.den) / frameRate.num)
+        if end > samplesWritten {
+          try muxer.writeFrame(
+            streamId: 1, pts: samplesWritten,
+            data: interleavedSamples(audio, from: samplesWritten, to: end))
+          samplesWritten = end
+        }
+      }
+    }
+    if let audio, sampleCount > samplesWritten {
+      try muxer.writeFrame(
+        streamId: 1, pts: samplesWritten,
+        data: interleavedSamples(audio, from: samplesWritten, to: sampleCount))
+    }
+    try muxer.finish()
+    if announce {
+      var note = "No system video encoder on this platform, so the clip was written raw:\n"
+      note +=
+        "  \(nutURL.path) — rgb48le, \(firstShape.width)x\(firstShape.height), \(tensors.count) frames @ \(framesPerSecond) fps"
+      if sampleCount > 0 { note += ", float32 audio" }
+      note += "\nffmpeg, ffplay and mpv read it directly.\n"
+      FileHandle.standardError.write(Data(note.utf8))
+    }
+    return nutURL.path
+  }
+
+  private func stereoSampleCount(_ tensor: Tensor<Float>) throws -> Int {
+    let shape = tensor.shape
+    guard shape.count == 2, shape[0] == 2, shape[1] > 0 else {
+      throw DrawThingsCLIError.invalidAudioTensorShape("\(shape)")
+    }
+    return shape[1]
+  }
+
+  private func rgb48Frame(_ tensor: Tensor<FloatType>, shape: ImageTensorShape) -> [UInt8] {
+    let pixelCount = shape.width * shape.height
+    var rgb = [UInt8](repeating: 0, count: pixelCount * 6)
+    tensor.withUnsafeBytes {
+      guard let fp16 = $0.baseAddress?.assumingMemoryBound(to: FloatType.self) else { return }
+      for i in 0..<pixelCount {
+        let source = i * shape.channels
+        for channel in 0..<3 {
+          let value = pixelShort(fp16[source + channel])
+          rgb[i * 6 + channel * 2] = UInt8(value & 0xFF)
+          rgb[i * 6 + channel * 2 + 1] = UInt8(value >> 8)
+        }
+      }
+    }
+    return rgb
+  }
+
+  private func interleavedSamples(_ audio: Tensor<Float>, from start: Int, to end: Int) -> [UInt8]
+  {
+    var bytes = [UInt8](repeating: 0, count: (end - start) * 8)
+    for i in start..<end {
+      let left = max(-1, min(1, audio[0, i]))
+      let right = max(-1, min(1, audio[1, i]))
+      for (channel, sample) in [left, right].enumerated() {
+        let raw = sample.bitPattern
+        let base = (i - start) * 8 + channel * 4
+        bytes[base] = UInt8(raw & 0xFF)
+        bytes[base + 1] = UInt8((raw >> 8) & 0xFF)
+        bytes[base + 2] = UInt8((raw >> 16) & 0xFF)
+        bytes[base + 3] = UInt8((raw >> 24) & 0xFF)
+      }
+    }
+    return bytes
   }
 
   #if canImport(AVFoundation) && canImport(CoreMedia) && canImport(CoreVideo)
@@ -2531,6 +2656,329 @@ private final class LocalGenerationRunner {
       }
     }
   #endif
+}
+
+private func pixelShort(_ value: FloatType) -> UInt16 {
+  UInt16(min(max(Int((value + 1) * 32767.5), 0), 65535))
+}
+
+private struct NutRational {
+  var num: Int
+  var den: Int
+}
+
+private func nutRational(fromFrameRate fps: Double) -> NutRational {
+  guard fps > 0 else { return NutRational(num: 1, den: 1) }
+  if fps.rounded() == fps { return NutRational(num: Int(fps), den: 1) }
+  var terms = [Int]()
+  var x = fps
+  for _ in 0..<16 {
+    let whole = x.rounded(.down)
+    terms.append(Int(whole))
+    let fraction = x - whole
+    if fraction < 1e-9 { break }
+    x = 1 / fraction
+  }
+  var best = NutRational(num: Int(fps.rounded()), den: 1)
+  for count in 1...terms.count {
+    var num = 1
+    var den = 0
+    for term in terms[0..<count].reversed() {
+      (num, den) = (term * num + den, num)
+    }
+    guard den <= 1_000_000 else { break }
+    best = NutRational(num: num, den: den)
+  }
+  return best
+}
+
+private final class NutMuxer {
+  struct VideoStream {
+    var width: Int
+    var height: Int
+    var frameRate: NutRational
+    var fourcc: [UInt8]
+
+    static func rgb48le(width: Int, height: Int, frameRate: NutRational) -> VideoStream {
+      VideoStream(width: width, height: height, frameRate: frameRate, fourcc: [0x52, 0x47, 0x42, 48])
+    }
+  }
+
+  struct AudioStream {
+    var sampleRate: Int
+    var channels: Int
+    var fourcc: [UInt8]
+
+    static func pcmF32le(sampleRate: Int, channels: Int) -> AudioStream {
+      AudioStream(sampleRate: sampleRate, channels: channels, fourcc: [0x50, 0x46, 0x44, 32])
+    }
+  }
+
+  private static let mainStartcode: UInt64 = 0x4E4D_7A56_1F5F_04AD
+  private static let streamStartcode: UInt64 = 0x4E53_1140_5BF2_F9DB
+  private static let syncpointStartcode: UInt64 = 0x4E4B_E4AD_EECA_4569
+  private static let infoStartcode: UInt64 = 0x4E49_AB68_B596_BA78
+  private static let indexStartcode: UInt64 = 0x4E58_DD67_2F23_E64E
+  private static let frameCode: UInt8 = 0x41
+  private static let frameFlags: UInt64 = 1 | 8 | 16 | 32 | 64
+  private static let flagInvalid: UInt64 = 8192
+  private static let msbPtsShift = 7
+
+  private let handle: FileHandle
+  private let timeBases: [NutRational]
+  private var position = 0
+  private var syncpoints = [(position: Int, streamId: Int, pts: Int)]()
+  private var lastSyncpointIndex: [Int?]
+
+  init(url: URL, video: VideoStream, audio: AudioStream?, metadata: [(String, String)]) throws {
+    guard FileManager.default.createFile(atPath: url.path, contents: nil),
+      let handle = FileHandle(forWritingAtPath: url.path)
+    else {
+      throw DrawThingsCLIError.videoEncodeFailed(url.path)
+    }
+    self.handle = handle
+    var timeBases = [NutRational(num: video.frameRate.den, den: video.frameRate.num)]
+    if let audio { timeBases.append(NutRational(num: 1, den: audio.sampleRate)) }
+    self.timeBases = timeBases
+    self.lastSyncpointIndex = [Int?](repeating: nil, count: audio == nil ? 1 : 2)
+    try write(Array("nut/multimedia container\0".utf8))
+    try writePacket(startcode: Self.mainStartcode, payload: mainHeader())
+    try writePacket(startcode: Self.streamStartcode, payload: videoHeader(video))
+    if let audio {
+      try writePacket(startcode: Self.streamStartcode, payload: audioHeader(audio))
+    }
+    if !metadata.isEmpty {
+      try writePacket(startcode: Self.infoStartcode, payload: infoPacket(metadata))
+    }
+  }
+
+  func writeFrame(streamId: Int, pts: Int, data: [UInt8]) throws {
+    try writeSyncpoint(streamId: streamId, pts: pts)
+    var header = [Self.frameCode]
+    appendVLC(UInt64(streamId), to: &header)
+    appendVLC(UInt64(pts) + (1 << Self.msbPtsShift), to: &header)
+    appendVLC(UInt64(data.count), to: &header)
+    appendU32(crc32(header[...]), to: &header)
+    try write(header)
+    try write(data)
+  }
+
+  func finish() throws {
+    if !syncpoints.isEmpty {
+      try writePacket(startcode: Self.indexStartcode, payload: indexPacket())
+    }
+    try handle.close()
+  }
+
+  private func writeSyncpoint(streamId: Int, pts: Int) throws {
+    let current = position
+    syncpoints.append((position: current, streamId: streamId, pts: pts))
+    let backIndex = lastSyncpointIndex.compactMap { $0 }.min() ?? syncpoints.count - 1
+    var payload = [UInt8]()
+    appendVLC(UInt64(pts * timeBases.count + streamId), to: &payload)
+    appendVLC(UInt64(current - syncpoints[backIndex].position) >> 4, to: &payload)
+    try writePacket(startcode: Self.syncpointStartcode, payload: payload)
+    lastSyncpointIndex[streamId] = syncpoints.count - 1
+  }
+
+  private func indexPacket() -> [UInt8] {
+    var payload = [UInt8]()
+    let maxByTime = syncpoints.indices.max { left, right in
+      let a = syncpoints[left]
+      let b = syncpoints[right]
+      let aBase = timeBases[a.streamId]
+      let bBase = timeBases[b.streamId]
+      return a.pts * aBase.num * bBase.den < b.pts * bBase.num * aBase.den
+    }!
+    let maxPts = syncpoints[maxByTime]
+    appendVLC(UInt64(maxPts.pts * timeBases.count + maxPts.streamId), to: &payload)
+    appendVLC(UInt64(syncpoints.count), to: &payload)
+    var previous = 0
+    for syncpoint in syncpoints {
+      appendVLC(UInt64((syncpoint.position >> 4) - (previous >> 4)), to: &payload)
+      previous = syncpoint.position
+    }
+    for streamId in 0..<lastSyncpointIndex.count {
+      func hasKeyframe(_ region: Int) -> Bool {
+        region > 0 && syncpoints[region - 1].streamId == streamId
+      }
+      var region = 0
+      var lastPts = -1
+      while region < syncpoints.count {
+        let flag = hasKeyframe(region) != (region + 1 == syncpoints.count)
+        var runLength = 0
+        while region < syncpoints.count, hasKeyframe(region) == flag {
+          runLength += 1
+          region += 1
+        }
+        appendVLC(UInt64(1 + (flag ? 2 : 0) + 4 * runLength), to: &payload)
+        for covered in (region - runLength)...region where covered < syncpoints.count {
+          guard hasKeyframe(covered) else { continue }
+          appendVLC(UInt64(syncpoints[covered - 1].pts - lastPts), to: &payload)
+          lastPts = syncpoints[covered - 1].pts
+        }
+        region += 1
+      }
+    }
+    let forwardPtr = payload.count + 8 + 4
+    let headerLength = 8 + vlcLength(UInt64(forwardPtr)) + (forwardPtr > 4096 ? 4 : 0)
+    var indexPtr = [UInt8]()
+    appendU64(UInt64(headerLength + payload.count + 8 + 4), to: &indexPtr)
+    return payload + indexPtr
+  }
+
+  private func mainHeader() -> [UInt8] {
+    var payload = [UInt8]()
+    appendVLC(3, to: &payload)
+    appendVLC(UInt64(lastSyncpointIndex.count), to: &payload)
+    appendVLC(32767, to: &payload)
+    appendVLC(UInt64(timeBases.count), to: &payload)
+    for timeBase in timeBases {
+      appendVLC(UInt64(timeBase.num), to: &payload)
+      appendVLC(UInt64(timeBase.den), to: &payload)
+    }
+    for (flags, count) in [(Self.flagInvalid, 65), (Self.frameFlags, 1), (Self.flagInvalid, 189)] {
+      appendVLC(flags, to: &payload)
+      appendVLC(6, to: &payload)
+      appendSignedVLC(0, to: &payload)
+      appendVLC(1, to: &payload)
+      appendVLC(0, to: &payload)
+      appendVLC(0, to: &payload)
+      appendVLC(0, to: &payload)
+      appendVLC(UInt64(count), to: &payload)
+    }
+    appendVLC(0, to: &payload)
+    appendVLC(0, to: &payload)
+    return payload
+  }
+
+  private func streamHeaderCommon(
+    streamId: Int, streamClass: UInt64, fourcc: [UInt8], maxPtsDistance: Int
+  ) -> [UInt8] {
+    var payload = [UInt8]()
+    appendVLC(UInt64(streamId), to: &payload)
+    appendVLC(streamClass, to: &payload)
+    appendVLC(UInt64(fourcc.count), to: &payload)
+    payload.append(contentsOf: fourcc)
+    appendVLC(UInt64(streamId), to: &payload)
+    appendVLC(UInt64(Self.msbPtsShift), to: &payload)
+    appendVLC(UInt64(maxPtsDistance), to: &payload)
+    appendVLC(0, to: &payload)
+    appendVLC(0, to: &payload)
+    appendVLC(0, to: &payload)
+    return payload
+  }
+
+  private func videoHeader(_ video: VideoStream) -> [UInt8] {
+    let ticksPerSecond = max(1, video.frameRate.num / max(1, video.frameRate.den))
+    var payload = streamHeaderCommon(
+      streamId: 0, streamClass: 0, fourcc: video.fourcc, maxPtsDistance: ticksPerSecond)
+    appendVLC(UInt64(video.width), to: &payload)
+    appendVLC(UInt64(video.height), to: &payload)
+    appendVLC(1, to: &payload)
+    appendVLC(1, to: &payload)
+    appendVLC(0, to: &payload)
+    return payload
+  }
+
+  private func audioHeader(_ audio: AudioStream) -> [UInt8] {
+    var payload = streamHeaderCommon(
+      streamId: 1, streamClass: 1, fourcc: audio.fourcc, maxPtsDistance: audio.sampleRate)
+    appendVLC(UInt64(audio.sampleRate), to: &payload)
+    appendVLC(1, to: &payload)
+    appendVLC(UInt64(audio.channels), to: &payload)
+    return payload
+  }
+
+  private func infoPacket(_ metadata: [(String, String)]) -> [UInt8] {
+    var payload = [UInt8]()
+    appendVLC(0, to: &payload)
+    appendSignedVLC(0, to: &payload)
+    appendVLC(0, to: &payload)
+    appendVLC(0, to: &payload)
+    appendVLC(UInt64(metadata.count), to: &payload)
+    for (name, value) in metadata {
+      let nameBytes = Array(name.utf8)
+      appendVLC(UInt64(nameBytes.count), to: &payload)
+      payload.append(contentsOf: nameBytes)
+      appendSignedVLC(-1, to: &payload)
+      var truncated = value
+      while truncated.utf8.count > 1020 {
+        truncated = String(truncated.dropLast())
+      }
+      if truncated.count < value.count { truncated += "…" }
+      let valueBytes = Array(truncated.utf8)
+      appendVLC(UInt64(valueBytes.count), to: &payload)
+      payload.append(contentsOf: valueBytes)
+    }
+    return payload
+  }
+
+  private func writePacket(startcode: UInt64, payload: [UInt8]) throws {
+    var header = [UInt8]()
+    appendU64(startcode, to: &header)
+    appendVLC(UInt64(payload.count) + 4, to: &header)
+    if payload.count + 4 > 4096 {
+      appendU32(crc32(header[...]), to: &header)
+    }
+    try write(header)
+    try write(payload)
+    var footer = [UInt8]()
+    appendU32(crc32(payload[...]), to: &footer)
+    try write(footer)
+  }
+
+  private func write(_ bytes: [UInt8]) throws {
+    try handle.write(contentsOf: Data(bytes))
+    position += bytes.count
+  }
+
+  private func vlcLength(_ value: UInt64) -> Int {
+    var length = 1
+    var rest = value >> 7
+    while rest > 0 {
+      length += 1
+      rest >>= 7
+    }
+    return length
+  }
+
+  private func appendVLC(_ value: UInt64, to bytes: inout [UInt8]) {
+    var groups: [UInt8] = [UInt8(value & 0x7F)]
+    var rest = value >> 7
+    while rest > 0 {
+      groups.append(UInt8(rest & 0x7F) | 0x80)
+      rest >>= 7
+    }
+    bytes.append(contentsOf: groups.reversed())
+  }
+
+  private func appendSignedVLC(_ value: Int, to bytes: inout [UInt8]) {
+    appendVLC(value > 0 ? UInt64(2 * value - 1) : UInt64(-2 * value), to: &bytes)
+  }
+
+  private func appendU32(_ value: UInt32, to bytes: inout [UInt8]) {
+    bytes.append(contentsOf: [
+      UInt8(value >> 24), UInt8((value >> 16) & 0xFF), UInt8((value >> 8) & 0xFF),
+      UInt8(value & 0xFF),
+    ])
+  }
+
+  private func appendU64(_ value: UInt64, to bytes: inout [UInt8]) {
+    appendU32(UInt32(value >> 32), to: &bytes)
+    appendU32(UInt32(value & 0xFFFF_FFFF), to: &bytes)
+  }
+
+  private func crc32(_ bytes: ArraySlice<UInt8>) -> UInt32 {
+    var crc: UInt32 = 0
+    for byte in bytes {
+      crc ^= UInt32(byte) << 24
+      for _ in 0..<8 {
+        crc = (crc & 0x8000_0000) != 0 ? (crc << 1) ^ 0x04C1_1DB7 : crc << 1
+      }
+    }
+    return crc
+  }
 }
 
 private final class RemoteGenerationRunner {
@@ -2787,7 +3235,7 @@ private final class RemoteGenerationRunner {
 
   private func isVideoOutputPath(_ outputPath: String) -> Bool {
     let ext = URL(fileURLWithPath: outputPath).pathExtension.lowercased()
-    return ext == "mov" || ext == "mp4"
+    return ext == "mov" || ext == "mp4" || ext == "nut"
   }
 }
 
@@ -4293,7 +4741,7 @@ extension DrawThingsCLI.Generate {
     }
     try validateVideoOutputOptions(outputPath: outputURL.path, videoFormat: output.videoFormat)
     switch outputURL.pathExtension.lowercased() {
-    case "mp4", "mov":
+    case "mp4", "mov", "nut":
       break
     default:
       throw DrawThingsCLIError.invalidOutputPath(outputURL.path)
@@ -4427,7 +4875,8 @@ extension DrawThingsCLI.Generate {
     }
     let outputPaths = try runner.saveOutputs(
       allFrames, audio: fallbackAudio, outputPath: outputURL.path, configuration: configuration,
-      videoFormat: output.videoFormat)
+      videoFormat: output.videoFormat,
+      prompt: promptValues.prompt, negativePrompt: resolvedNegativePrompt)
     for path in outputPaths {
       print("Wrote: \(path)")
     }
@@ -4837,7 +5286,7 @@ private func validateVideoOutputOptions(outputPath: String, videoFormat: VideoEx
     if videoFormat == .prores4444 || videoFormat == .prores422hq {
       throw ValidationError("ProRes video formats require .mov output")
     }
-  case "png":
+  case "png", "nut":
     throw ValidationError("--video-format can only be used with .mov or .mp4 output")
   default:
     return
