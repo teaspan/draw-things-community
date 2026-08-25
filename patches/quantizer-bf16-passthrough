@@ -1,0 +1,20 @@
+Bottom: 07b01aefe260a0d4635f59e65ac9018df92a2fff
+Top:    07b01aefe260a0d4635f59e65ac9018df92a2fff
+Author: Teaspan <314463419+teaspan@users.noreply.github.com>
+Date:   2026-08-25 14:02:33 +0000
+
+Stop narrowing BF16 matmul rows to F16 when quantizing
+
+Every arm opens with Tensor<FloatType>(from: tensor), which silently converts
+BF16 weights to F16. Z-Image and the Qwen family carry CCV_16BF matmul rows
+inside their _f16 checkpoints, the codecs keep centroids and row scales in the
+tensor's own dtype, and ccv_nnc_tensor_read has no 16F to 16BF path, so the
+quantized result crashes the server on its first generation. Pass an
+already-16-bit tensor through untouched and narrow only what needs it.
+
+Found by comparing a Z-Image Turbo quantized by this CLI against one the macOS
+app produced from the same source. The recipe matched exactly and the only
+discrepancy in the whole file was 238 F16 rows where the app had BF16. That
+file segfaulted both gRPCServerCLI and the app, while the app's own generated
+normally. The app is where BF16 architectures get quantized in practice, which
+is why this has gone unnoticed.
