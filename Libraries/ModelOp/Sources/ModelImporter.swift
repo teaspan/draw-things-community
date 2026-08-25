@@ -91,7 +91,7 @@ public final class ModelImporter {
     var archive: TensorArchive
     var stateDict: [String: TensorDescriptor]
     if let safeTensors = SafeTensors(url: URL(fileURLWithPath: filePath)) {
-      archive = safeTensors
+      archive = safeTensors.applyingScaledFP8WeightScales()
       let states = safeTensors.states
       stateDict = states
       for (key, value) in states {
@@ -576,7 +576,7 @@ public final class ModelImporter {
           var textEncoderStateDict = stateDict
           if let textEncoderFilePath = textEncoderFilePath {
             if let safeTensors = SafeTensors(url: URL(fileURLWithPath: textEncoderFilePath)) {
-              textEncoderArchive = safeTensors
+              textEncoderArchive = safeTensors.applyingScaledFP8WeightScales()
               textEncoderStateDict = safeTensors.states
               for (key, value) in textEncoderStateDict {
                 textEncoderStateDict["cond_stage_model.transformer.\(key)"] = value
@@ -695,7 +695,7 @@ public final class ModelImporter {
             var textEncoder2TextProjectionTransposed = false
             if let textEncoder2FilePath = textEncoder2FilePath {
               if let safeTensors = SafeTensors(url: URL(fileURLWithPath: textEncoder2FilePath)) {
-                textEncoder2Archive = safeTensors
+                textEncoder2Archive = safeTensors.applyingScaledFP8WeightScales()
                 textEncoder2StateDict = safeTensors.states
                 for (key, value) in textEncoder2StateDict {
                   if key.hasPrefix("text_projection") {
@@ -2296,7 +2296,7 @@ public final class ModelImporter {
           // Redo the stateDict
           stateDict.removeAll()
           if let safeTensors = SafeTensors(url: URL(fileURLWithPath: autoencoderFilePath)) {
-            archive = safeTensors
+            archive = safeTensors.applyingScaledFP8WeightScales()
             let states = safeTensors.states
             stateDict = states
             for (key, value) in states {
