@@ -134,6 +134,20 @@ public final class SafeTensors {
         storageOffset: offsetStart, shape: shape, strides: strides)
       states[key] = tensorDescriptor
     }
+    for (key, descriptor) in states
+    where descriptor.storage.FP8_E4M3 || descriptor.storage.FP8_E5M2 {
+      let scaleKeys =
+        key.hasSuffix(".weight")
+        ? [key + "_scale", String(key.dropLast("weight".count)) + "scale_weight"] : [key + "_scale"]
+      guard
+        let scale = scaleKeys.compactMap({ states[$0] }).first(where: {
+          $0.storage.dataType == .Float32 && $0.storage.size == MemoryLayout<Float>.size
+        })
+      else { continue }
+      states[key]?.storage.scale = data.withUnsafeBytes {
+        $0.loadUnaligned(fromByteOffset: 8 + Int(headerSize) + scale.storageOffset, as: Float.self)
+      }
+    }
     self.data = data
     self.states = states
     bufferStart = 8 + Int(headerSize)
@@ -205,13 +219,14 @@ extension TensorDataArchive {
           )
           f32.withUnsafeMutableBytes {
             guard let f32 = $0.baseAddress?.assumingMemoryBound(to: Float.self) else { return }
+            let scale = tensorDescriptor.storage.scale
             if tensorDescriptor.storage.FP8_E4M3 {
               for i in 0..<count {
-                f32[i] = F8_E4M3[Int(fp8[i])]
+                f32[i] = F8_E4M3[Int(fp8[i])] * scale
               }
             } else if tensorDescriptor.storage.FP8_E5M2 {
               for i in 0..<count {
-                f32[i] = F8_E5M2[Int(fp8[i])]
+                f32[i] = F8_E5M2[Int(fp8[i])] * scale
               }
             }
           }
@@ -265,13 +280,14 @@ extension TensorDataArchive {
           )
           f32.withUnsafeMutableBytes {
             guard let f32 = $0.baseAddress?.assumingMemoryBound(to: Float.self) else { return }
+            let scale = tensorDescriptor.storage.scale
             if tensorDescriptor.storage.FP8_E4M3 {
               for i in 0..<count {
-                f32[i] = F8_E4M3[Int(fp8[i])]
+                f32[i] = F8_E4M3[Int(fp8[i])] * scale
               }
             } else if tensorDescriptor.storage.FP8_E5M2 {
               for i in 0..<count {
-                f32[i] = F8_E5M2[Int(fp8[i])]
+                f32[i] = F8_E5M2[Int(fp8[i])] * scale
               }
             }
           }
