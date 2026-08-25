@@ -180,8 +180,10 @@ private func BasicTransformerBlock1D(
     }
     mapping["\(prefix).attn1.to_out.0.weight"] = [unifyheads.weight.name]
     mapping["\(prefix).attn1.to_out.0.bias"] = [unifyheads.bias.name]
-    mapping["\(prefix).attn1.k_norm.weight"] = [normK.weight.name]
-    mapping["\(prefix).attn1.q_norm.weight"] = [normQ.weight.name]
+    mapping["\(prefix).attn1.k_norm.weight"] = ModelWeightElement(
+      [normK.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k)
+    mapping["\(prefix).attn1.q_norm.weight"] = ModelWeightElement(
+      [normQ.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k)
     mapping["\(prefix).ff.net.0.proj.weight"] = [upProj.weight.name]
     mapping["\(prefix).ff.net.0.proj.bias"] = [upProj.bias.name]
     mapping["\(prefix).ff.net.2.weight"] = [downProj.weight.name]
@@ -315,8 +317,10 @@ private func LTX2SelfAttention(
     }
     mapping["\(prefix).to_out.0.weight"] = [unifyheads.weight.name]
     mapping["\(prefix).to_out.0.bias"] = [unifyheads.bias.name]
-    mapping["\(prefix).k_norm.weight"] = [normK.weight.name]
-    mapping["\(prefix).q_norm.weight"] = [normQ.weight.name]
+    mapping["\(prefix).k_norm.weight"] = ModelWeightElement(
+      [normK.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k)
+    mapping["\(prefix).q_norm.weight"] = ModelWeightElement(
+      [normQ.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k)
     return mapping
   }
   return (mapper, Model([x, rot], [out]))
@@ -432,9 +436,11 @@ private func LTX2CrossAttention(
     mapping["\(prefix).to_out.0.weight"] = [unifyheads.weight.name]
     mapping["\(prefix).to_out.0.bias"] = [unifyheads.bias.name]
     if let normK = normK {
-      mapping["\(prefix).k_norm.weight"] = [normK.weight.name]
+      mapping["\(prefix).k_norm.weight"] = ModelWeightElement(
+        [normK.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k.1)
     }
-    mapping["\(prefix).q_norm.weight"] = [normQ.weight.name]
+    mapping["\(prefix).q_norm.weight"] = ModelWeightElement(
+      [normQ.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k.1)
     return mapping
   }
   return (
@@ -823,7 +829,8 @@ private func LTX2CrossAttentionFixed(
       [toKeys.bias.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k.1)
     mapping["\(prefix).to_v.weight"] = [toValues.weight.name]
     mapping["\(prefix).to_v.bias"] = [toValues.bias.name]
-    mapping["\(prefix).k_norm.weight"] = [normK.weight.name]
+    mapping["\(prefix).k_norm.weight"] = ModelWeightElement(
+      [normK.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k.1)
     return mapping
   }
   return (mapper, Model([context], [keys, values]))
@@ -1331,8 +1338,10 @@ private func LoRABasicTransformerBlock1D(
     }
     mapping["\(prefix).attn1.to_out.0.weight"] = [unifyheads.weight.name]
     mapping["\(prefix).attn1.to_out.0.bias"] = [unifyheads.bias.name]
-    mapping["\(prefix).attn1.k_norm.weight"] = [normK.weight.name]
-    mapping["\(prefix).attn1.q_norm.weight"] = [normQ.weight.name]
+    mapping["\(prefix).attn1.k_norm.weight"] = ModelWeightElement(
+      [normK.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k)
+    mapping["\(prefix).attn1.q_norm.weight"] = ModelWeightElement(
+      [normQ.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k)
     mapping["\(prefix).ff.net.0.proj.weight"] = [upProj.weight.name]
     mapping["\(prefix).ff.net.0.proj.bias"] = [upProj.bias.name]
     mapping["\(prefix).ff.net.2.weight"] = [downProj.weight.name]
@@ -1475,8 +1484,10 @@ private func LoRALTX2SelfAttention(
     }
     mapping["\(prefix).to_out.0.weight"] = [unifyheads.weight.name]
     mapping["\(prefix).to_out.0.bias"] = [unifyheads.bias.name]
-    mapping["\(prefix).k_norm.weight"] = [normK.weight.name]
-    mapping["\(prefix).q_norm.weight"] = [normQ.weight.name]
+    mapping["\(prefix).k_norm.weight"] = ModelWeightElement(
+      [normK.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k)
+    mapping["\(prefix).q_norm.weight"] = ModelWeightElement(
+      [normQ.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k)
     return mapping
   }
   return (mapper, Model([x, rot], [out]))
@@ -1600,9 +1611,11 @@ private func LoRALTX2CrossAttention(
     mapping["\(prefix).to_out.0.weight"] = [unifyheads.weight.name]
     mapping["\(prefix).to_out.0.bias"] = [unifyheads.bias.name]
     if let normK = normK {
-      mapping["\(prefix).k_norm.weight"] = [normK.weight.name]
+      mapping["\(prefix).k_norm.weight"] = ModelWeightElement(
+        [normK.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k.1)
     }
-    mapping["\(prefix).q_norm.weight"] = [normQ.weight.name]
+    mapping["\(prefix).q_norm.weight"] = ModelWeightElement(
+      [normQ.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k.1)
     return mapping
   }
   return (
@@ -2009,7 +2022,8 @@ private func LoRALTX2CrossAttentionFixed(
       [toKeys.bias.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k.1)
     mapping["\(prefix).to_v.weight"] = [toValues.weight.name]
     mapping["\(prefix).to_v.bias"] = [toValues.bias.name]
-    mapping["\(prefix).k_norm.weight"] = [normK.weight.name]
+    mapping["\(prefix).k_norm.weight"] = ModelWeightElement(
+      [normK.weight.name], interleavedIndices: [0], numberOfHeads: h, headDimension: k.1)
     return mapping
   }
   return (mapper, Model([context], [keys, values]))
