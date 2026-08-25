@@ -50,7 +50,7 @@ swift_library(
         "//Libraries/Upscaler",
         "@SwiftCrypto//:Crypto",
         "@SwiftLog//:Logging",
-        "@ccv//lib:ccv",
+        "@s4nnc//nnc:C_ccv",
         "@s4nnc//nnc",
         "@swift-atomics//:SwiftAtomics",
     ] + select({
