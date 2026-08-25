@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "0d05118227ab177fffb043615c00740bb6ab2f2f",
-  "head": "705f88b3ab326bf6c1551cba6b2f27a25d23a897",
+  "prev": "284c4c5eb4cc1cbfdd88df22a3d620c53e5d1966",
+  "head": "d688a43c6a26a75368af504f80474427322b84d6",
   "applied": [
     "dti-split-tool",
     "fp8-sidecar-archive",
@@ -11,8 +11,7 @@
     "ltx23-base-import",
     "nnc-shared-library",
     "no-advertising-flag",
-    "quantizer-bf16-passthrough",
-    "refresh-temp"
+    "quantizer-bf16-passthrough"
   ],
   "unapplied": [
     "quantizer-codec-flag",
@@ -47,13 +46,10 @@
       "oid": "737b75cfd13d01dae081a98b3f66d6851542ead0"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "1ae55e345ced42add611642593dad2cd4ec00f70"
+      "oid": "d688a43c6a26a75368af504f80474427322b84d6"
     },
     "quantizer-codec-flag": {
       "oid": "0c2168ece7fb5ecd404e7e0be3dc07238beb6443"
-    },
-    "refresh-temp": {
-      "oid": "705f88b3ab326bf6c1551cba6b2f27a25d23a897"
     },
     "separate-lora-flag": {
       "oid": "4247486d7adaf33a2252e9bb0fe1ff968b359851"
