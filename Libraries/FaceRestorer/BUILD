@@ -7,6 +7,6 @@ swift_library(
     visibility = ["//visibility:public"],
     deps = [
         "@s4nnc//nnc",
-        "@ccv//lib:ccv",
+        "@s4nnc//nnc:C_ccv",
     ],
 )
