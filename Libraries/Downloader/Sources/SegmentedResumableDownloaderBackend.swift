@@ -21,7 +21,9 @@ final class SegmentedResumableDownloaderBackend: NSObject, DownloadBackend {
   private lazy var session: URLSession = {
     let configuration = URLSessionConfiguration.default
     configuration.httpMaximumConnectionsPerHost = connectionCount
-    configuration.waitsForConnectivity = true
+    #if canImport(Darwin)
+      configuration.waitsForConnectivity = true
+    #endif
     return URLSession(configuration: configuration, delegate: self, delegateQueue: delegateQueue)
   }()
 
