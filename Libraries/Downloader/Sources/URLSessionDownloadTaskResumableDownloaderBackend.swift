@@ -210,7 +210,7 @@ extension URLSessionDownloadTaskResumableDownloaderBackend: URLSessionDownloadDe
     }
 
     var resumeDataWriteError: Error? = nil
-    if let resumeData = nsError.userInfo[NSURLSessionDownloadTaskResumeData] as? Data {
+    if let resumeData = nsError.userInfo["NSURLSessionDownloadTaskResumeData"] as? Data {
       do {
         try writeResumeData(resumeData)
       } catch {

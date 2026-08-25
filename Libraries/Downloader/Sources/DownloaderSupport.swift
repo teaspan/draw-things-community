@@ -1,5 +1,10 @@
-import CryptoKit
-import Darwin
+import Crypto
+
+#if canImport(Darwin)
+  import Darwin
+#else
+  import Glibc
+#endif
 import Foundation
 
 public struct URLDownloadProbe {
@@ -100,7 +105,7 @@ func isTransientDownloadError(_ error: NSError) -> Bool {
   if error.domain == NSPOSIXErrorDomain, error.code == 54 || error.code == 32 {
     return true
   }
-  if error.domain == kCFErrorDomainCFNetwork as String,
+  if error.domain == "kCFErrorDomainCFNetwork",
     let underlyingError = error.userInfo[NSUnderlyingErrorKey] as? NSError,
     underlyingError.domain == NSPOSIXErrorDomain,
     underlyingError.code == 54 || underlyingError.code == 32
@@ -213,3 +218,10 @@ extension Data {
     map { String(format: "%02x", $0) }.joined()
   }
 }
+
+#if !canImport(ObjectiveC)
+  @discardableResult
+  fileprivate func autoreleasepool<Result>(invoking body: () throws -> Result) rethrows -> Result {
+    return try body()
+  }
+#endif
