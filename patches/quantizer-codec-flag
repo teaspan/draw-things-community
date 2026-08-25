@@ -1,19 +1,22 @@
 Bottom: 35bcd3faecd3a14e0d98819bbe075af2ea990f49
 Top:    d14ada8f49dfd30206cfb3ef401cda23d247754b
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-08-25 14:02:33 +0000
+Date:   2026-08-25 14:02:57 +0000
 
-Add --codec to ModelQuantizer, and stop narrowing BF16 rows to F16
+Add --codec to ModelQuantizer
 
-Every arm opens with Tensor<FloatType>(from: tensor), which silently narrows
-BF16 matmul weights to F16. Z-Image and the Qwen family carry CCV_16BF rows
-inside their _f16 checkpoints, the codecs keep centroids and row scales in the
-tensor's own dtype, and ccv_nnc_tensor_read has no 16F to 16BF path, so the
-result crashes the server on first generation. The fix preserves any
-already-16-bit row and still narrows anything else.
+Replaces the per-version recipe's codec for the matmul bulk only, which is the
+same split the app's three quantize actions make. Convolutions, ada_ln
+projections, embedders and 1-D tensors keep the recipe's own codecs, so this is
+upstream's own factorization rather than a new one. Sixteen call sites route
+through a bulkCodec helper that returns the recipe's literal unless overridden,
+and default reproduces current output byte for byte.
 
---codec replaces the per-version recipe's codec for the matmul bulk only,
-which is the same split the app's three quantize actions make. default
-reproduces current output byte for byte. Palettizing is DP-bound and takes
-hours on a 22B DiT where i8x is about eight passes per row, and the i8x
-artifact is separately the only encoding an Apple Neural Engine can consume.
+Palettizing is DP-bound and takes hours on a 22B DiT where i8x is about eight
+passes per row, so this turns quantize-overnight-before-you-can-test into a few
+minutes. The i8x artifact is separately the only encoding an Apple Neural
+Engine can consume, which is worth having on its own account.
+
+Only plain i8x is validated here. The K-quant subtypes are plumbed end to end
+but unexercised, and the iq* formats are importance-matrix quants by
+construction while this flag passes no imatrix, so they run at their worst.
