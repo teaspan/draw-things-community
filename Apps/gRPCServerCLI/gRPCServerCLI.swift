@@ -343,6 +343,9 @@ struct gRPCServerCLI: ParsableCommand {
   @Flag(help: "Disable FlashAttention.")
   var noFlashAttention = false
 
+  @Flag(help: "Disable mDNS advertising of the server on the local network.")
+  var noAdvertising = false
+
   @Option(name: .shortAndLong, help: "The weights cache size in GiB.")
   var weightsCache: Int = 0
 
@@ -602,8 +605,9 @@ struct gRPCServerCLI: ParsableCommand {
     } else {
       print("Server started, but port is unknown")
     }
-    let advertiser: GRPCServerAdvertiser = GRPCServerAdvertiser(name: name)
-    advertiser.startAdvertising(port: Int32(port), TLS: TLS)
+    let advertiser: GRPCServerAdvertiser? =
+      noAdvertising ? nil : GRPCServerAdvertiser(name: name)
+    advertiser?.startAdvertising(port: Int32(port), TLS: TLS)
 
     if let json = join {
       try addServers(try AddServersConfiguration.parse(json))
@@ -611,7 +615,7 @@ struct gRPCServerCLI: ParsableCommand {
 
     // Block the current thread until the server closes
     try server.onClose.wait()
-    advertiser.stopAdvertising()
+    advertiser?.stopAdvertising()
   }
 
   func addServers(_ addServers: AddServersConfiguration) throws {
