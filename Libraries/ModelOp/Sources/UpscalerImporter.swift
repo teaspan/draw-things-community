@@ -47,7 +47,7 @@ public final class UpscalerImporter {
         stateDict[key] = value
       }
     } else if let data = try? Data(
-      contentsOf: URL(fileURLWithPath: filePath), options: .mappedIfSafe)
+      contentsOf: URL(fileURLWithPath: filePath), options: .mappedIfLocal)
     {
       archive = DataArchive(data: data, bufferStart: 0)
       let rootObject = try Interpreter.unpickle(data: data, fileReadDirectly: true)
