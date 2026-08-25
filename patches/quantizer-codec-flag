@@ -1,7 +1,7 @@
-Bottom: 07b01aefe260a0d4635f59e65ac9018df92a2fff
+Bottom: 35bcd3faecd3a14e0d98819bbe075af2ea990f49
 Top:    d14ada8f49dfd30206cfb3ef401cda23d247754b
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-08-25 14:01:18 +0000
+Date:   2026-08-25 14:02:33 +0000
 
 Add --codec to ModelQuantizer, and stop narrowing BF16 rows to F16
 
