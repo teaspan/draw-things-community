@@ -104,6 +104,13 @@ load("@bazel_features//:deps.bzl", "bazel_features_deps")
 
 bazel_features_deps()
 
+http_archive(
+    name = "sqlite3",
+    sha256 = "9ad6d16cbc1df7cd55c8b55127c82a9bca5e9f287818de6dc87e04e73599d754",
+    urls = ["https://www.sqlite.org/2025/sqlite-amalgamation-3500300.zip"],
+    build_file = "//:sqlite3-split.BUILD",
+)
+
 git_repository(
     name = "dflat",
     commit = "73925e51e4f44add842177a229f9990cb13711ff",
@@ -117,9 +124,20 @@ dflat_deps()
 
 git_repository(
     name = "s4nnc",
-    commit = "40fba933eac7b34b967f97efeedc4b9697f963fe",
-    remote = "https://github.com/liuliu/s4nnc.git",
-    shallow_since = "1787598682 -0400",
+    commit = "830fb15ec9855775c2c12c173591b4ba522ee811",
+    remote = "https://github.com/teaspan/s4nnc.git",
+)
+
+git_repository(
+    name = "ccv",
+    commit = "f53347902239ef73514bc7a0add2110a3f4f73d2",
+    remote = "https://github.com/teaspan/ccv.git",
+)
+
+git_repository(
+    name = "build_bazel_rules_cuda",
+    commit = "26b2280c4a8da7c9f133bc295ddd552142740af7",
+    remote = "https://github.com/teaspan/rules_cuda.git",
 )
 
 load("@s4nnc//:deps.bzl", "s4nnc_deps", "s4nnc_extra_deps")
