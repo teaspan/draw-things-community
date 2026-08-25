@@ -71,7 +71,7 @@ public final class SafeTensors {
   public let bufferStart: Int
   public let states: [String: TensorDescriptor]
   public init?(url: URL) {
-    guard let data = try? Data(contentsOf: url, options: .mappedIfSafe) else { return nil }
+    guard let data = try? Data(contentsOf: url, options: .alwaysMapped) else { return nil }
     guard data.count >= 8 else { return nil }
     let headerSize = data.withUnsafeBytes { $0.load(as: UInt64.self) }
     // It doesn't make sense for my use-case has more than 10MiB header.
