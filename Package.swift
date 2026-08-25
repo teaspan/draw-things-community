@@ -8,6 +8,7 @@ let package = Package(
   products: [
     .executable(name: "gRPCServerCLI", targets: ["gRPCServerCLI"]),
     .executable(name: "draw-things-cli", targets: ["DrawThingsCLI"]),
+    .executable(name: "dti-split", targets: ["dtiSplit"]),
     .library(name: "_MediaGenerationKit", targets: ["_MediaGenerationKit"]),
   ],
   dependencies: [
@@ -507,6 +508,15 @@ let package = Package(
       ],
       path: "Apps/DrawThingsCLI",
       sources: ["DrawThingsCLI.swift"]
+    ),
+    .executableTarget(
+      name: "dtiSplit",
+      dependencies: [
+        "LLM",
+        .product(name: "ArgumentParser", package: "swift-argument-parser"),
+        .product(name: "NNC", package: "s4nnc"),
+      ],
+      path: "Apps/dtiSplit"
     ),
     .target(
       name: "DeviceAttestation",
