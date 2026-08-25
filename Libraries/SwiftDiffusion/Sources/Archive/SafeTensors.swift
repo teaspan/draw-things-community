@@ -70,6 +70,7 @@ public final class SafeTensors {
   public var data: Data
   public let bufferStart: Int
   public let states: [String: TensorDescriptor]
+  public let unsupportedDtypes: [String: String]
   public init?(url: URL) {
     guard let data = try? Data(contentsOf: url, options: .mappedIfSafe) else { return nil }
     guard data.count >= 8 else { return nil }
@@ -83,6 +84,7 @@ public final class SafeTensors {
         with: data[8..<(8 + headerSize)]) as? [String: Any]
     else { return nil }
     var states = [String: TensorDescriptor]()
+    var unsupportedDtypes = [String: String]()
     for (key, value) in jsonDict {
       guard let value = value as? [String: Any], let offsets = value["data_offsets"] as? [Int],
         let dtype = (value["dtype"] as? String)?.lowercased(), var shape = value["shape"] as? [Int],
@@ -105,6 +107,7 @@ public final class SafeTensors {
           || dtype == "double" || dtype == "bf16" || dtype == "bfloat16" || dtype == "f8_e4m3"
           || dtype == "f8_e5m2"
       else {
+        unsupportedDtypes[key] = dtype.uppercased()
         continue
       }
       let BF16 = (dtype == "bf16" || dtype == "bfloat16")
@@ -136,7 +139,125 @@ public final class SafeTensors {
     }
     self.data = data
     self.states = states
+    self.unsupportedDtypes = unsupportedDtypes
     bufferStart = 8 + Int(headerSize)
+  }
+}
+
+public enum SafeTensorsQuantizationError: Error, LocalizedError {
+  case orphanScales(count: Int, example: String)
+  case scaledE5M2
+  case unappliedSidecar(count: Int, example: String, sidecar: String)
+  case unsupportedDtypes(count: Int, example: String, dtype: String)
+
+  public var errorDescription: String? {
+    switch self {
+    case .orphanScales(let count, let example):
+      return
+        "\(count) F8_E4M3 tensors have no matching scale (e.g. \(example)) — unrecognized scale convention; importing them unscaled would corrupt the model"
+    case .scaledE5M2:
+      return
+        "F8_E5M2 tensors alongside quantization scales — scaled-E5M2 is not supported (E4M3 only)"
+    case .unappliedSidecar(let count, let example, let sidecar):
+      return
+        "\(count) tensors carry a live \(sidecar) sidecar that would not be applied (e.g. \(example)) — importing them as-is would corrupt the model"
+    case .unsupportedDtypes(let count, let example, let dtype):
+      return
+        "\(count) tensors have a dtype the importer skips silently (e.g. \(example): \(dtype)) — the converted model would be missing those weights"
+    }
+  }
+}
+
+extension SafeTensors {
+  public func applyingScaledFP8Sidecars(skippingKeyPrefixes: [String]) throws -> TensorArchive {
+    func isSkipped(_ key: String) -> Bool {
+      skippingKeyPrefixes.contains { key.hasPrefix($0) }
+    }
+    func stemScoped(_ key: String) -> [String] {
+      guard key.hasSuffix(".weight") else { return [] }
+      let stem = String(key.dropLast(".weight".count))
+      return [stem + ".scale_weight", stem + ".comfy_quant"]
+    }
+    func isScaleNamed(_ key: String) -> Bool {
+      key.hasSuffix("weight_scale") || key.hasSuffix("scale_weight")
+    }
+    if states.keys.contains(where: isScaleNamed)
+      && states.values.contains(where: { $0.storage.FP8_E5M2 })
+    {
+      throw SafeTensorsQuantizationError.scaledE5M2
+    }
+    let foreign = unsupportedDtypes.filter { key, _ in
+      !isSkipped(key) && !key.hasSuffix(".comfy_quant")
+    }
+    if let worst = foreign.min(by: { $0.key < $1.key }) {
+      throw SafeTensorsQuantizationError.unsupportedDtypes(
+        count: foreign.count, example: worst.key, dtype: worst.value)
+    }
+    var scaleValues = [String: Float]()
+    for (key, descriptor) in states
+    where isScaleNamed(key) && descriptor.storage.dataType == .Float32 {
+      scaleValues[key] = data.withUnsafeBytes {
+        $0.loadUnaligned(fromByteOffset: bufferStart + descriptor.storageOffset, as: Float.self)
+      }
+    }
+    let headerKeys = Set(states.keys).union(unsupportedDtypes.keys)
+    func scaleFor(_ key: String) -> Float? {
+      if let value = scaleValues[key + "_scale"] { return value }
+      return stemScoped(key).lazy.compactMap { scaleValues[$0] }.first
+    }
+    func sidecarFor(_ key: String) -> String? {
+      ([key + "_scale"] + stemScoped(key)).first { headerKeys.contains($0) }
+    }
+    var scales = [String: Float]()
+    var orphans = [String]()
+    var unapplied = [(String, String)]()
+    for (key, descriptor) in states where !isSkipped(key) && !isScaleNamed(key) {
+      if descriptor.storage.FP8_E4M3 {
+        if let scale = scaleFor(key) {
+          scales[key] = scale
+        } else if !scaleValues.isEmpty {
+          orphans.append(key)
+        }
+      } else if let sidecar = sidecarFor(key) {
+        unapplied.append((key, sidecar))
+      }
+    }
+    if !orphans.isEmpty {
+      throw SafeTensorsQuantizationError.orphanScales(
+        count: orphans.count, example: orphans.sorted()[0])
+    }
+    if let worst = unapplied.min(by: { $0.0 < $1.0 }) {
+      let leaf = worst.1.split(separator: ".").last.map(String.init) ?? worst.1
+      throw SafeTensorsQuantizationError.unappliedSidecar(
+        count: unapplied.count, example: worst.0, sidecar: leaf)
+    }
+    guard !scales.isEmpty else { return self }
+    return ScaledFP8Archive(base: self, scales: scales)
+  }
+}
+
+private final class ScaledFP8Archive: TensorArchive {
+  private let base: SafeTensors
+  private let scales: [String: Float]
+  init(base: SafeTensors, scales: [String: Float]) {
+    self.base = base
+    self.scales = scales
+  }
+  func with<T>(_ tensorDescriptor: TensorDescriptor, block: (AnyTensor) throws -> T) throws -> T {
+    guard tensorDescriptor.storage.FP8_E4M3, let scale = scales[tensorDescriptor.storage.name]
+    else {
+      return try base.with(tensorDescriptor, block: block)
+    }
+    return try base.with(tensorDescriptor) { tensor in
+      guard var f32 = tensor as? Tensor<Float> else { return try block(tensor) }
+      f32.withUnsafeMutableBytes { bytes in
+        guard let pointer = bytes.baseAddress?.assumingMemoryBound(to: Float.self) else { return }
+        for i in 0..<(bytes.count / MemoryLayout<Float>.size) {
+          pointer[i] *= scale
+        }
+      }
+      return try block(f32)
+    }
   }
 }
 
