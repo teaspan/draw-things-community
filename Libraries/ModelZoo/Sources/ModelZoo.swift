@@ -301,6 +301,10 @@ public struct ModelZoo: DownloadZoo {
       }
       public var file: String
       public var scale: Scale
+      public init(file: String, scale: Scale) {
+        self.file = file
+        self.scale = scale
+      }
     }
     public var name: String
     public var file: String
