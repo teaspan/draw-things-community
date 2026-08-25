@@ -26,6 +26,43 @@ struct Quantizer: ParsableCommand {
   @Option(name: .shortAndLong, help: "The output file after conversion")
   var outputFile: String
 
+  @Option(
+    name: .shortAndLong,
+    help: """
+      Codec for the matmul bulk: q4p, q5p, q6p, q7p, q8p, ezm7, i8x, i6x, i4x,
+      or an i8x subtype (i8x:q6k, i8x:q5k, i8x:q4k, i8x:q3k, i8x:q2k,
+      i8x:iq3s, i8x:iq3xxs, i8x:iq2s, i8x:iq2xs, i8x:iq2xxs). Convolutions,
+      ada_ln, embedders and 1-D tensors keep the model version's own codecs.
+      Defaults to the model version's codec throughout.
+      """)
+  var codec: String = "default"
+
+  static func parseBulkCodec(_ name: String) throws -> DynamicGraph.Store.Codec? {
+    switch name {
+    case "default": return nil
+    case "ezm7": return [.ezm7]
+    case "q4p": return [.q4p, .ezm7]
+    case "q5p": return [.q5p, .ezm7]
+    case "q6p": return [.q6p, .ezm7]
+    case "q7p": return [.q7p, .ezm7]
+    case "q8p": return [.q8p, .ezm7]
+    case "i8x": return [.i8x, .ezm7]
+    case "i6x": return [.i8x(.q6k), .ezm7]
+    case "i4x": return [.i8x([.q4k, .hadamard256]), .ezm7]
+    case "i8x:q6k": return [.i8x(.q6k), .ezm7]
+    case "i8x:q5k": return [.i8x(.q5k), .ezm7]
+    case "i8x:q4k": return [.i8x(.q4k), .ezm7]
+    case "i8x:q3k": return [.i8x(.q3k), .ezm7]
+    case "i8x:q2k": return [.i8x(.q2k), .ezm7]
+    case "i8x:iq3s": return [.i8x(.iq3s), .ezm7]
+    case "i8x:iq3xxs": return [.i8x(.iq3xxs), .ezm7]
+    case "i8x:iq2s": return [.i8x(.iq2s), .ezm7]
+    case "i8x:iq2xs": return [.i8x(.iq2xs), .ezm7]
+    case "i8x:iq2xxs": return [.i8x(.iq2xxs), .ezm7]
+    default: throw ValidationError("Invalid codec: \(name)")
+    }
+  }
+
   mutating func run() throws {
     // Convert string to ModelVersion enum
     guard let version = ModelVersion(rawValue: modelVersion) else {
@@ -33,6 +70,13 @@ struct Quantizer: ParsableCommand {
     }
     // Now you can use 'version' as your ModelVersion enum
     print("Converting \(inputFile), model version: \(version)")
+    let bulkOverride = try Self.parseBulkCodec(codec)
+    func bulkCodec(_ recipe: DynamicGraph.Store.Codec) -> DynamicGraph.Store.Codec {
+      bulkOverride ?? recipe
+    }
+    if bulkOverride != nil {
+      print("Matmul-bulk codec overridden to: \(codec)")
+    }
 
     let graph = DynamicGraph()
     graph.openStore(
@@ -59,7 +103,7 @@ struct Quantizer: ParsableCommand {
               continue
             }
             if shape.count == 2 && squeezedDims > 1 {
-              $0.write(key, tensor: fp16, codec: [.q6p, .ezm7])
+              $0.write(key, tensor: fp16, codec: bulkCodec([.q6p, .ezm7]))
             } else if shape.count == 4 && squeezedDims > 1 {
               $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
             } else {
@@ -70,7 +114,7 @@ struct Quantizer: ParsableCommand {
               $0.write(key, tensor: fp16)
             } else {
               if shape.count == 2 && squeezedDims > 1 {
-                $0.write(key, tensor: fp16, codec: [.q6p, .ezm7])
+                $0.write(key, tensor: fp16, codec: bulkCodec([.q6p, .ezm7]))
               } else if shape.count == 4 && squeezedDims > 1 {
                 $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
               } else {
@@ -82,7 +126,7 @@ struct Quantizer: ParsableCommand {
               $0.write(key, tensor: fp16)
             } else {
               if squeezedDims > 1 {
-                $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+                $0.write(key, tensor: fp16, codec: bulkCodec([.q8p, .ezm7]))
               } else {
                 $0.write(key, tensor: fp16, codec: .ezm7)
               }
@@ -94,7 +138,7 @@ struct Quantizer: ParsableCommand {
               $0.write(key, tensor: fp16, codec: [.ezm7])
             } else {
               if squeezedDims > 1 {
-                $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+                $0.write(key, tensor: fp16, codec: bulkCodec([.q8p, .ezm7]))
               } else {
                 $0.write(key, tensor: fp16, codec: .ezm7)
               }
@@ -111,7 +155,7 @@ struct Quantizer: ParsableCommand {
                 if key.contains("ada_ln") || key.contains("-linear-") {
                   $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
                 } else {
-                  $0.write(key, tensor: fp16, codec: [.q5p, .ezm7])
+                  $0.write(key, tensor: fp16, codec: bulkCodec([.q5p, .ezm7]))
                 }
               } else {
                 $0.write(key, tensor: fp16, codec: .ezm7)
@@ -128,7 +172,7 @@ struct Quantizer: ParsableCommand {
                   if shape.count == 4 {  // Convolution.
                     $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
                   } else {
-                    $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+                    $0.write(key, tensor: fp16, codec: bulkCodec([.q8p, .ezm7]))
                   }
                 }
               } else {
@@ -148,7 +192,7 @@ struct Quantizer: ParsableCommand {
                   if shape.count == 4 {  // Convolution.
                     $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
                   } else {
-                    $0.write(key, tensor: fp16, codec: [.q5p, .ezm7])
+                    $0.write(key, tensor: fp16, codec: bulkCodec([.q5p, .ezm7]))
                   }
                 }
               } else {
@@ -166,7 +210,7 @@ struct Quantizer: ParsableCommand {
                   if shape.count == 4 {  // Convolution.
                     $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
                   } else {
-                    $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+                    $0.write(key, tensor: fp16, codec: bulkCodec([.q8p, .ezm7]))
                   }
                 }
               } else {
@@ -184,7 +228,7 @@ struct Quantizer: ParsableCommand {
                   if shape.count == 4 {  // Convolution.
                     $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
                   } else {
-                    $0.write(key, tensor: fp16, codec: [.q6p, .ezm7])
+                    $0.write(key, tensor: fp16, codec: bulkCodec([.q6p, .ezm7]))
                   }
                 }
               } else {
@@ -202,9 +246,9 @@ struct Quantizer: ParsableCommand {
                   if shape.count == 4 {  // Convolution.
                     $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
                   } else if shape.count == 3 {  // MoE.
-                    $0.write(key, tensor: fp16, codec: [.q5p, .ezm7])
+                    $0.write(key, tensor: fp16, codec: bulkCodec([.q5p, .ezm7]))
                   } else {
-                    $0.write(key, tensor: fp16, codec: [.q6p, .ezm7])
+                    $0.write(key, tensor: fp16, codec: bulkCodec([.q6p, .ezm7]))
                   }
                 }
               } else {
@@ -222,7 +266,7 @@ struct Quantizer: ParsableCommand {
                   if shape.count == 4 {  // Convolution.
                     $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
                   } else {
-                    $0.write(key, tensor: fp16, codec: [.q6p, .ezm7])
+                    $0.write(key, tensor: fp16, codec: bulkCodec([.q6p, .ezm7]))
                   }
                 }
               } else {
@@ -239,7 +283,7 @@ struct Quantizer: ParsableCommand {
                 if shape.count == 4 {  // Convolution.
                   $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
                 } else {
-                  $0.write(key, tensor: fp16, codec: [.q6p, .ezm7])
+                  $0.write(key, tensor: fp16, codec: bulkCodec([.q6p, .ezm7]))
                 }
               } else {
                 $0.write(key, tensor: fp16, codec: .ezm7)
@@ -258,7 +302,7 @@ struct Quantizer: ParsableCommand {
                   if shape.count == 4 {  // Convolution.
                     $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
                   } else {
-                    $0.write(key, tensor: fp16, codec: [.q6p, .ezm7])
+                    $0.write(key, tensor: fp16, codec: bulkCodec([.q6p, .ezm7]))
                   }
                 }
               } else {
@@ -273,7 +317,7 @@ struct Quantizer: ParsableCommand {
             } else if key.contains("embedder") || key.contains("proj_out") {
               $0.write(key, tensor: fp16)
             } else if squeezedDims > 1 {
-              $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+              $0.write(key, tensor: fp16, codec: bulkCodec([.q8p, .ezm7]))
             } else {
               $0.write(key, tensor: fp16, codec: .ezm7)
             }
@@ -284,8 +328,10 @@ struct Quantizer: ParsableCommand {
             } else if key.contains("embedder") || key.contains("final_linear") {
               $0.write(key, tensor: fp16)
             } else {
-              if squeezedDims > 1 {
+              if squeezedDims > 1 && key.contains("ada_ln") {
                 $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+              } else if squeezedDims > 1 {
+                $0.write(key, tensor: fp16, codec: bulkCodec([.q8p, .ezm7]))
               } else {
                 $0.write(key, tensor: fp16, codec: .ezm7)
               }
@@ -297,8 +343,10 @@ struct Quantizer: ParsableCommand {
             } else if key.contains("embedder") || key.contains("-linear-") {
               $0.write(key, tensor: fp16)
             } else {
-              if squeezedDims > 1 {
+              if squeezedDims > 1 && key.contains("ada_ln") {
                 $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+              } else if squeezedDims > 1 {
+                $0.write(key, tensor: fp16, codec: bulkCodec([.q8p, .ezm7]))
               } else {
                 $0.write(key, tensor: fp16, codec: .ezm7)
               }
@@ -314,7 +362,7 @@ struct Quantizer: ParsableCommand {
                   if shape.count == 4 {  // Convolution.
                     $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
                   } else {
-                    $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+                    $0.write(key, tensor: fp16, codec: bulkCodec([.q8p, .ezm7]))
                   }
                 }
               } else {
