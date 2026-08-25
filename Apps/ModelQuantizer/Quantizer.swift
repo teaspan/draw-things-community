@@ -263,7 +263,15 @@ struct Quantizer: ParsableCommand {
               }
             }
           case .ltx2, .ltx2_3, .longcatVideoAvatar1_5:
-            fatalError()
+            if !key.hasPrefix("__dit__") {
+              $0.write(key, tensor: tensor)
+            } else if key.contains("embedder") || key.contains("proj_out") {
+              $0.write(key, tensor: fp16)
+            } else if squeezedDims > 1 {
+              $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+            } else {
+              $0.write(key, tensor: fp16, codec: .ezm7)
+            }
           case .flux2, .flux2_9b, .flux2_4b, .ideogram4:
             if key.contains("embedder") || key.contains("pos_embed") || key.contains("-linear-") {
               $0.write(key, tensor: fp16)
