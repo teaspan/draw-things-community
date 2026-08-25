@@ -263,8 +263,18 @@ struct Quantizer: ParsableCommand {
                 $0.write(key, tensor: fp16, codec: .ezm7)
               }
             }
-          case .ltx2, .ltx2_3, .longcatVideoAvatar1_5, .minimaxH3:
+          case .minimaxH3:
             fatalError()
+          case .ltx2, .ltx2_3, .longcatVideoAvatar1_5:
+            if !key.hasPrefix("__dit__") {
+              $0.write(key, tensor: tensor)
+            } else if key.contains("embedder") || key.contains("proj_out") {
+              $0.write(key, tensor: fp16)
+            } else if squeezedDims > 1 {
+              $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+            } else {
+              $0.write(key, tensor: fp16, codec: .ezm7)
+            }
           case .mossImage:
             if tensor.dataType == .Float32 {
               // time_embedder_2 is kept in FP32 to avoid FP16 underflow.
