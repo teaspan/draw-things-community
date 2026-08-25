@@ -1779,6 +1779,14 @@ private func printImportedModelSummary(
   }
 }
 
+private func printSpecificationJSON(_ specification: ModelZoo.Specification) {
+  let jsonEncoder = JSONEncoder()
+  jsonEncoder.keyEncodingStrategy = .convertToSnakeCase
+  jsonEncoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+  guard let jsonData = try? jsonEncoder.encode(specification) else { return }
+  print(String(decoding: jsonData, as: UTF8.self))
+}
+
 private func createTemporaryDirectory() throws -> String {
   let path = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString)
   try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
@@ -5096,6 +5104,13 @@ extension DrawThingsCLI {
       )
       var offline: Bool = false
 
+      @Flag(
+        name: .long,
+        help:
+          "Print the inferred model specification as custom.json-formatted JSON instead of the summary table."
+      )
+      var json: Bool = false
+
       mutating func run() throws {
         NetworkAccessPolicy.offline = offline
         let modelsDirectory = try ModelsDirectoryResolver.resolve(
@@ -5165,13 +5180,17 @@ extension DrawThingsCLI {
             upcastAttention: false,
             finetuneScale: finetuneScale
           )
-          print("Dry run: no files written.")
-          printImportedModelSummary(
-            specification: specification, version: inspection.version,
-            modifier: inspection.modifier, importedFiles: expectedFiles,
-            dependencyFiles: importedDependencyFiles(
-              specification: specification, additionalModels: additionalModels,
-              importedFiles: expectedFiles))
+          if json {
+            printSpecificationJSON(specification)
+          } else {
+            print("Dry run: no files written.")
+            printImportedModelSummary(
+              specification: specification, version: inspection.version,
+              modifier: inspection.modifier, importedFiles: expectedFiles,
+              dependencyFiles: importedDependencyFiles(
+                specification: specification, additionalModels: additionalModels,
+                importedFiles: expectedFiles))
+          }
           return
         }
 
@@ -5217,16 +5236,24 @@ extension DrawThingsCLI {
 
         ModelZoo.appendCustomSpecification(specification)
 
-        printImportedModelSummary(
-          specification: specification, version: result.1, modifier: result.2,
-          importedFiles: fileNames, dependencyFiles: dependencyFiles)
-        if let dependencyWarning {
-          print("")
-          print("Dependency download warning:")
-          print(dependencyWarning)
+        if json {
+          printSpecificationJSON(specification)
+          if let dependencyWarning {
+            FileHandle.standardError.write(
+              Data("Dependency download warning:\n\(dependencyWarning)\n".utf8))
+          }
         } else {
-          print("")
-          print("Model imported: \(specification.file)")
+          printImportedModelSummary(
+            specification: specification, version: result.1, modifier: result.2,
+            importedFiles: fileNames, dependencyFiles: dependencyFiles)
+          if let dependencyWarning {
+            print("")
+            print("Dependency download warning:")
+            print(dependencyWarning)
+          } else {
+            print("")
+            print("Model imported: \(specification.file)")
+          }
         }
       }
     }
