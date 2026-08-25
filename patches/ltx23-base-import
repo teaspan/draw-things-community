@@ -1,0 +1,21 @@
+Bottom: 65b3c1ecba0f8986a428a3254beffdfe4d21ea0b
+Top:    e4c42848816ce74c7ccd95c9aaa5034c682ff004
+Author: Teaspan <314463419+teaspan@users.noreply.github.com>
+Date:   2026-08-25 14:01:18 +0000
+
+Implement LTX-2.3 base model import
+
+Every .ltx2_3 arm of ModelImporter is a fatalError. This adds the inspect()
+detection arm and fills the seven switch arms with the working wiring from
+LoRAImporter, plus the prefix-strip loop, the bare-named connector register
+writes that UNetFixedEncoder reads back, a 5746-tensor write check, and an
+inferModelSpecification arm mirroring the built-in zoo entry. The four
+aggregate_embed mappings carry isBF16 because the text feature extractor runs
+BF16 at inference and ccv_nnc_tensor_read has no 16F to 16BF path.
+
+It also fixes a latent bug in the LTX2.swift mappers. The q and k RMSNorm
+gain vectors must be row-interleaved exactly like their sibling to_q and to_k
+projections, for the NNC cmul rotary pair layout, and all fourteen are mapped
+plain. LoRA import never carries norm gains, so nothing exercised it.
+Un-interleaved gains produce spatially fine but temporally frozen video with
+a washed-out cast.

@@ -1,0 +1,16 @@
+Bottom: d14ada8f49dfd30206cfb3ef401cda23d247754b
+Top:    c0b701286fa4345463d3e8b0f44586828339a618
+Author: Teaspan <314463419+teaspan@users.noreply.github.com>
+Date:   2026-08-25 14:01:18 +0000
+
+Add --separate-lora to gRPCServerCLI
+
+LoRA deltas merge into the model weights at load unless the base is quantized,
+bf16 or JIT-offloaded, and a merged-LoRA load bypasses the weights cache in
+both directions, so an f16 base plus a LoRA re-reads the full checkpoint from
+disk on every generation. The app-side settings ModelPreloader subscribes to
+are unreachable from the server, which builds an empty settings workspace in a
+fresh temp dir every boot. The flag sets ModelZoo.isSeparateLoRAPreferred,
+read at the top of isQuantizedModel, which is the single function all fourteen
+decision sites reach. LoHa still merges, since there is no separate path for
+it.

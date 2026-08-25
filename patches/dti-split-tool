@@ -1,0 +1,15 @@
+Bottom: 1a1407d7f0432282e85944ed5b5918a77148b93b
+Top:    5ffb3bb5e692332915f3611169d494031768eea3
+Author: Teaspan <314463419+teaspan@users.noreply.github.com>
+Date:   2026-08-25 14:01:18 +0000
+
+Add dtiSplit, a CLI over TensorData's external-data split
+
+TensorData.makeExternalData and makeCompactStore are reachable only from the
+app's Optimize for Faster Loading action, which is gated to the Metal
+performance tiers, while every server load path already opens with
+externalStore and an .externalData read codec. This adds Apps:dtiSplit so a
+repository copy can be pre-split ahead of first use, and --unsplit for the
+inverse. New files, plus an Apps/BUILD target and a Package.swift product and
+target pair. The tool verifies each file after writing it, because the
+upstream helpers swallow their own errors.

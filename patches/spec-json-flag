@@ -1,0 +1,13 @@
+Bottom: c0b701286fa4345463d3e8b0f44586828339a618
+Top:    65e2af03c94aefd16475137e236bc5003ed38f86
+Author: Teaspan <314463419+teaspan@users.noreply.github.com>
+Date:   2026-08-25 14:01:19 +0000
+
+Add --json to DrawThingsCLI models import
+
+The dry-run and import paths both already hold the finished Specification. The
+flag prints it with the encoder settings appendCustomSpecification uses plus
+sortedKeys, so models import --dry-run --json emits the exact custom JSON block
+an import would append, without importing anything. The summary table is
+suppressed and the dependency-download warning moves to stderr, so stdout is
+pure JSON either way.

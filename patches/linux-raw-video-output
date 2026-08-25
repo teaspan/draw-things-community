@@ -1,0 +1,14 @@
+Bottom: 1c483e39f634b214b5eb76a4c0a1df2f6f09f4d4
+Top:    65b3c1ecba0f8986a428a3254beffdfe4d21ea0b
+Author: Teaspan <314463419+teaspan@users.noreply.github.com>
+Date:   2026-08-25 14:01:18 +0000
+
+Write a NUT clip instead of failing video output on Linux
+
+The whole mp4 and mov muxer sits inside one canImport(AVFoundation) block, so
+generate --output clip.mp4 hard-errors off Darwin, and the suggested PNG
+fallback silently drops the audio tensor. The #else now writes a single
+clip.nut holding rgb48le video, pcm_f32le stereo audio, and an info packet
+carrying the prompt, model, seed, and the originally requested filename and
+codec. ffmpeg, ffplay and mpv read it directly. NutMuxer compiles
+unconditionally so a macOS build still type-checks it.

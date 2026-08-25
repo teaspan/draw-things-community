@@ -1,0 +1,14 @@
+Bottom: e95e55419a4045aaccf603e6a027f16a97c89662
+Top:    1c483e39f634b214b5eb76a4c0a1df2f6f09f4d4
+Author: Teaspan <314463419+teaspan@users.noreply.github.com>
+Date:   2026-08-25 14:01:18 +0000
+
+Build Trainer and Downloader on Linux
+
+LoRATrainer hands memset optional base addresses, which glibc declares
+non-optional, and its largest openStore closure needs an explicit signature
+before swiftc 6.0.3 will type-check it in reasonable time. DownloaderSupport
+imports CryptoKit and Darwin, so it moves to swift-crypto and a guarded
+Glibc, with the CFNetwork and resume-data userInfo key constants written as
+their literal strings and a no-op autoreleasepool shim off ObjectiveC.
+waitsForConnectivity is get-only in corelibs-foundation.
