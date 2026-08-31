@@ -319,7 +319,7 @@ public final class ModelImporter {
       expectedTotalAccess = 5746
       isDiffusersFormat = false
       if let safeTensors = archive as? SafeTensors {
-        archive = try safeTensors.applyingScaledFP8Sidecars(
+        archive = try safeTensors.applyingScaledFP8WeightScales(
           skippingKeyPrefixes: ["vae.", "audio_vae.", "vocoder.", "text_encoders."])
       }
     } else if isPixArtSigmaXL {
