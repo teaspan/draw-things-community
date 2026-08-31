@@ -1,16 +1,14 @@
 {
   "version": 5,
-  "prev": "5e8bc61f3e2f5b457774a36ee850a29f9ca577e8",
-  "head": "e2e51f6a2ef9d38c539f1f272f3563ecd638b9a7",
+  "prev": "205c5a24b5209b02b0690771f084a6aee3905b57",
+  "head": "053a48846d8922717be05e54634038a14b842e6e",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
     "linux-mapped-reads",
     "linux-portability",
     "linux-raw-video-output",
-    "ltx23-base-import"
-  ],
-  "unapplied": [
+    "ltx23-base-import",
     "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
@@ -19,6 +17,7 @@
     "spec-json-flag",
     "terse-import-progress"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
@@ -37,28 +36,28 @@
       "oid": "e2e51f6a2ef9d38c539f1f272f3563ecd638b9a7"
     },
     "nnc-shared-library": {
-      "oid": "b4278ba0e308a426d05e79acb2fac6c2d75cb988"
+      "oid": "9db2d54f5b4da7b54bfd6b8b3a9676d731f1385b"
     },
     "no-advertising-flag": {
-      "oid": "a7f4d843821975b57792a03f6158a4b63256d9c0"
+      "oid": "35fd5854af70cf8254459f736aba74524d163f05"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "bf7c882ce180f4536d64e76eafe4f645b1236e43"
+      "oid": "54decad171ee6cf56d39710c3be78ee95bcd38d6"
     },
     "quantizer-codec-flag": {
-      "oid": "7842ffbe4623fb98d007a88ce0fce43a80eb78bc"
+      "oid": "be1a61dfc1f05ee4ce83f6f502a29d6d3d185a51"
     },
     "scaled-fp8-import": {
       "oid": "6f27b30aa36e236564c391fb19be1b7f4b83b918"
     },
     "separate-lora-flag": {
-      "oid": "998cf994a01ab7af01607f2f46d3aeb382eb3a71"
+      "oid": "43ca3ae45bd90413fc24ced77062031321ca3f32"
     },
     "spec-json-flag": {
-      "oid": "bf6d48bf3e5dc16f95f943183be549c54990e1e2"
+      "oid": "1c8f124e0e76c5094ec884ca3b27e3cc16317a19"
     },
     "terse-import-progress": {
-      "oid": "c26dfbb63f3cdbdd66c2507ac6df98a32807badd"
+      "oid": "053a48846d8922717be05e54634038a14b842e6e"
     }
   }
 }
