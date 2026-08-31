@@ -1,7 +1,7 @@
 Bottom: 36a835ae18081506ac943b7e73a6d424a557b85c
 Top:    2711250b0582cd47d6fea7b66bdec27c5357270e
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-09-01 01:43:14 +1000
+Date:   2026-08-31 15:47:13 +0000
 
 Stop narrowing BF16 matmul rows to F16 when quantizing
 

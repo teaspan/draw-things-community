@@ -1,7 +1,7 @@
 Bottom: 1a1407d7f0432282e85944ed5b5918a77148b93b
 Top:    5ffb3bb5e692332915f3611169d494031768eea3
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-08-25 14:01:18 +0000
+Date:   2026-08-31 15:47:13 +0000
 
 Add dtiSplit, a CLI over TensorData's external-data split
 
