@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "4d500cda80a8a396e651ec333b724ded35801241",
-  "head": "147c8a059309f27d430cea8066730180c2c9d2f4",
+  "prev": "3717d851af7d0aeb32ede16c041998528704577d",
+  "head": "ce5ba7da93e1dd315c92166300cb661af32b95f8",
   "applied": [
     "dti-split-tool",
     "fp8-sidecar-archive",
@@ -39,25 +39,25 @@
       "oid": "0b95f1fb7ce758104663db8947116cfe7ade4186"
     },
     "nnc-shared-library": {
-      "oid": "ac2eec24766b523434da65ad08621c045c2098be"
+      "oid": "b4278ba0e308a426d05e79acb2fac6c2d75cb988"
     },
     "no-advertising-flag": {
-      "oid": "8964f5f2eea7cd0fe0686d90b5a2cf659c0ba54a"
+      "oid": "1eb6057e27d3bee40e4e8566b384e1de84e6e140"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "173a682c26e6c9386c7d7746905b814bb4dc36a3"
+      "oid": "458aa97ed846fc21e8fe076d79ce8dc71ddde4a1"
     },
     "quantizer-codec-flag": {
-      "oid": "52268300fe68aebf27deed3ee23cc74d0302c946"
+      "oid": "c34fc3fdf07f9bc8d3c25cda234305ce2610d89e"
     },
     "separate-lora-flag": {
-      "oid": "ce055c5f379f39551f1fced6026785419024d58d"
+      "oid": "d155b898d8cfee520bd71b9b597b23e380f7560f"
     },
     "spec-json-flag": {
-      "oid": "046ae7d00e7063e48c8e163a8e12fd16dcb7144b"
+      "oid": "4316a8e9966b2c8d5d9d44551e2d7e3fd95a15fc"
     },
     "terse-import-progress": {
-      "oid": "147c8a059309f27d430cea8066730180c2c9d2f4"
+      "oid": "ce5ba7da93e1dd315c92166300cb661af32b95f8"
     }
   }
 }
