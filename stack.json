@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "e80bf20f049672108a3870fc28c7c7c1d672cf72",
-  "head": "1a8668641a2c043f88b360d6da3b941ed783b3b1",
+  "prev": "87cc2167e8cc5a632c6c38df16c233262787e94b",
+  "head": "1afc3711c27adc3ee83c2092a31478e546037021",
   "applied": [
     "dti-split-tool",
     "fp8-sidecar-archive",
@@ -54,10 +54,10 @@
       "oid": "998cf994a01ab7af01607f2f46d3aeb382eb3a71"
     },
     "spec-json-flag": {
-      "oid": "c4f0a6fb45e5c1927720bd785c30e1e0f26e9f42"
+      "oid": "bf6d48bf3e5dc16f95f943183be549c54990e1e2"
     },
     "terse-import-progress": {
-      "oid": "1a8668641a2c043f88b360d6da3b941ed783b3b1"
+      "oid": "1afc3711c27adc3ee83c2092a31478e546037021"
     }
   }
 }
