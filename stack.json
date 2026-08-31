@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "2c78dc6d812138788a1c1f7a59c3e3591f894240",
-  "head": "fa12bfce7631f8b3d392c66a7c318e32c4d765f0",
+  "prev": "58c9bc11af235ca7958e454129da3b1fd6bbd078",
+  "head": "6f27b30aa36e236564c391fb19be1b7f4b83b918",
   "applied": [
     "dti-split-tool",
     "fp8-sidecar-archive"
@@ -25,7 +25,7 @@
       "oid": "885599b4f463ed3e09edbbd8aa0352bc0cbd2b87"
     },
     "fp8-sidecar-archive": {
-      "oid": "fa12bfce7631f8b3d392c66a7c318e32c4d765f0"
+      "oid": "6f27b30aa36e236564c391fb19be1b7f4b83b918"
     },
     "linux-mapped-reads": {
       "oid": "3fedfe4a73fa3545a4c4b63f66748ad683be00a3"

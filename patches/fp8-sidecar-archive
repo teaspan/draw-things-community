@@ -3,15 +3,15 @@ Top:    1a9d4e8175fdbce440a3747b492e88d381c6e5cf
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
 Date:   2026-08-31 16:02:08 +0000
 
-Apply ComfyUI scaled-FP8 sidecar scales when reading safetensors
+Apply ComfyUI scaled-FP8 weight scales when reading safetensors
 
 Bare fp8 tensors are LUT-decoded already, but the per-tensor F32 weight_scale
-and scale_weight sidecars are ignored, so a scaled-FP8 file imports about
+and scale_weight entries are ignored, so a scaled-FP8 file imports about
 1/scale too large and renders a solid colour or NaN.
-applyingScaledFP8Sidecars returns the archive itself when a file carries no
+applyingScaledFP8WeightScales returns the archive itself when a file carries no
 scales, and otherwise a wrapper that multiplies each F8_E4M3 tensor by its
 matched scale at read time. Wrapping with(_:block:) is what makes it hold for
 combined-source gathers whose sources carry different scales, which the
 element-level ModelWeightElement.scale affine cannot express. Vetting throws
 instead of letting the reader skip silently on orphan scales, scaled E5M2, a
-live sidecar on a non-FP8 tensor, and foreign dtypes.
+scale entry naming a non-FP8 tensor, and foreign dtypes.
