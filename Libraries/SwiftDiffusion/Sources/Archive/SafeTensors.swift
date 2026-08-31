@@ -147,7 +147,7 @@ public final class SafeTensors {
 public enum SafeTensorsQuantizationError: Error, LocalizedError {
   case orphanScales(count: Int, example: String)
   case scaledE5M2
-  case unappliedSidecar(count: Int, example: String, sidecar: String)
+  case unappliedScale(count: Int, example: String, entry: String)
   case unsupportedDtypes(count: Int, example: String, dtype: String)
 
   public var errorDescription: String? {
@@ -156,8 +156,8 @@ public enum SafeTensorsQuantizationError: Error, LocalizedError {
       return "Found F8_E4M3 tensors with an unrecognized scale convention."
     case .scaledE5M2:
       return "Found F8_E5M2 tensors with quantization scales. Scaled-E5M2 is not supported."
-    case .unappliedSidecar(_, _, let sidecar):
-      return "Found tensors with a \(sidecar) entry that would be ignored."
+    case .unappliedScale(_, _, let entry):
+      return "Found tensors with a \(entry) entry that would be ignored."
     case .unsupportedDtypes(_, _, let dtype):
       return "Found tensors with an unusable dtype (\(dtype))."
     }
@@ -165,7 +165,7 @@ public enum SafeTensorsQuantizationError: Error, LocalizedError {
 }
 
 extension SafeTensors {
-  public func applyingScaledFP8Sidecars(skippingKeyPrefixes: [String]) throws -> TensorArchive {
+  public func applyingScaledFP8WeightScales(skippingKeyPrefixes: [String]) throws -> TensorArchive {
     func isSkipped(_ key: String) -> Bool {
       skippingKeyPrefixes.contains { key.hasPrefix($0) }
     }
@@ -201,7 +201,7 @@ extension SafeTensors {
       if let value = scaleValues[key + "_scale"] { return value }
       return stemScoped(key).lazy.compactMap { scaleValues[$0] }.first
     }
-    func sidecarFor(_ key: String) -> String? {
+    func scaleEntryFor(_ key: String) -> String? {
       ([key + "_scale"] + stemScoped(key)).first { headerKeys.contains($0) }
     }
     var scales = [String: Float]()
@@ -214,8 +214,8 @@ extension SafeTensors {
         } else if !scaleValues.isEmpty {
           orphans.append(key)
         }
-      } else if let sidecar = sidecarFor(key) {
-        unapplied.append((key, sidecar))
+      } else if let entry = scaleEntryFor(key) {
+        unapplied.append((key, entry))
       }
     }
     if !orphans.isEmpty {
@@ -224,8 +224,8 @@ extension SafeTensors {
     }
     if let worst = unapplied.min(by: { $0.0 < $1.0 }) {
       let leaf = worst.1.split(separator: ".").last.map(String.init) ?? worst.1
-      throw SafeTensorsQuantizationError.unappliedSidecar(
-        count: unapplied.count, example: worst.0, sidecar: leaf)
+      throw SafeTensorsQuantizationError.unappliedScale(
+        count: unapplied.count, example: worst.0, entry: leaf)
     }
     guard !scales.isEmpty else { return self }
     return ScaledFP8Archive(base: self, scales: scales)
