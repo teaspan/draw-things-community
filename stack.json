@@ -1,10 +1,10 @@
 {
   "version": 5,
-  "prev": "58c9bc11af235ca7958e454129da3b1fd6bbd078",
+  "prev": "19c7dbccf71faf19c6174194d79c643f21eadf7a",
   "head": "6f27b30aa36e236564c391fb19be1b7f4b83b918",
   "applied": [
     "dti-split-tool",
-    "fp8-sidecar-archive"
+    "scaled-fp8-import"
   ],
   "unapplied": [
     "linux-mapped-reads",
@@ -23,9 +23,6 @@
   "patches": {
     "dti-split-tool": {
       "oid": "885599b4f463ed3e09edbbd8aa0352bc0cbd2b87"
-    },
-    "fp8-sidecar-archive": {
-      "oid": "6f27b30aa36e236564c391fb19be1b7f4b83b918"
     },
     "linux-mapped-reads": {
       "oid": "3fedfe4a73fa3545a4c4b63f66748ad683be00a3"
@@ -50,6 +47,9 @@
     },
     "quantizer-codec-flag": {
       "oid": "7842ffbe4623fb98d007a88ce0fce43a80eb78bc"
+    },
+    "scaled-fp8-import": {
+      "oid": "6f27b30aa36e236564c391fb19be1b7f4b83b918"
     },
     "separate-lora-flag": {
       "oid": "998cf994a01ab7af01607f2f46d3aeb382eb3a71"
