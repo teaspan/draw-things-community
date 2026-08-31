@@ -152,18 +152,14 @@ public enum SafeTensorsQuantizationError: Error, LocalizedError {
 
   public var errorDescription: String? {
     switch self {
-    case .orphanScales(let count, let example):
-      return
-        "\(count) F8_E4M3 tensors have no matching scale (e.g. \(example)) — unrecognized scale convention; importing them unscaled would corrupt the model"
+    case .orphanScales:
+      return "Found F8_E4M3 tensors with an unrecognized scale convention."
     case .scaledE5M2:
-      return
-        "F8_E5M2 tensors alongside quantization scales — scaled-E5M2 is not supported (E4M3 only)"
-    case .unappliedSidecar(let count, let example, let sidecar):
-      return
-        "\(count) tensors carry a live \(sidecar) sidecar that would not be applied (e.g. \(example)) — importing them as-is would corrupt the model"
-    case .unsupportedDtypes(let count, let example, let dtype):
-      return
-        "\(count) tensors have a dtype the importer skips silently (e.g. \(example): \(dtype)) — the converted model would be missing those weights"
+      return "Found F8_E5M2 tensors with quantization scales. Scaled-E5M2 is not supported."
+    case .unappliedSidecar(_, _, let sidecar):
+      return "Found tensors with a \(sidecar) entry that would be ignored."
+    case .unsupportedDtypes(_, _, let dtype):
+      return "Found tensors with an unusable dtype (\(dtype))."
     }
   }
 }
