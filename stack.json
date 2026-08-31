@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "9b2fb87972a9d1b58b6cb08acf608803a60de061",
-  "head": "d665004edbd0d1c295a8af4a97872d94b13bc705",
+  "prev": "b36b254c193dafb886e35ccffa88cc883ff164df",
+  "head": "e86e0b032008fa5eeb84d5c2bb15ed7c61315944",
   "applied": [
     "dti-split-tool",
     "fp8-sidecar-archive",
@@ -30,34 +30,34 @@
       "oid": "3fedfe4a73fa3545a4c4b63f66748ad683be00a3"
     },
     "linux-portability": {
-      "oid": "e608b819955087cdac01ea56d911b3d31998c8eb"
+      "oid": "bb07fb09f31e28490e616d94862eae93e1a19ba8"
     },
     "linux-raw-video-output": {
-      "oid": "64cde853c1819a9d610e2d269c848d1dfb5ccc4f"
+      "oid": "a83af2f0c4b6f4aa97ad97ecbe521df9f4e74727"
     },
     "ltx23-base-import": {
-      "oid": "888e1239f088cb1fc72777f2ee7774d7b40e714d"
+      "oid": "a5cb5728ccdd7d6a4acc23da37a286f461316bdc"
     },
     "nnc-shared-library": {
-      "oid": "66a0f2c43ebf526e6f9dba255165c143577318ed"
+      "oid": "7857324cfc02c328f5f457dd039710803b9a47bb"
     },
     "no-advertising-flag": {
-      "oid": "01baf52a43d85be229d089fc855b9fd5f295317a"
+      "oid": "6af385562aa7a5d12fa372430de1ab8cf7dabac5"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "0237dd41a130e1d2806e59d45caf8461f68b2ba3"
+      "oid": "d908a14c403d60ddc28204496caf6f4ec7c4a590"
     },
     "quantizer-codec-flag": {
-      "oid": "789f7143a43833e0720ac4edb3fca7c2e81023a3"
+      "oid": "0b9dbea1484151f34dd2426599f88b60f4ab0c82"
     },
     "separate-lora-flag": {
-      "oid": "81e4ed6cb6502015e0b598f75736272e928341f6"
+      "oid": "844a60748de9c4b75a6b611c1908c7486d83d51f"
     },
     "spec-json-flag": {
-      "oid": "a51bc7eae8f8444f9d25c7e8212b25bbcb3d7439"
+      "oid": "d1a4bf1f3007a4e9c1774e9e77847147b2e1d106"
     },
     "terse-import-progress": {
-      "oid": "d665004edbd0d1c295a8af4a97872d94b13bc705"
+      "oid": "e86e0b032008fa5eeb84d5c2bb15ed7c61315944"
     }
   }
 }
