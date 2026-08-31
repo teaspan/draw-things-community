@@ -1,16 +1,16 @@
 {
   "version": 5,
-  "prev": "19c7dbccf71faf19c6174194d79c643f21eadf7a",
-  "head": "6f27b30aa36e236564c391fb19be1b7f4b83b918",
+  "prev": "69d5469ea7987bbed2860db3f6831f2bdc806a5e",
+  "head": "cb5efd8fc0a038c3cdd6707a2b399d4e89b3c8a1",
   "applied": [
     "dti-split-tool",
-    "scaled-fp8-import"
-  ],
-  "unapplied": [
+    "scaled-fp8-import",
     "linux-mapped-reads",
     "linux-portability",
     "linux-raw-video-output",
-    "ltx23-base-import",
+    "ltx23-base-import"
+  ],
+  "unapplied": [
     "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
@@ -25,16 +25,16 @@
       "oid": "885599b4f463ed3e09edbbd8aa0352bc0cbd2b87"
     },
     "linux-mapped-reads": {
-      "oid": "3fedfe4a73fa3545a4c4b63f66748ad683be00a3"
+      "oid": "fa71e710fccebd31916b71d0f599ef7c3b16e3e8"
     },
     "linux-portability": {
-      "oid": "48597a488d9eacfe02919f0fb4f1e8cfbd652fe1"
+      "oid": "d98a264880f39772292646b781569d97d32106ef"
     },
     "linux-raw-video-output": {
-      "oid": "ae15628876d88b1418511e553820508acd9e04d7"
+      "oid": "640a9d3f8aec3d2ac4d555b23589aceddafe4d0b"
     },
     "ltx23-base-import": {
-      "oid": "0b95f1fb7ce758104663db8947116cfe7ade4186"
+      "oid": "cb5efd8fc0a038c3cdd6707a2b399d4e89b3c8a1"
     },
     "nnc-shared-library": {
       "oid": "b4278ba0e308a426d05e79acb2fac6c2d75cb988"

@@ -1,7 +1,7 @@
-Bottom: ea5c302eb4e077395b837d19fb0a917ddec69c5f
-Top:    38c0bf60b0667961afcbfe1f72446a600735e024
+Bottom: 1a9d4e8175fdbce440a3747b492e88d381c6e5cf
+Top:    e9934f9cffe84b58ef76b35be7860fc383322848
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-08-25 14:01:18 +0000
+Date:   2026-09-01 02:02:14 +1000
 
 Map whole-file reads on Linux via Data.ReadingOptions.mappedIfLocal
 
