@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "41db744f16b3d1916e7f04139c1c3acc35ec7593",
-  "head": "60e731ae6912de48e83f25354d391d414e1f385c",
+  "prev": "9b2fb87972a9d1b58b6cb08acf608803a60de061",
+  "head": "d665004edbd0d1c295a8af4a97872d94b13bc705",
   "applied": [
     "dti-split-tool",
     "fp8-sidecar-archive",
@@ -27,37 +27,37 @@
       "oid": "1260d5c5dc5a129f9d37cdd6a777c06dbfc8899e"
     },
     "linux-mapped-reads": {
-      "oid": "1754ee3f5879bb5f3ff7d6fc690e337071331488"
+      "oid": "3fedfe4a73fa3545a4c4b63f66748ad683be00a3"
     },
     "linux-portability": {
-      "oid": "b3abf6253622b304d705e550c1a169a1695a4dd2"
+      "oid": "e608b819955087cdac01ea56d911b3d31998c8eb"
     },
     "linux-raw-video-output": {
-      "oid": "9928aa5514e8315515db44f55d5c9223dc7a537d"
+      "oid": "64cde853c1819a9d610e2d269c848d1dfb5ccc4f"
     },
     "ltx23-base-import": {
-      "oid": "7ca71fe164bcf16448130053bb63ba6aae8242f5"
+      "oid": "888e1239f088cb1fc72777f2ee7774d7b40e714d"
     },
     "nnc-shared-library": {
-      "oid": "69367f2dc0c7bd025f6fc6fac643c9bd77c38a3f"
+      "oid": "66a0f2c43ebf526e6f9dba255165c143577318ed"
     },
     "no-advertising-flag": {
-      "oid": "c233bf516e2e266e3887eddec4326dee8d191800"
+      "oid": "01baf52a43d85be229d089fc855b9fd5f295317a"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "1b5981afba60dc6549ce78a06e4b10839660e0b9"
+      "oid": "0237dd41a130e1d2806e59d45caf8461f68b2ba3"
     },
     "quantizer-codec-flag": {
-      "oid": "a3e367de2aa9fda2173a12f64f2356a500a38494"
+      "oid": "789f7143a43833e0720ac4edb3fca7c2e81023a3"
     },
     "separate-lora-flag": {
-      "oid": "eb3d2148bcb3568bea4c478e9a10fbeeeb052acb"
+      "oid": "81e4ed6cb6502015e0b598f75736272e928341f6"
     },
     "spec-json-flag": {
-      "oid": "a30b90477258ae837a60caa004be7f9d135f582e"
+      "oid": "a51bc7eae8f8444f9d25c7e8212b25bbcb3d7439"
     },
     "terse-import-progress": {
-      "oid": "60e731ae6912de48e83f25354d391d414e1f385c"
+      "oid": "d665004edbd0d1c295a8af4a97872d94b13bc705"
     }
   }
 }
