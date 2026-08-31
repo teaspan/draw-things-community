@@ -1,7 +1,7 @@
 Bottom: 5ffb3bb5e692332915f3611169d494031768eea3
-Top:    ea5c302eb4e077395b837d19fb0a917ddec69c5f
+Top:    1a9d4e8175fdbce440a3747b492e88d381c6e5cf
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-08-25 14:01:18 +0000
+Date:   2026-08-31 16:02:08 +0000
 
 Apply ComfyUI scaled-FP8 sidecar scales when reading safetensors
 
