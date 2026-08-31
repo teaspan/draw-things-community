@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "87cc2167e8cc5a632c6c38df16c233262787e94b",
-  "head": "1afc3711c27adc3ee83c2092a31478e546037021",
+  "prev": "6c04843b5afafb87df347f4d23974539ff7c0ad7",
+  "head": "62ea61901d1839d56b4e41e252896a90f9787cde",
   "applied": [
     "dti-split-tool",
     "fp8-sidecar-archive",
@@ -57,7 +57,7 @@
       "oid": "bf6d48bf3e5dc16f95f943183be549c54990e1e2"
     },
     "terse-import-progress": {
-      "oid": "1afc3711c27adc3ee83c2092a31478e546037021"
+      "oid": "62ea61901d1839d56b4e41e252896a90f9787cde"
     }
   }
 }
