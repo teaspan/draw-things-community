@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "08365f1c79270b7a292b447058b584e2ead43b03",
-  "head": "0aeb671010d6b3644a363a49d81859905ee58a88",
+  "prev": "db709db50b1ac6842a32e8e751da67749a9b25c1",
+  "head": "04d311aa25114f36e9f9fc52687c080d8ffab939",
   "applied": [
     "dti-split-tool",
     "fp8-sidecar-archive",
@@ -33,31 +33,31 @@
       "oid": "48597a488d9eacfe02919f0fb4f1e8cfbd652fe1"
     },
     "linux-raw-video-output": {
-      "oid": "688ca46df11cdca1e868e9f1cf9b0fc67242e967"
+      "oid": "ae15628876d88b1418511e553820508acd9e04d7"
     },
     "ltx23-base-import": {
-      "oid": "252a56b7aa417678b42b20a7876c514ad6512f14"
+      "oid": "cd1184799c01579a05c09157788eca74ec8b5c70"
     },
     "nnc-shared-library": {
-      "oid": "23d2e5b517f7a9ddb91de094f11ffdbc4b4da2e4"
+      "oid": "71a0709806f799c4855fcf3a5918e3c5a569fb38"
     },
     "no-advertising-flag": {
-      "oid": "2bee838b8ab168a16525e63dd94e43d2c7217356"
+      "oid": "6804cbedff80b7bb71c469cd4f319a861d3be62e"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "aeda3d373dd9bad0009f4e532e1ce6effcafff0f"
+      "oid": "b3e037cd8c78965ff149ac66ca4669ce91336c77"
     },
     "quantizer-codec-flag": {
-      "oid": "2905a249bb4fff7beb8bc20e4d96d26e0a526a12"
+      "oid": "5bdb9f93f15e7453364d6e3c2a45f3760fb8fc75"
     },
     "separate-lora-flag": {
-      "oid": "f15040cc85a1936115e00cd6cd3eaa07c0d9a733"
+      "oid": "397bfc6344f08aa0ca8078ffe6c862b59dbe3786"
     },
     "spec-json-flag": {
-      "oid": "6c079c804c1dc4a06f7fd6b1083697da5a054fe0"
+      "oid": "a89672018e84dcf7b241397132242df989577c63"
     },
     "terse-import-progress": {
-      "oid": "0aeb671010d6b3644a363a49d81859905ee58a88"
+      "oid": "04d311aa25114f36e9f9fc52687c080d8ffab939"
     }
   }
 }
