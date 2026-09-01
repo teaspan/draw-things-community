@@ -90,7 +90,7 @@ private enum DrawThingsCLIError: LocalizedError {
       return "Failed to encode video at path: \(outputPath)"
     case .unsupportedVideoOutput(let outputPath):
       return
-        "Video output is not supported on this platform for path: \(outputPath). Use .png output instead."
+        "Video output is not supported on this platform for path: \(outputPath). Use .nut output instead."
     case .invalidInputImagePath(let path):
       return "Input image path does not exist: \(path)"
     case .invalidInputImage(let path):
@@ -114,6 +114,18 @@ enum VideoExportFormat: String, ExpressibleByArgument {
   case prores422hq
   case h264
   case hevc
+  case rgb48le
+  case rgb24
+  case gbrpf16le
+
+  var isRawPixelFormat: Bool {
+    switch self {
+    case .rgb48le, .rgb24, .gbrpf16le:
+      return true
+    case .prores4444, .prores422hq, .h264, .hevc:
+      return false
+    }
+  }
 }
 
 enum TerminalImageProtocol: String, ExpressibleByArgument {
@@ -375,9 +387,9 @@ private let generateImageHelp = ArgumentHelp(
 )
 
 private let videoFormatHelp = ArgumentHelp(
-  "Video export format for .mov/.mp4 outputs.",
+  "Video export format for .mov/.mp4 outputs, or pixel format for .nut.",
   discussion:
-    "Accepted values: prores4444, prores422hq, h264, hevc. ProRes formats require .mov output."
+    "Accepted values: prores4444, prores422hq, h264, hevc for .mov/.mp4, and rgb48le, rgb24, gbrpf16le for .nut. ProRes formats require .mov output."
 )
 
 private let terminalImageHelp = ArgumentHelp(
@@ -592,7 +604,7 @@ struct GenerateOutputOptions: ParsableArguments {
     help: ArgumentHelp(
       "Output path (.png, .mov, .mp4, or .nut).",
       discussion:
-        "Use .png for image output and .mov/.mp4 for video-capable models. Use .nut to write the clip raw, as lossless rgb48le video and float32 audio in a NUT container that ffmpeg, ffplay and mpv read directly. Where the platform has no system video encoder, .mov/.mp4 write the .nut as well. If omitted, the CLI previews the result inline in supported interactive terminals and does not write a file."
+        "Use .png for image output and .mov/.mp4/.nut for video-capable models. If omitted, the CLI previews the result inline in supported interactive terminals and does not write a file."
     ))
   var output: String?
 
@@ -2130,22 +2142,20 @@ private final class LocalGenerationRunner {
     switch destination {
     case .png(let outputURL):
       if videoFormat != nil {
-        throw ValidationError("--video-format can only be used with .mov or .mp4 output")
+        throw ValidationError("--video-format can only be used with .mov, .mp4, or .nut output")
       }
       return try savePNGOutputs(tensors, outputURL: outputURL)
     case .video(let outputURL, let containerExtension):
       let path = try writeVideo(
         tensors: tensors, to: outputURL, containerExtension: containerExtension,
         framesPerSecond: framesPerSecond, videoFormat: videoFormat ?? .h264, audio: audio,
-        audioSampleRate: audioSampleRate, metadata: metadata)
+        audioSampleRate: audioSampleRate)
       return [path]
     case .rawVideo(let outputURL):
-      if videoFormat != nil {
-        throw ValidationError("--video-format can only be used with .mov or .mp4 output")
-      }
       let path = try writeNutVideo(
-        tensors: tensors, to: outputURL, framesPerSecond: framesPerSecond, audio: audio,
-        audioSampleRate: audioSampleRate, metadata: metadata, announce: false)
+        tensors: tensors, to: outputURL, framesPerSecond: framesPerSecond,
+        pixelFormat: videoFormat ?? .rgb48le, audio: audio, audioSampleRate: audioSampleRate,
+        metadata: metadata)
       return [path]
     }
   }
@@ -2175,7 +2185,7 @@ private final class LocalGenerationRunner {
   private func writeVideo(
     tensors: [Tensor<FloatType>], to outputURL: URL, containerExtension: String,
     framesPerSecond: Double, videoFormat: VideoExportFormat, audio: Tensor<Float>?,
-    audioSampleRate: Double?, metadata: [(String, String)] = []
+    audioSampleRate: Double?
   ) throws -> String {
     #if canImport(AVFoundation) && canImport(CoreMedia) && canImport(CoreVideo)
       guard let first = tensors.first else {
@@ -2359,16 +2369,14 @@ private final class LocalGenerationRunner {
       if let finishError { throw finishError }
       return outputURL.path
     #else
-      return try writeNutVideo(
-        tensors: tensors, to: outputURL.deletingPathExtension().appendingPathExtension("nut"),
-        framesPerSecond: framesPerSecond, audio: audio, audioSampleRate: audioSampleRate,
-        metadata: metadata, announce: true)
+      throw DrawThingsCLIError.unsupportedVideoOutput(outputURL.path)
     #endif
   }
 
   private func writeNutVideo(
-    tensors: [Tensor<FloatType>], to nutURL: URL, framesPerSecond: Double, audio: Tensor<Float>?,
-    audioSampleRate: Double?, metadata: [(String, String)], announce: Bool
+    tensors: [Tensor<FloatType>], to nutURL: URL, framesPerSecond: Double,
+    pixelFormat: VideoExportFormat, audio: Tensor<Float>?, audioSampleRate: Double?,
+    metadata: [(String, String)]
   ) throws -> String {
     guard let first = tensors.first else {
       throw DrawThingsCLIError.generationFailed
@@ -2384,10 +2392,22 @@ private final class LocalGenerationRunner {
       sampleCount = try stereoSampleCount(audio)
       audioStream = .pcmF32le(sampleRate: Int(audioSampleRate.rounded()), channels: 2)
     }
-    let muxer = try NutMuxer(
-      url: nutURL,
-      video: .rgb48le(width: firstShape.width, height: firstShape.height, frameRate: frameRate),
-      audio: audioStream, metadata: metadata)
+    let width = firstShape.width
+    let height = firstShape.height
+    let video: NutMuxer.VideoStream
+    let frameBytes: (Tensor<FloatType>, ImageTensorShape) -> [UInt8]
+    switch pixelFormat {
+    case .rgb24:
+      video = .rgb24(width: width, height: height, frameRate: frameRate)
+      frameBytes = rgb24Frame
+    case .gbrpf16le:
+      video = .gbrpf16le(width: width, height: height, frameRate: frameRate)
+      frameBytes = gbrpf16Frame
+    default:
+      video = .rgb48le(width: width, height: height, frameRate: frameRate)
+      frameBytes = rgb48Frame
+    }
+    let muxer = try NutMuxer(url: nutURL, video: video, audio: audioStream, metadata: metadata)
     var samplesWritten = 0
     for (index, tensor) in tensors.enumerated() {
       let shape = try imageTensorShape(tensor)
@@ -2398,7 +2418,7 @@ private final class LocalGenerationRunner {
           "Inconsistent frame dimensions: expected \(firstShape.width)x\(firstShape.height), got \(shape.width)x\(shape.height)"
         )
       }
-      try muxer.writeFrame(streamId: 0, pts: index, data: rgb48Frame(tensor, shape: shape))
+      try muxer.writeFrame(streamId: 0, pts: index, data: frameBytes(tensor, shape))
       if let audio, let audioStream {
         let end = min(
           sampleCount, ((index + 1) * audioStream.sampleRate * frameRate.den) / frameRate.num)
@@ -2416,14 +2436,6 @@ private final class LocalGenerationRunner {
         data: interleavedSamples(audio, from: samplesWritten, to: sampleCount))
     }
     try muxer.finish()
-    if announce {
-      var note = "No system video encoder on this platform, so the clip was written raw:\n"
-      note +=
-        "  \(nutURL.path) — rgb48le, \(firstShape.width)x\(firstShape.height), \(tensors.count) frames @ \(framesPerSecond) fps"
-      if sampleCount > 0 { note += ", float32 audio" }
-      note += "\nffmpeg, ffplay and mpv read it directly.\n"
-      FileHandle.standardError.write(Data(note.utf8))
-    }
     return nutURL.path
   }
 
@@ -2450,6 +2462,37 @@ private final class LocalGenerationRunner {
       }
     }
     return rgb
+  }
+
+  private func rgb24Frame(_ tensor: Tensor<FloatType>, shape: ImageTensorShape) -> [UInt8] {
+    let pixelCount = shape.width * shape.height
+    var rgb = [UInt8](repeating: 0, count: pixelCount * 3)
+    tensor.withUnsafeBytes {
+      guard let source = $0.baseAddress?.assumingMemoryBound(to: FloatType.self) else { return }
+      for i in 0..<pixelCount {
+        for channel in 0..<3 {
+          rgb[i * 3 + channel] = pixelByte(source[i * shape.channels + channel])
+        }
+      }
+    }
+    return rgb
+  }
+
+  private func gbrpf16Frame(_ tensor: Tensor<FloatType>, shape: ImageTensorShape) -> [UInt8] {
+    let pixelCount = shape.width * shape.height
+    var planes = [UInt8](repeating: 0, count: pixelCount * 6)
+    tensor.withUnsafeBytes {
+      guard let source = $0.baseAddress?.assumingMemoryBound(to: FloatType.self) else { return }
+      for (plane, channel) in [1, 2, 0].enumerated() {
+        for i in 0..<pixelCount {
+          let bits = halfBits((Float(source[i * shape.channels + channel]) + 1) / 2)
+          let base = (plane * pixelCount + i) * 2
+          planes[base] = UInt8(bits & 0xFF)
+          planes[base + 1] = UInt8(bits >> 8)
+        }
+      }
+    }
+    return planes
   }
 
   private func interleavedSamples(_ audio: Tensor<Float>, from start: Int, to end: Int) -> [UInt8]
@@ -2662,6 +2705,20 @@ private func pixelShort(_ value: FloatType) -> UInt16 {
   UInt16(min(max(Int((value + 1) * 32767.5), 0), 65535))
 }
 
+private func halfBits(_ value: Float) -> UInt16 {
+  let sign = UInt16(truncatingIfNeeded: value.bitPattern >> 16) & 0x8000
+  let magnitude = value.bitPattern & 0x7FFF_FFFF
+  if magnitude >= 0x4780_0000 {
+    return sign | (magnitude > 0x7F80_0000 ? 0x7E00 : 0x7C00)
+  }
+  if magnitude < 0x3880_0000 {
+    let denormalized = Float(bitPattern: magnitude) + Float(bitPattern: 126 << 23)
+    return sign | UInt16(truncatingIfNeeded: denormalized.bitPattern &- (126 << 23))
+  }
+  let odd = (magnitude >> 13) & 1
+  return sign | UInt16(truncatingIfNeeded: (magnitude &+ 0xC800_0FFF &+ odd) >> 13)
+}
+
 private struct NutRational {
   var num: Int
   var den: Int
@@ -2701,6 +2758,15 @@ private final class NutMuxer {
 
     static func rgb48le(width: Int, height: Int, frameRate: NutRational) -> VideoStream {
       VideoStream(width: width, height: height, frameRate: frameRate, fourcc: [0x52, 0x47, 0x42, 48])
+    }
+
+    static func rgb24(width: Int, height: Int, frameRate: NutRational) -> VideoStream {
+      VideoStream(width: width, height: height, frameRate: frameRate, fourcc: [0x52, 0x47, 0x42, 24])
+    }
+
+    static func gbrpf16le(width: Int, height: Int, frameRate: NutRational) -> VideoStream {
+      VideoStream(
+        width: width, height: height, frameRate: frameRate, fourcc: [0x47, 0x33, 0x00, 17])
     }
   }
 
@@ -5281,13 +5347,22 @@ private func validateVideoOutputOptions(outputPath: String, videoFormat: VideoEx
   }
   switch url.pathExtension.lowercased() {
   case "mov":
-    return
+    if videoFormat.isRawPixelFormat {
+      throw ValidationError("Raw pixel formats require .nut output")
+    }
   case "mp4":
+    if videoFormat.isRawPixelFormat {
+      throw ValidationError("Raw pixel formats require .nut output")
+    }
     if videoFormat == .prores4444 || videoFormat == .prores422hq {
       throw ValidationError("ProRes video formats require .mov output")
     }
-  case "png", "nut":
-    throw ValidationError("--video-format can only be used with .mov or .mp4 output")
+  case "nut":
+    if !videoFormat.isRawPixelFormat {
+      throw ValidationError("Video codecs require .mov or .mp4 output")
+    }
+  case "png":
+    throw ValidationError("--video-format can only be used with .mov, .mp4, or .nut output")
   default:
     return
   }
