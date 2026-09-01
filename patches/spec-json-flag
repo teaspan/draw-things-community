@@ -5,5 +5,4 @@ Date:   2026-09-01 21:58:01 +0000
 
 Add --json to DrawThingsCLI models import
 
-With --dry-run this prints the custom.json entry an import would append,
-and nothing else on stdout.
+Print the custom.json entry that an import would append.  Especially handy with --dry-run.
