@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "b3be22d1183be84ed8dd533284230569a9fb2da5",
-  "head": "ca2665a607fa6015202981e101d0519153cb3d1f",
+  "prev": "09a6870b1d64624800ffc7b497b7041cb71612fa",
+  "head": "ca52823afaa5e0739da1ecdc566b479e85e93b40",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -22,7 +22,7 @@
   "hidden": [],
   "patches": {
     "drop-ripgrep-vendor": {
-      "oid": "ca2665a607fa6015202981e101d0519153cb3d1f"
+      "oid": "ca52823afaa5e0739da1ecdc566b479e85e93b40"
     },
     "dti-split-tool": {
       "oid": "9c85daec3da7f85bf89c796e0d56af272e58646c"

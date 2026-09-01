@@ -3,19 +3,16 @@ Top:    47b98b285656fd629cd4b4ffff8de53c5dbed378
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
 Date:   2026-09-01 21:11:06 +0000
 
-Drop the Ripgrep WORKSPACE stanzas the public mirror cannot satisfy
+Drop the Ripgrep WORKSPACE stanzas
 
-WORKSPACE.linux loads //Vendors/Ripgrep:repositories.bzl, but Vendors/Ripgrep is
-absent from SYNCLIST, so the public mirror never receives the directory. A
-WORKSPACE load() is eager, so every commit from 3dc01fe5 onward fails at load
-phase for anyone building the community repo. Nothing outside the two WORKSPACE
-files names ripgrep, so removing the load, the ripgrep_repositories() call and
-the @ripgrep_crates load costs the Linux build no target.
+WORKSPACE.linux loads //Vendors/Ripgrep:repositories.bzl, but
+Vendors/Ripgrep is not in SYNCLIST and the public repository does not
+contain it. The load fails before any target can be built. Nothing outside
+the two WORKSPACE files uses ripgrep, so the load, the ripgrep_repositories()
+call and the @ripgrep_crates load are removed.
 
-It does cost one transitive pin. ripgrep_repositories() reaches
-rules_rust_dependencies(), which is what declared rules_license 1.0.0 first and
-so kept the stale 0.0.3 that the apple and swift rule sets carry from winning.
-protobuf 32.0 calls license() without license_kinds, mandatory in 0.0.3 alone,
-which fails analysis for every //Apps target. Pinning rules_license beside the
-protobuf and rules_cc pins restores it, in the same idiom and for the same
-reason.
+ripgrep_repositories() also called rules_rust_dependencies(), which declared
+rules_license 1.0.0 before the apple and swift rule sets could declare
+0.0.3. protobuf 32.0 calls license() without license_kinds, which 0.0.3
+requires, so without that declaration every //Apps target fails analysis.
+rules_license is now pinned beside protobuf and rules_cc.
