@@ -5,8 +5,5 @@ Date:   2026-09-01 21:32:01 +0000
 
 Add --json to DrawThingsCLI models import
 
-The dry-run and import paths both hold the finished Specification. The flag
-prints it with the encoder settings appendCustomSpecification uses, plus
-sortedKeys, so models import --dry-run --json prints exactly the custom.json
-entry an import would append. With --json the summary table is not printed
-and the dependency-download warning goes to stderr, so stdout is only JSON.
+With --dry-run this prints the custom.json entry an import would append,
+and nothing else on stdout.
