@@ -5,15 +5,17 @@ Date:   2026-09-01 21:11:05 +0000
 
 Apply ComfyUI scaled-FP8 weight scales when reading safetensors
 
-Bare fp8 tensors are LUT-decoded already, but the per-tensor F32 weight_scale
-and scale_weight entries are ignored, so a scaled-FP8 file imports about
-1/scale too large and renders a solid colour or NaN.
-applyingScaledFP8WeightScales returns the archive itself when a file carries no
-scales, and otherwise a wrapper that multiplies each F8_E4M3 tensor by its
-matched scale at read time. Wrapping with(_:block:) is what makes it hold for
-combined-source gathers whose sources carry different scales, which the
-element-level ModelWeightElement.scale affine cannot express. ModelImporter
-wraps at every SafeTensors open, ahead of architecture detection, so the scales
-apply to whatever the file turns out to hold. Orphan scales, scaled E5M2, a
-scale entry naming a non-FP8 tensor and undecodable dtypes each warn on stderr
-and the import carries on.
+Bare fp8 tensors were already decoded through the LUT, but the per-tensor
+F32 weight_scale and scale_weight entries were ignored. A scaled-FP8 file
+imported with every weight about 1/scale too large and rendered a solid
+colour or NaN.
+
+applyingScaledFP8WeightScales returns the archive unchanged when the file
+carries no scales. Otherwise it returns a wrapper that multiplies each
+F8_E4M3 tensor by its scale at read time. The wrapper is applied through
+with(_:block:) so a gather over several sources applies each source's own
+scale, which the per-element ModelWeightElement.scale cannot do.
+ModelImporter wraps every SafeTensors open before architecture detection, so
+the scales apply whatever the file holds. An orphan scale, a scaled E5M2
+tensor, a scale for a non-FP8 tensor and an undecodable dtype each print a
+warning to stderr, and the import continues.
