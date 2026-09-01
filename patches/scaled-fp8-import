@@ -12,6 +12,8 @@ applyingScaledFP8WeightScales returns the archive itself when a file carries no
 scales, and otherwise a wrapper that multiplies each F8_E4M3 tensor by its
 matched scale at read time. Wrapping with(_:block:) is what makes it hold for
 combined-source gathers whose sources carry different scales, which the
-element-level ModelWeightElement.scale affine cannot express. Vetting throws
-instead of letting the reader skip silently on orphan scales, scaled E5M2, a
-scale entry naming a non-FP8 tensor, and foreign dtypes.
+element-level ModelWeightElement.scale affine cannot express. ModelImporter
+wraps at every SafeTensors open, ahead of architecture detection, so the scales
+apply to whatever the file turns out to hold. Orphan scales, scaled E5M2, a
+scale entry naming a non-FP8 tensor and undecodable dtypes each warn on stderr
+and the import carries on.
