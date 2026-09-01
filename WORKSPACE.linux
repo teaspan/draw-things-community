@@ -124,19 +124,19 @@ dflat_deps()
 
 git_repository(
     name = "s4nnc",
-    commit = "830fb15ec9855775c2c12c173591b4ba522ee811",
+    commit = "f7fbbd42d8b3d404a1dfa1ad0e21656310bb9db6",
     remote = "https://github.com/teaspan/s4nnc.git",
 )
 
 git_repository(
     name = "ccv",
-    commit = "f53347902239ef73514bc7a0add2110a3f4f73d2",
+    commit = "d738002b811aec8fea452d7ba58a44ca61292f4c",
     remote = "https://github.com/teaspan/ccv.git",
 )
 
 git_repository(
     name = "build_bazel_rules_cuda",
-    commit = "26b2280c4a8da7c9f133bc295ddd552142740af7",
+    commit = "9d881f53aab05d78c05e20bc3f3e10ee423a1656",
     remote = "https://github.com/teaspan/rules_cuda.git",
 )
 
