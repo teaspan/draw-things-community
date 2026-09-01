@@ -1,7 +1,7 @@
 Bottom: 6b7964d5f2ae4aa93eb19b5a14a23b799a45ccc1
-Top:    4809288e45814c3f2a429758d50a04e6cdc3d2c3
+Top:    5727b0faeedfe8b3207208680ed6936342b5030e
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-09-01 04:10:06 +0000
+Date:   2026-09-01 04:24:53 +0000
 
 Drop the Ripgrep WORKSPACE stanzas the public mirror cannot satisfy
 
@@ -10,4 +10,12 @@ absent from SYNCLIST, so the public mirror never receives the directory. A
 WORKSPACE load() is eager, so every commit from 3dc01fe5 onward fails at load
 phase for anyone building the community repo. Nothing outside the two WORKSPACE
 files names ripgrep, so removing the load, the ripgrep_repositories() call and
-the @ripgrep_crates load costs the Linux build nothing.
+the @ripgrep_crates load costs the Linux build no target.
+
+It does cost one transitive pin. ripgrep_repositories() reaches
+rules_rust_dependencies(), which is what declared rules_license 1.0.0 first and
+so kept the stale 0.0.3 that the apple and swift rule sets carry from winning.
+protobuf 32.0 calls license() without license_kinds, mandatory in 0.0.3 alone,
+which fails analysis for every //Apps target. Pinning rules_license beside the
+protobuf and rules_cc pins restores it, in the same idiom and for the same
+reason.
