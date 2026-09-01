@@ -78,14 +78,6 @@ load(
 
 apple_support_dependencies()
 
-load("//Vendors/Ripgrep:repositories.bzl", "ripgrep_repositories")
-
-ripgrep_repositories()
-
-load("@ripgrep_crates//:defs.bzl", "crate_repositories")
-
-crate_repositories()
-
 git_repository(
     name = "rules_xcodeproj",
     commit = "b5265cf4c360a7607d82ab89e109d20f2a66188b",
