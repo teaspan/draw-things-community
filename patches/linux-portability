@@ -3,7 +3,7 @@ Top:    bfcbe9a907d9bbab1d9637e6c403d56d2bfed6c3
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
 Date:   2026-09-01 21:58:00 +0000
 
-Build Trainer and Downloader on Linux
+Build trainer and downloader on Linux
 
 The openStore closure signature is spelled out because swiftc 6.0.3
-otherwise takes minutes to type-check it.
+otherwise takes forever to type-check it.
