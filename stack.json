@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "d56ae5d3b2213cf6fad3dac358bbf6193e6d172b",
-  "head": "457860bafba0145b308a4245e275e48f6c855186",
+  "prev": "2c6dc47cbfaddc5ba2d8006f4e2e7d4d7361dbf2",
+  "head": "1b32837421d0870fc6bbfe37cc3e7d1b5a5e2b48",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -22,7 +22,7 @@
   "hidden": [],
   "patches": {
     "drop-ripgrep-vendor": {
-      "oid": "457860bafba0145b308a4245e275e48f6c855186"
+      "oid": "1b32837421d0870fc6bbfe37cc3e7d1b5a5e2b48"
     },
     "dti-split-tool": {
       "oid": "9e76e0647fd0cd58b9c820211c8eaaba1ca57c1a"
@@ -34,19 +34,19 @@
       "oid": "d9148a4f765fb67e42d1ac043abf9c4a67476067"
     },
     "ltx23-base-import": {
-      "oid": "a88919bab5b87cd60fc66541d83cc9dc479fec9f"
+      "oid": "a815b14c745a84c946cecc8c46f3622f246c5b3a"
     },
     "nnc-shared-library": {
-      "oid": "ad12fa99827370eeb5268405eed64de11ab73cd0"
+      "oid": "d80a94abd475970829c7b3880a0a266853696626"
     },
     "no-advertising-flag": {
-      "oid": "2a44b40cc3cecb0e9e414f4bc576b87870249754"
+      "oid": "e31cc3c46315f66e5479a51a7673e6b5642ba307"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "e2a0edc211d00976c653baac758c2dc59faf72e9"
+      "oid": "07abbb98fef35a0e8cb15ac1c5af8178a92f2964"
     },
     "quantizer-codec-flag": {
-      "oid": "257e22bb745895a2cf7238928a6cd4af24bec0f8"
+      "oid": "3ed1e47aaf8faafeb096a0d9d224115fdf05f09c"
     },
     "raw-video-output": {
       "oid": "8ce6d491cfd717fad370172009eda303f085235e"
@@ -55,13 +55,13 @@
       "oid": "e3f127c314b8d70f5d891220c4a2f5aba6a701de"
     },
     "separate-lora-flag": {
-      "oid": "9548de604f6360f83eb8e63f3e0db3bb09f003a2"
+      "oid": "3733182984fb5aa0abc9f9b6857bde9d1fab1ecf"
     },
     "spec-json-flag": {
-      "oid": "4cc6b9f5db2f2dd6deb1bc9851b4620aad9ed5ce"
+      "oid": "cf7e3191a889c44584a4ad613ac7c34ca2c985d9"
     },
     "terse-import-progress": {
-      "oid": "dedbbaf80f184fe6536659a781faf3b98a411cbc"
+      "oid": "d398723a7d4a2e8c0639557f9ede45dee9ffb802"
     }
   }
 }
