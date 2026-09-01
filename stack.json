@@ -1,10 +1,12 @@
 {
   "version": 5,
-  "prev": "d951ddd822c0fcf087d6cc64722a1c166e805715",
-  "head": "e7655cd3cd7912501d810494bcdb002075106d33",
+  "prev": "b4ac23c8a6b29a31c0a9f8bc3d75e330838b0692",
+  "head": "898492f47c3d4efe0969f8e6fed1166739c81d08",
   "applied": [
     "dti-split-tool",
-    "scaled-fp8-import",
+    "scaled-fp8-import"
+  ],
+  "unapplied": [
     "linux-mapped-reads",
     "linux-portability",
     "linux-raw-video-output",
@@ -18,7 +20,6 @@
     "terse-import-progress",
     "drop-ripgrep-vendor"
   ],
-  "unapplied": [],
   "hidden": [],
   "patches": {
     "drop-ripgrep-vendor": {
