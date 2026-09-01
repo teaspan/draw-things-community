@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "e3d1552dbd39af70c89e6d6cfbfe46e9a9b40b02",
-  "head": "a6793eec1f4fbc1370c32939553cbe815e30fb0c",
+  "prev": "58ef1ea4c9656a82627e1947c5f194f571aa478e",
+  "head": "3e54ff3906ede84ce3e8033d3cfdcbfee0a508a6",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -9,9 +9,7 @@
     "linux-portability",
     "raw-video-output",
     "ltx23-base-import",
-    "nnc-shared-library"
-  ],
-  "unapplied": [
+    "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
@@ -20,10 +18,11 @@
     "terse-import-progress",
     "drop-ripgrep-vendor"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "drop-ripgrep-vendor": {
-      "oid": "8820df45004b6a58b7f0bfd4b43d5784bf25c7d6"
+      "oid": "3e54ff3906ede84ce3e8033d3cfdcbfee0a508a6"
     },
     "dti-split-tool": {
       "oid": "9e76e0647fd0cd58b9c820211c8eaaba1ca57c1a"
@@ -41,13 +40,13 @@
       "oid": "a6793eec1f4fbc1370c32939553cbe815e30fb0c"
     },
     "no-advertising-flag": {
-      "oid": "dbbe63a91315a93cf78e0fa75d8787d3cfab37da"
+      "oid": "d807b13807738c76d1eda695ff16b3cc7fae4ce9"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "4c7e4292e4c80f611be2f449cde98666abb385d0"
+      "oid": "9e2950a254023f74e929d701ba8c28505f77df91"
     },
     "quantizer-codec-flag": {
-      "oid": "75135ab787505d67b17fda9e2f9bdea00a1036b5"
+      "oid": "8994cfd41429c2f4145246136e59805631d12fdc"
     },
     "raw-video-output": {
       "oid": "d6983b838bd4c66d1f700d57dcb50fd0f6c38c22"
@@ -56,13 +55,13 @@
       "oid": "e3f127c314b8d70f5d891220c4a2f5aba6a701de"
     },
     "separate-lora-flag": {
-      "oid": "d895af6bdd1ba0407203beb1c9bd73e72653f28e"
+      "oid": "2b6147067e88f26e3091eb57b450eec31a0f53bd"
     },
     "spec-json-flag": {
-      "oid": "b9314dfe4a84a04fdb91244bfca404bd8ef67da4"
+      "oid": "d5e676a3d42f77baf30436c8aa3301aa997c2e6e"
     },
     "terse-import-progress": {
-      "oid": "c85f198d91a7a4228e7be7e78c3711a268684161"
+      "oid": "0896f816cd1533e5769aa60722012b95c4982058"
     }
   }
 }
