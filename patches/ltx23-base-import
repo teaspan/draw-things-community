@@ -1,7 +1,7 @@
-Bottom: 8ee9b8f59a429282eb01570cf6be8c0b32a0d0a4
-Top:    c2d836e138d183a3c6124c494823a711c33daeaa
+Bottom: c6ee95af0b62c6bbeea9898871d50df260bd4ca7
+Top:    b285f99e003c547666036bd5ee2a81405c00aea7
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-09-01 09:20:12 +0000
+Date:   2026-09-02 00:58:27 +1000
 
 Implement LTX-2.3 base model import
 
