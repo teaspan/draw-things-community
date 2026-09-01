@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "fe4eab92c674711eb1e48d6afd2794f41d675810",
-  "head": "e64580f304161de6091f8c31526692b18b04e3c6",
+  "prev": "0088d74866e340afd2c625bd31efab63781ad9ca",
+  "head": "df187da3897b19da21d32efaa2ef911accbbc9ae",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -15,11 +15,15 @@
     "quantizer-codec-flag",
     "separate-lora-flag",
     "spec-json-flag",
-    "terse-import-progress"
+    "terse-import-progress",
+    "dti-dev-sentinel"
   ],
   "unapplied": [],
   "hidden": [],
   "patches": {
+    "dti-dev-sentinel": {
+      "oid": "df187da3897b19da21d32efaa2ef911accbbc9ae"
+    },
     "dti-split-tool": {
       "oid": "885599b4f463ed3e09edbbd8aa0352bc0cbd2b87"
     },
