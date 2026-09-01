@@ -1,7 +1,7 @@
-Bottom: 9f465bceb6900bb0b7102adfbff371f66d36327c
-Top:    169230c6503414df7ba7ec6234802280531233a8
+Bottom: bfcbe9a907d9bbab1d9637e6c403d56d2bfed6c3
+Top:    8ee9b8f59a429282eb01570cf6be8c0b32a0d0a4
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-09-01 09:11:49 +0000
+Date:   2026-09-01 09:20:12 +0000
 
 Write a NUT clip instead of failing video output on Linux
 

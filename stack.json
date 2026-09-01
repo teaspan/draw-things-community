@@ -1,12 +1,10 @@
 {
   "version": 5,
-  "prev": "fdcda4b5188de31a3c05afaaf1fc8ecf04b617ef",
-  "head": "32740211250f36ea238e823a3618a15613e8787c",
+  "prev": "dfbc0d5b24ad009a3f7c10f4cf057244995a8e2f",
+  "head": "edc2947324edee5b21015cb7697202cb9e80b711",
   "applied": [
     "dti-split-tool",
-    "scaled-fp8-import"
-  ],
-  "unapplied": [
+    "scaled-fp8-import",
     "linux-mapped-reads",
     "linux-portability",
     "linux-raw-video-output",
@@ -20,49 +18,50 @@
     "terse-import-progress",
     "drop-ripgrep-vendor"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "drop-ripgrep-vendor": {
-      "oid": "f3796c07088f9c864506ba496d72f1439046097d"
+      "oid": "edc2947324edee5b21015cb7697202cb9e80b711"
     },
     "dti-split-tool": {
       "oid": "0eb585fa96db6f7b8c9655daab61e5bab35f25b8"
     },
     "linux-mapped-reads": {
-      "oid": "7c7d5bd16d62c9838bed6d3e079ba9e7f180fb3a"
+      "oid": "6477dfb06328323755c75dc75a5cd5b17b60b135"
     },
     "linux-portability": {
-      "oid": "f595e23d595546d37ab8e869f91791a2d19edf84"
+      "oid": "72550c64dc23a9e0440c9b6b6fab4ba02c6c8f07"
     },
     "linux-raw-video-output": {
-      "oid": "516a104192a54c0dd690a4f4e7505f055d112046"
+      "oid": "1b14213eb4a08a855ca408b219bbc3c7a3c93fb2"
     },
     "ltx23-base-import": {
-      "oid": "f2192dc20c6619dbe91327a67dc5ca2dd3a1861f"
+      "oid": "863dec377adbe310e16f858d841a4b12195ce9d3"
     },
     "nnc-shared-library": {
-      "oid": "14f1a3b5f76c7945640e5e8e702f77bdb9560f7f"
+      "oid": "54397ef16021584f90cc12b846a1fd67666faebe"
     },
     "no-advertising-flag": {
-      "oid": "b09fe29e2835cb1b7185f9bf9b9478e939424752"
+      "oid": "8e6c5f2d15a7e43ef44acf96875d6e2be8383979"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "b848711bef2d2f80b535b1ca950eb27289a85303"
+      "oid": "37fb3d2bae9a8ce1a13b0c5125dc58e8863b45e3"
     },
     "quantizer-codec-flag": {
-      "oid": "ee60bb6aaba4f405c75b28a10d98b3d47776af42"
+      "oid": "065a5968fc286ddcf5b43292ad190c39e618136c"
     },
     "scaled-fp8-import": {
       "oid": "32740211250f36ea238e823a3618a15613e8787c"
     },
     "separate-lora-flag": {
-      "oid": "90c211f3569dfcd21a0839f0054d5457d05c15b8"
+      "oid": "f7162e586927a0496acd46727235127c9b164f90"
     },
     "spec-json-flag": {
-      "oid": "6d77e7778dcbe15a571eed67f756af0927f663d1"
+      "oid": "e7aede716b4e2e88221bcbd2f3928a73e74f8477"
     },
     "terse-import-progress": {
-      "oid": "79a5c79700ce794d348362a25b61c47f85ce2ea4"
+      "oid": "4d3aa095b3700debd03b119a43fe76438baca027"
     }
   }
 }
