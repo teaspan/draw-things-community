@@ -5,13 +5,12 @@ Date:   2026-09-01 21:11:05 +0000
 
 Link ccv and NNC as one shared library
 
-Six binaries each carry a private copy of the ~970 MB .nv_fatbin plus all ccv
-host code and sqlite. WORKSPACE.linux pre-declares @sqlite3 with a split BUILD
-and hands @s4nnc two patches, which add a cc_shared_library and a cc_import to
-nnc/BUILD.bazel and pass @ccv its own patch marking the host sub-libraries
-alwayslink. The four cuda_library targets stay lazy, because their members
-ride the registrant references in the committed ccv_nnc_cmd.inc and forcing
-them would embed kernels the binaries never carried. Eight Libraries BUILD
-files redirect @ccv//lib:ccv to @s4nnc//nnc:C_ccv so the static payload cannot
-leak back in. One sqlite copy lives in the shared library, because Store.swift
-opens handles that ccv_nnc_tensor_read consumes.
+Each of the six binaries carried its own copy of the 970 MB .nv_fatbin, all
+of the ccv host code, and sqlite. WORKSPACE.linux now pre-declares @sqlite3
+with a split BUILD, and pins @s4nnc, @ccv and @build_bazel_rules_cuda to the
+teaspan forks, which add a cc_shared_library and a cc_import to
+nnc/BUILD.bazel and mark the ccv host sub-libraries alwayslink. Eight
+Libraries BUILD files redirect @ccv//lib:ccv to @s4nnc//nnc:C_ccv so the
+static payload cannot be linked in again. sqlite lives in the shared library
+because Store.swift opens handles that ccv_nnc_tensor_read consumes, and
+both must use the same sqlite.
