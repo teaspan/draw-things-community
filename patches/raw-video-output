@@ -1,17 +1,11 @@
 Bottom: bfcbe9a907d9bbab1d9637e6c403d56d2bfed6c3
 Top:    af7c8832c380b3e22aee347421ed279fca79aef6
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-09-02 03:25:00 +1000
+Date:   2026-09-02 03:25:05 +1000
 
-Write video output as a raw NUT clip, and take it where no encoder exists
+Support raw audio/video output in NUT container
 
-The mp4 and mov muxer sits inside one canImport(AVFoundation) block, so
-generate --output clip.mp4 hard-errors off Darwin, and the suggested PNG
-fallback silently drops the audio tensor.
-
---output clip.nut now writes the clip raw on every platform. One file holds
-rgb48le video, pcm_f32le stereo audio, and an info packet carrying the prompt,
-model and seed. ffmpeg, ffplay and mpv read it directly, so it is also the
-lossless source for whatever encoder you prefer. Where AVFoundation is absent
-the #else writes that same file, taking the .nut extension in place of the one
-given.
+Write a simple raw output form.  Useful fallback when AVFoundation is absent,
+or you just wanted the raw frames and audio.  Produces uncompressed rgb48le
+video and pcm_f32le audio in the NUT container format:
+https://git.ffmpeg.org/gitweb/nut.git/blob_plain/HEAD:/docs/nut.txt
