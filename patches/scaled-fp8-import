@@ -5,17 +5,6 @@ Date:   2026-09-01 21:32:00 +0000
 
 Apply ComfyUI scaled-FP8 weight scales when reading safetensors
 
-Bare fp8 tensors were already decoded through the LUT, but the per-tensor
-F32 weight_scale and scale_weight entries were ignored. A scaled-FP8 file
-imported with every weight about 1/scale too large and rendered a solid
-colour or NaN.
-
-applyingScaledFP8WeightScales returns the archive unchanged when the file
-carries no scales. Otherwise it returns a wrapper that multiplies each
-F8_E4M3 tensor by its scale at read time. The wrapper is applied through
-with(_:block:) so a gather over several sources applies each source's own
-scale, which the per-element ModelWeightElement.scale cannot do.
-ModelImporter wraps every SafeTensors open before architecture detection, so
-the scales apply whatever the file holds. An orphan scale, a scaled E5M2
-tensor, a scale for a non-FP8 tensor and an undecodable dtype each print a
-warning to stderr, and the import continues.
+Without them a scaled-FP8 model imports 1/scale too large and renders a
+solid colour. The archive is wrapped, rather than ModelWeightElement.scale
+set, so a combined-source gather can carry a different scale per source.
