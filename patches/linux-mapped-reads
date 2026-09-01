@@ -5,12 +5,5 @@ Date:   2026-09-01 21:32:00 +0000
 
 Map whole-file reads on Linux
 
-Swift 6's Linux Foundation does not map files for .mappedIfSafe. Every
-whole-file Data(contentsOf:options:) is a malloc and a full read, where
-Darwin gets a lazy mmap. models import opens the safetensors twice before
-printing Detected, and the server's two SHA-256 paths and GRPCFileUploader
-each read whole checkpoints into memory.
-
-Data.ReadingOptions.mappedIfLocal is .mappedIfSafe on Darwin and
-.alwaysMapped on Linux, which FoundationEssentials implements with a real
-mmap. Darwin behaviour is unchanged.
+Linux Foundation ignores .mappedIfSafe and reads the whole file into memory.
+.alwaysMapped is honoured. Darwin is unchanged.
