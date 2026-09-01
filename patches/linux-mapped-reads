@@ -3,12 +3,14 @@ Top:    0f4b1cc27b24539c001da2bafa5eb2f9d600de88
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
 Date:   2026-09-01 21:11:05 +0000
 
-Map whole-file reads on Linux via Data.ReadingOptions.mappedIfLocal
+Map whole-file reads on Linux
 
-Swift 6's Linux Foundation never maps for .mappedIfSafe, so every whole-file
-Data(contentsOf:options:) is a malloc plus a full read where Darwin gets a
-lazy mmap. models import opens the safetensors twice before printing
-Detected, and the server's two SHA-256 paths and GRPCFileUploader each malloc
-whole checkpoints. mappedIfLocal is .mappedIfSafe on Darwin and .alwaysMapped
-on Linux, which FoundationEssentials honours with a real mmap. Darwin
-behaviour is byte-identical.
+Swift 6's Linux Foundation does not map files for .mappedIfSafe. Every
+whole-file Data(contentsOf:options:) is a malloc and a full read, where
+Darwin gets a lazy mmap. models import opens the safetensors twice before
+printing Detected, and the server's two SHA-256 paths and GRPCFileUploader
+each read whole checkpoints into memory.
+
+Data.ReadingOptions.mappedIfLocal is .mappedIfSafe on Darwin and
+.alwaysMapped on Linux, which FoundationEssentials implements with a real
+mmap. Darwin behaviour is unchanged.
