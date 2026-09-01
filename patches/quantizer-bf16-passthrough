@@ -5,6 +5,6 @@ Date:   2026-09-01 21:58:00 +0000
 
 Keep BF16 weights BF16 when quantizing
 
-Tensor<FloatType>(from:) narrowed BF16 rows to F16. ccv_nnc_tensor_read
+Tensor<FloatType>(from:) narrowed BF16 rows to F16, but ccv_nnc_tensor_read
 cannot convert 16F to 16BF, so the server crashed on the first generation
-with a quantized Z-Image or Qwen model. The macOS app keeps them BF16.
+with a quantized Z-Image or Qwen model.
