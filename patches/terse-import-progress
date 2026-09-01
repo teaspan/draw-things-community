@@ -3,10 +3,7 @@ Top:    0fb95623a2c171e656fe288523521ad77b6c7ded
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
 Date:   2026-09-01 21:32:01 +0000
 
-Stop reprinting Importing: 100% during an import
+Stop reprinting Importing: 100%
 
-inflateInterrupter divides by a hard-coded per-arch expectedTotalAccess
-estimate. Once the real access count passes it the ratio is pinned at 1.0,
-and the throttle's percent == 100 test fires on every step, printing a few
-thousand identical lines. Requiring lastPrintedPercent < 100 keeps the final
-100% line and caps an import at 21 lines.
+expectedTotalAccess is an estimate. Once the real count passes it the ratio
+pins at 1.0 and the 100% line is printed on every step.
