@@ -3,18 +3,16 @@ Top:    8f2752557f27d45ec12f8de9a638085235d0a900
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
 Date:   2026-09-01 21:11:06 +0000
 
-Stop narrowing BF16 matmul rows to F16 when quantizing
+Keep BF16 rows BF16 when quantizing
 
-Every arm opens with Tensor<FloatType>(from: tensor), which silently converts
-BF16 weights to F16. Z-Image and the Qwen family carry CCV_16BF matmul rows
-inside their _f16 checkpoints, the codecs keep centroids and row scales in the
-tensor's own dtype, and ccv_nnc_tensor_read has no 16F to 16BF path, so the
-quantized result crashes the server on its first generation. Pass an
-already-16-bit tensor through untouched and narrow only what needs it.
+Every arm opens with Tensor<FloatType>(from: tensor), which converts BF16
+weights to F16. Z-Image and the Qwen family carry BF16 matmul rows inside
+their _f16 checkpoints. The codecs store centroids and row scales in the
+tensor's own dtype, and ccv_nnc_tensor_read cannot convert 16F to 16BF, so
+the server crashes on its first generation with the quantized file. An
+already-16-bit tensor is now passed through untouched, and only wider
+tensors are narrowed.
 
-Found by comparing a Z-Image Turbo quantized by this CLI against one the macOS
-app produced from the same source. The recipe matched exactly and the only
-discrepancy in the whole file was 238 F16 rows where the app had BF16. That
-file segfaulted both gRPCServerCLI and the app, while the app's own generated
-normally. The app is where BF16 architectures get quantized in practice, which
-is why this has gone unnoticed.
+A Z-Image Turbo quantized by this CLI differed from the macOS app's
+quantization of the same source in exactly 238 rows, F16 here and BF16
+there. The CLI's file crashed both gRPCServerCLI and the app.
