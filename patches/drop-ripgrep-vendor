@@ -5,14 +5,6 @@ Date:   2026-09-01 21:32:01 +0000
 
 Drop the Ripgrep WORKSPACE stanzas
 
-WORKSPACE.linux loads //Vendors/Ripgrep:repositories.bzl, but
-Vendors/Ripgrep is not in SYNCLIST and the public repository does not
-contain it. The load fails before any target can be built. Nothing outside
-the two WORKSPACE files uses ripgrep, so the load, the ripgrep_repositories()
-call and the @ripgrep_crates load are removed.
-
-ripgrep_repositories() also called rules_rust_dependencies(), which declared
-rules_license 1.0.0 before the apple and swift rule sets could declare
-0.0.3. protobuf 32.0 calls license() without license_kinds, which 0.0.3
-requires, so without that declaration every //Apps target fails analysis.
-rules_license is now pinned beside protobuf and rules_cc.
+Vendors/Ripgrep is not in SYNCLIST, so the public repository cannot load
+it. rules_rust had been pinning rules_license 1.0.0, which protobuf needs,
+so it is now pinned directly.
