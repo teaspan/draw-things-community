@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "cface42f0a7ddb9830503bb35452133dbbbf5281",
-  "head": "7b36fa02d254dd71e89ced2d3501a159fdaea7c5",
+  "prev": "6f46a83b3d87703aab0abb9c1226cd4969adb684",
+  "head": "bcbbe49870c674a68dc7d58188f9ba42ec934bd4",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -16,14 +16,13 @@
     "separate-lora-flag",
     "spec-json-flag",
     "terse-import-progress",
-    "drop-ripgrep-vendor",
-    "refresh-temp"
+    "drop-ripgrep-vendor"
   ],
   "unapplied": [],
   "hidden": [],
   "patches": {
     "drop-ripgrep-vendor": {
-      "oid": "68ae651f0deb7aae10113f0d37e7f10db293a1d0"
+      "oid": "bcbbe49870c674a68dc7d58188f9ba42ec934bd4"
     },
     "dti-split-tool": {
       "oid": "a17ff1363dcf3089657c4df5dd3637f4c6c89deb"
@@ -51,9 +50,6 @@
     },
     "quantizer-codec-flag": {
       "oid": "285e1883be56e7362683097d57c0dfa5a006a7f1"
-    },
-    "refresh-temp": {
-      "oid": "7b36fa02d254dd71e89ced2d3501a159fdaea7c5"
     },
     "scaled-fp8-import": {
       "oid": "9090ea21f0455137265bdab072aae569855f2f72"
