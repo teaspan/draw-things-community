@@ -175,7 +175,8 @@ extension SafeTensors {
     var scales = [String: Float]()
     var orphans = [String]()
     var unapplied = [(String, String)]()
-    for (key, descriptor) in states where !isScaleNamed(key) {
+    for (key, descriptor) in states
+    where !isScaleNamed(key) && descriptor.storage.size > 0 {
       if descriptor.storage.FP8_E4M3 {
         if let scale = scaleFor(key) {
           scales[key] = scale
