@@ -318,10 +318,6 @@ public final class ModelImporter {
       inputDim = 128
       expectedTotalAccess = 5746
       isDiffusersFormat = false
-      if let safeTensors = archive as? SafeTensors {
-        archive = try safeTensors.applyingScaledFP8WeightScales(
-          skippingKeyPrefixes: ["vae.", "audio_vae.", "vocoder.", "text_encoders."])
-      }
     } else if isPixArtSigmaXL {
       modelVersion = .pixart
       modifier = .none
