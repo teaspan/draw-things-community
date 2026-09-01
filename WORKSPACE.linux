@@ -12,6 +12,15 @@ http_archive(
 )
 
 http_archive(
+    name = "rules_license",
+    sha256 = "26d4021f6898e23b82ef953078389dd49ac2b5618ac564ade4ef87cced147b38",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_license/releases/download/1.0.0/rules_license-1.0.0.tar.gz",
+        "https://github.com/bazelbuild/rules_license/releases/download/1.0.0/rules_license-1.0.0.tar.gz",
+    ],
+)
+
+http_archive(
     name = "rules_java",
     sha256 = "c5bc17e17bb62290b1fd8fdd847a2396d3459f337a7e07da7769b869b488ec26",
     urls = [
@@ -77,14 +86,6 @@ load(
 )
 
 apple_support_dependencies()
-
-load("//Vendors/Ripgrep:repositories.bzl", "ripgrep_repositories")
-
-ripgrep_repositories()
-
-load("@ripgrep_crates//:defs.bzl", "crate_repositories")
-
-crate_repositories()
 
 git_repository(
     name = "rules_xcodeproj",
