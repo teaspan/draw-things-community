@@ -1,0 +1,13 @@
+Bottom: 6b7964d5f2ae4aa93eb19b5a14a23b799a45ccc1
+Top:    6b7964d5f2ae4aa93eb19b5a14a23b799a45ccc1
+Author: Teaspan <314463419+teaspan@users.noreply.github.com>
+Date:   2026-09-01 14:09:15 +1000
+
+Drop the Ripgrep WORKSPACE stanzas the public mirror cannot satisfy
+
+WORKSPACE.linux loads //Vendors/Ripgrep:repositories.bzl, but Vendors/Ripgrep is
+absent from SYNCLIST, so the public mirror never receives the directory. A
+WORKSPACE load() is eager, so every commit from 3dc01fe5 onward fails at load
+phase for anyone building the community repo. Nothing outside the two WORKSPACE
+files names ripgrep, so removing the load, the ripgrep_repositories() call and
+the @ripgrep_crates load costs the Linux build nothing.
