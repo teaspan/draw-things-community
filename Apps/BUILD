@@ -119,3 +119,5 @@ swift_binary(
         "@s4nnc//nnc",
     ],
 )
+
+print("dti-dev-sentinel: draw-things-community")
