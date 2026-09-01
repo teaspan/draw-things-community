@@ -1,7 +1,7 @@
 Bottom: bc4a47d1228fbd4dea1a9820c5aa576f8485fa12
 Top:    9c5d57aadf24214bf673dc21f2d31c8064b7a38b
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-09-01 09:20:12 +0000
+Date:   2026-09-01 21:11:05 +0000
 
 Apply ComfyUI scaled-FP8 weight scales when reading safetensors
 
