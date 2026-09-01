@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "6631f98d339d428502193394058745159e1e14a5",
-  "head": "2c45d3be4b71fc03ecaf0baa8ee14ba37bee6538",
+  "prev": "d906807a76a74cf9be4878e95eab43893a329b31",
+  "head": "b980e75b05949de9607b4a1569cd9f3bee03fd16",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -22,7 +22,7 @@
   "hidden": [],
   "patches": {
     "drop-ripgrep-vendor": {
-      "oid": "2c45d3be4b71fc03ecaf0baa8ee14ba37bee6538"
+      "oid": "b980e75b05949de9607b4a1569cd9f3bee03fd16"
     },
     "dti-split-tool": {
       "oid": "9c85daec3da7f85bf89c796e0d56af272e58646c"
@@ -34,19 +34,19 @@
       "oid": "0454a38246de450ed960b1b1c33a2b324e15c97a"
     },
     "ltx23-base-import": {
-      "oid": "87031165965248979d1839dd67577229040417ba"
+      "oid": "0be0694c38b6b2407ec9e3f418359576a3caa6bb"
     },
     "nnc-shared-library": {
-      "oid": "91bd8ec2400aa3b78543a205a708f7f238fbcf69"
+      "oid": "97996c56c54f475a99ee42aa10da25ec55aad5ae"
     },
     "no-advertising-flag": {
-      "oid": "100af27bd15aeb893363c1fc6b5f95b2214dc334"
+      "oid": "734eb082e67f1a83e86e7454891fb828ecfd2c11"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "99e21017aeeda2df7299b1a6d49ac4ac7cd36ec8"
+      "oid": "74ac352b5f81b3d273fec868e305dc4ff16bcc07"
     },
     "quantizer-codec-flag": {
-      "oid": "a0867f60b1b07c6c1563cb1788d3cfa4f105347c"
+      "oid": "6632b3d726ed91c73674a875861eac59fa004614"
     },
     "raw-video-output": {
       "oid": "1637f683c8dfce9ba7d723221148f2499c7b171b"
@@ -55,13 +55,13 @@
       "oid": "2d43855db7c487e8906bee330c344cdfc9f800c8"
     },
     "separate-lora-flag": {
-      "oid": "2495641595bc2926757088403ff36211aac49cce"
+      "oid": "579317bc2388d121ff13fc6fffe7f83af2c0d924"
     },
     "spec-json-flag": {
-      "oid": "34ffc8d2c0e4f06f498f609e77af8883d5f2c317"
+      "oid": "78f7ab614bc5f697af2af857449ba1868878af61"
     },
     "terse-import-progress": {
-      "oid": "97ce52ad8a58ecf03fcbcf8aa7ecd6aac6b994cd"
+      "oid": "dafa7d1ee5cb26af5e25b701d204e2b519132270"
     }
   }
 }
