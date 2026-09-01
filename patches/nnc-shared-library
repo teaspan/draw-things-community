@@ -6,5 +6,4 @@ Date:   2026-09-01 21:58:00 +0000
 Link ccv and NNC as one shared library
 
 Each binary carried its own 970 MB fatbin. The Libraries BUILD files
-redirect @ccv//lib:ccv to @s4nnc//nnc:C_ccv so the static copy cannot come
-back.
+redirect @ccv//lib:ccv to @s4nnc//nnc:C_ccv so the static copy can't return.
