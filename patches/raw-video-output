@@ -3,12 +3,15 @@ Top:    c6ee95af0b62c6bbeea9898871d50df260bd4ca7
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
 Date:   2026-09-02 00:58:22 +1000
 
-Write a NUT clip instead of failing video output on Linux
+Write video output as a raw NUT clip, and take it where no encoder exists
 
-The whole mp4 and mov muxer sits inside one canImport(AVFoundation) block, so
+The mp4 and mov muxer sits inside one canImport(AVFoundation) block, so
 generate --output clip.mp4 hard-errors off Darwin, and the suggested PNG
-fallback silently drops the audio tensor. The #else now writes a single
-clip.nut holding rgb48le video, pcm_f32le stereo audio, and an info packet
-carrying the prompt, model, seed, and the originally requested filename and
-codec. ffmpeg, ffplay and mpv read it directly. NutMuxer compiles
-unconditionally so a macOS build still type-checks it.
+fallback silently drops the audio tensor.
+
+--output clip.nut now writes the clip raw on every platform. One file holds
+rgb48le video, pcm_f32le stereo audio, and an info packet carrying the prompt,
+model and seed. ffmpeg, ffplay and mpv read it directly, so it is also the
+lossless source for whatever encoder you prefer. Where AVFoundation is absent
+the #else writes that same file, taking the .nut extension in place of the one
+given.
