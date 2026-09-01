@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "2d1912672d6acc850efdf05192bdd50fed399bd4",
-  "head": "e2124afccea611221f38e17c498390988895707e",
+  "prev": "569404ea8df8cbbbacac8d84866136dec4b8a36d",
+  "head": "19c84a738a70ad22f16db199083f2e8f217c1247",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -22,7 +22,7 @@
   "hidden": [],
   "patches": {
     "drop-ripgrep-vendor": {
-      "oid": "e2124afccea611221f38e17c498390988895707e"
+      "oid": "19c84a738a70ad22f16db199083f2e8f217c1247"
     },
     "dti-split-tool": {
       "oid": "9e76e0647fd0cd58b9c820211c8eaaba1ca57c1a"
@@ -46,7 +46,7 @@
       "oid": "4c7e4292e4c80f611be2f449cde98666abb385d0"
     },
     "quantizer-codec-flag": {
-      "oid": "b2b4b5c5c953629eb6bf0cb8f0fc9616c7ee71b3"
+      "oid": "75135ab787505d67b17fda9e2f9bdea00a1036b5"
     },
     "raw-video-output": {
       "oid": "d6983b838bd4c66d1f700d57dcb50fd0f6c38c22"
@@ -55,13 +55,13 @@
       "oid": "e3f127c314b8d70f5d891220c4a2f5aba6a701de"
     },
     "separate-lora-flag": {
-      "oid": "aa8fbf6997b3eb47c1511f93672e63cae74a5877"
+      "oid": "49364d5378416e85b7fb98a61e310cba3d9098f8"
     },
     "spec-json-flag": {
-      "oid": "a9ca348756c07313b0b53acf5c1d5a2d1d664af7"
+      "oid": "79ff1336b4f4b8711db5786b44eec2bf4691a3e1"
     },
     "terse-import-progress": {
-      "oid": "fedecce9a65ae9b4da2c92d840b09cd010775a92"
+      "oid": "3fc0620cc9761e7f6743cb15adb8ed854e69433d"
     }
   }
 }

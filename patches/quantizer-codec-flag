@@ -1,10 +1,10 @@
 Bottom: 8f2752557f27d45ec12f8de9a638085235d0a900
 Top:    55ef3c5fe47e69c1ff313fc0b20a721ef951c3dd
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-09-01 21:58:00 +0000
+Date:   2026-09-01 21:58:01 +0000
 
 Add --codec to ModelQuantizer
 
 Overrides the codec for the matmul bulk only, the same split the app's
 quantize actions make. Default output is unchanged. Only i8x has been
-tested. The iq* formats need an importance matrix, which is not supplied.
+tested, and the iq* formats are missing an importance matrix.
