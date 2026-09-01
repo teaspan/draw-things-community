@@ -2138,15 +2138,6 @@ private final class LocalGenerationRunner {
     prompt: String = "", negativePrompt: String = ""
   ) throws -> [String] {
     let destination = try normalizedOutputDestination(outputPath)
-    let framesPerSecond = ModelZoo.framesPerSecondForModel(configuration.model ?? "")
-    let audioSampleRate = audio.map { _ in
-      Double(ModelZoo.audioSampleRateForModel(configuration.model ?? ""))
-    }
-    var metadata = [(String, String)]()
-    if !prompt.isEmpty { metadata.append(("prompt", prompt)) }
-    if !negativePrompt.isEmpty { metadata.append(("negative_prompt", negativePrompt)) }
-    if let model = configuration.model { metadata.append(("model", model)) }
-    metadata.append(("seed", "\(configuration.seed)"))
     switch destination {
     case .png(let outputURL):
       if videoFormat != nil {
@@ -2154,12 +2145,25 @@ private final class LocalGenerationRunner {
       }
       return try savePNGOutputs(tensors, outputURL: outputURL)
     case .video(let outputURL, let containerExtension):
+      let framesPerSecond = ModelZoo.framesPerSecondForModel(configuration.model ?? "")
+      let audioSampleRate = audio.map { _ in
+        Double(ModelZoo.audioSampleRateForModel(configuration.model ?? ""))
+      }
       let path = try writeVideo(
         tensors: tensors, to: outputURL, containerExtension: containerExtension,
         framesPerSecond: framesPerSecond, videoFormat: videoFormat ?? .h264, audio: audio,
         audioSampleRate: audioSampleRate)
       return [path]
     case .rawVideo(let outputURL):
+      let framesPerSecond = ModelZoo.framesPerSecondForModel(configuration.model ?? "")
+      let audioSampleRate = audio.map { _ in
+        Double(ModelZoo.audioSampleRateForModel(configuration.model ?? ""))
+      }
+      var metadata = [(String, String)]()
+      if !prompt.isEmpty { metadata.append(("prompt", prompt)) }
+      if !negativePrompt.isEmpty { metadata.append(("negative_prompt", negativePrompt)) }
+      if let model = configuration.model { metadata.append(("model", model)) }
+      metadata.append(("seed", "\(configuration.seed)"))
       let path = try writeNutVideo(
         tensors: tensors, to: outputURL, framesPerSecond: framesPerSecond,
         pixelFormat: videoFormat ?? .rgb48le, audio: audio, audioSampleRate: audioSampleRate,
