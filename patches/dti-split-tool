@@ -1,9 +1,10 @@
 Bottom: 66e84fdd69ce0fafd0092b02b8ffd5aeafedcf13
 Top:    bc4a47d1228fbd4dea1a9820c5aa576f8485fa12
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-09-01 21:32:00 +0000
+Date:   2026-09-01 21:58:00 +0000
 
 Add dtiSplit, a CLI for TensorData's external-data split
 
-The app only exposes the split behind Optimize for Faster Loading. Files are
-verified after writing because the upstream helpers swallow their errors.
+The app calls this "Optimize for Faster Loading".  Files are
+verified after writing because the upstream helpers may not
+report errors.
