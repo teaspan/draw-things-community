@@ -64,7 +64,7 @@ private enum DrawThingsCLIError: LocalizedError {
     case .invalidModelsDirectory(let path):
       return "Models directory path is not valid: \(path)"
     case .invalidOutputPath(let path):
-      return "Output path extension must be .png, .mov, or .mp4: \(path)"
+      return "Output path extension must be .png, .mov, .mp4, or .nut: \(path)"
     case .invalidConfigurationJSON:
       return "Failed to parse configuration override JSON"
     case .invalidLoRAConfigurationJSON:
@@ -590,9 +590,9 @@ struct GenerateOutputOptions: ParsableArguments {
   @Option(
     name: .shortAndLong,
     help: ArgumentHelp(
-      "Output path (.png, .mov, or .mp4).",
+      "Output path (.png, .mov, .mp4, or .nut).",
       discussion:
-        "Use .png for image output and .mov/.mp4 for video-capable models. If omitted, the CLI previews the result inline in supported interactive terminals and does not write a file."
+        "Use .png for image output and .mov/.mp4 for video-capable models. Use .nut to write the clip raw, as lossless rgb48le video and float32 audio in a NUT container that ffmpeg, ffplay and mpv read directly. Where the platform has no system video encoder, .mov/.mp4 write the .nut as well. If omitted, the CLI previews the result inline in supported interactive terminals and does not write a file."
     ))
   var output: String?
 
@@ -1952,6 +1952,7 @@ private final class LocalGenerationRunner {
   private enum OutputDestination {
     case png(URL)
     case video(URL, containerExtension: String)
+    case rawVideo(URL)
   }
 
   private final class GenerationTimingTracker {
@@ -2117,6 +2118,15 @@ private final class LocalGenerationRunner {
     prompt: String = "", negativePrompt: String = ""
   ) throws -> [String] {
     let destination = try normalizedOutputDestination(outputPath)
+    let framesPerSecond = ModelZoo.framesPerSecondForModel(configuration.model ?? "")
+    let audioSampleRate = audio.map { _ in
+      Double(ModelZoo.audioSampleRateForModel(configuration.model ?? ""))
+    }
+    var metadata = [(String, String)]()
+    if !prompt.isEmpty { metadata.append(("prompt", prompt)) }
+    if !negativePrompt.isEmpty { metadata.append(("negative_prompt", negativePrompt)) }
+    if let model = configuration.model { metadata.append(("model", model)) }
+    metadata.append(("seed", "\(configuration.seed)"))
     switch destination {
     case .png(let outputURL):
       if videoFormat != nil {
@@ -2124,19 +2134,18 @@ private final class LocalGenerationRunner {
       }
       return try savePNGOutputs(tensors, outputURL: outputURL)
     case .video(let outputURL, let containerExtension):
-      let framesPerSecond = ModelZoo.framesPerSecondForModel(configuration.model ?? "")
-      let audioSampleRate = audio.map { _ in
-        Double(ModelZoo.audioSampleRateForModel(configuration.model ?? ""))
-      }
-      var metadata = [(String, String)]()
-      if !prompt.isEmpty { metadata.append(("prompt", prompt)) }
-      if !negativePrompt.isEmpty { metadata.append(("negative_prompt", negativePrompt)) }
-      if let model = configuration.model { metadata.append(("model", model)) }
-      metadata.append(("seed", "\(configuration.seed)"))
       let path = try writeVideo(
         tensors: tensors, to: outputURL, containerExtension: containerExtension,
         framesPerSecond: framesPerSecond, videoFormat: videoFormat ?? .h264, audio: audio,
         audioSampleRate: audioSampleRate, metadata: metadata)
+      return [path]
+    case .rawVideo(let outputURL):
+      if videoFormat != nil {
+        throw ValidationError("--video-format can only be used with .mov or .mp4 output")
+      }
+      let path = try writeNutVideo(
+        tensors: tensors, to: outputURL, framesPerSecond: framesPerSecond, audio: audio,
+        audioSampleRate: audioSampleRate, metadata: metadata, announce: false)
       return [path]
     }
   }
@@ -2153,6 +2162,8 @@ private final class LocalGenerationRunner {
       destination = .png(url)
     case "mov", "mp4":
       destination = .video(url, containerExtension: ext)
+    case "nut":
+      destination = .rawVideo(url)
     default:
       throw DrawThingsCLIError.invalidOutputPath(url.path)
     }
@@ -2349,16 +2360,15 @@ private final class LocalGenerationRunner {
       return outputURL.path
     #else
       return try writeNutVideo(
-        tensors: tensors, to: outputURL, containerExtension: containerExtension,
-        framesPerSecond: framesPerSecond, videoFormat: videoFormat, audio: audio,
-        audioSampleRate: audioSampleRate, metadata: metadata)
+        tensors: tensors, to: outputURL.deletingPathExtension().appendingPathExtension("nut"),
+        framesPerSecond: framesPerSecond, audio: audio, audioSampleRate: audioSampleRate,
+        metadata: metadata, announce: true)
     #endif
   }
 
   private func writeNutVideo(
-    tensors: [Tensor<FloatType>], to outputURL: URL, containerExtension: String,
-    framesPerSecond: Double, videoFormat: VideoExportFormat, audio: Tensor<Float>?,
-    audioSampleRate: Double?, metadata: [(String, String)]
+    tensors: [Tensor<FloatType>], to nutURL: URL, framesPerSecond: Double, audio: Tensor<Float>?,
+    audioSampleRate: Double?, metadata: [(String, String)], announce: Bool
   ) throws -> String {
     guard let first = tensors.first else {
       throw DrawThingsCLIError.generationFailed
@@ -2367,12 +2377,6 @@ private final class LocalGenerationRunner {
     guard firstShape.channels >= 3 else {
       throw DrawThingsCLIError.unsupportedTensorShape("\(first.shape)")
     }
-    if containerExtension == "mp4",
-      videoFormat == .prores4444 || videoFormat == .prores422hq
-    {
-      throw ValidationError("ProRes video formats require .mov output")
-    }
-    let nutURL = outputURL.deletingPathExtension().appendingPathExtension("nut")
     let frameRate = nutRational(fromFrameRate: framesPerSecond)
     var audioStream: NutMuxer.AudioStream? = nil
     var sampleCount = 0
@@ -2380,13 +2384,10 @@ private final class LocalGenerationRunner {
       sampleCount = try stereoSampleCount(audio)
       audioStream = .pcmF32le(sampleRate: Int(audioSampleRate.rounded()), channels: 2)
     }
-    var fullMetadata = metadata
-    fullMetadata.append(("dti_output", outputURL.lastPathComponent))
-    fullMetadata.append(("dti_video_format", videoFormat.rawValue))
     let muxer = try NutMuxer(
       url: nutURL,
       video: .rgb48le(width: firstShape.width, height: firstShape.height, frameRate: frameRate),
-      audio: audioStream, metadata: fullMetadata)
+      audio: audioStream, metadata: metadata)
     var samplesWritten = 0
     for (index, tensor) in tensors.enumerated() {
       let shape = try imageTensorShape(tensor)
@@ -2415,12 +2416,14 @@ private final class LocalGenerationRunner {
         data: interleavedSamples(audio, from: samplesWritten, to: sampleCount))
     }
     try muxer.finish()
-    var note = "No system video encoder on this platform; wrote a NUT container instead:\n"
-    note +=
-      "  \(nutURL.path) — rgb48le, \(firstShape.width)x\(firstShape.height), \(tensors.count) frames @ \(framesPerSecond) fps"
-    if sampleCount > 0 { note += ", float32 audio" }
-    note += "\nffmpeg/ffplay/mpv read it directly. Encode with: dti-encode \(nutURL.path)\n"
-    FileHandle.standardError.write(Data(note.utf8))
+    if announce {
+      var note = "No system video encoder on this platform, so the clip was written raw:\n"
+      note +=
+        "  \(nutURL.path) — rgb48le, \(firstShape.width)x\(firstShape.height), \(tensors.count) frames @ \(framesPerSecond) fps"
+      if sampleCount > 0 { note += ", float32 audio" }
+      note += "\nffmpeg, ffplay and mpv read it directly.\n"
+      FileHandle.standardError.write(Data(note.utf8))
+    }
     return nutURL.path
   }
 
@@ -3232,7 +3235,7 @@ private final class RemoteGenerationRunner {
 
   private func isVideoOutputPath(_ outputPath: String) -> Bool {
     let ext = URL(fileURLWithPath: outputPath).pathExtension.lowercased()
-    return ext == "mov" || ext == "mp4"
+    return ext == "mov" || ext == "mp4" || ext == "nut"
   }
 }
 
@@ -4738,7 +4741,7 @@ extension DrawThingsCLI.Generate {
     }
     try validateVideoOutputOptions(outputPath: outputURL.path, videoFormat: output.videoFormat)
     switch outputURL.pathExtension.lowercased() {
-    case "mp4", "mov":
+    case "mp4", "mov", "nut":
       break
     default:
       throw DrawThingsCLIError.invalidOutputPath(outputURL.path)
@@ -5283,7 +5286,7 @@ private func validateVideoOutputOptions(outputPath: String, videoFormat: VideoEx
     if videoFormat == .prores4444 || videoFormat == .prores422hq {
       throw ValidationError("ProRes video formats require .mov output")
     }
-  case "png":
+  case "png", "nut":
     throw ValidationError("--video-format can only be used with .mov or .mp4 output")
   default:
     return
