@@ -5,10 +5,12 @@ Date:   2026-09-01 21:11:05 +0000
 
 Build Trainer and Downloader on Linux
 
-LoRATrainer hands memset optional base addresses, which glibc declares
-non-optional, and its largest openStore closure needs an explicit signature
-before swiftc 6.0.3 will type-check it in reasonable time. DownloaderSupport
-imports CryptoKit and Darwin, so it moves to swift-crypto and a guarded
-Glibc, with the CFNetwork and resume-data userInfo key constants written as
-their literal strings and a no-op autoreleasepool shim off ObjectiveC.
-waitsForConnectivity is get-only in corelibs-foundation.
+LoRATrainer passes optional base addresses to memset, which glibc declares
+non-optional. Its largest openStore closure needs an explicit signature, or
+swiftc 6.0.3 takes too long to type-check it.
+
+DownloaderSupport imports CryptoKit and Darwin. It now uses swift-crypto and
+a guarded Glibc import. The CFNetwork and resume-data userInfo keys are
+written as literal strings, autoreleasepool is a no-op when ObjectiveC is
+absent, and the waitsForConnectivity assignment is dropped because the
+property is get-only in corelibs-foundation.
