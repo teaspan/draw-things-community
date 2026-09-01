@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "12c705eaa2aa2e04589897d98497a2f5f889311b",
-  "head": "e79d134ff8a19a1c72780892aa5edb1f93667e6c",
+  "prev": "d56ae5d3b2213cf6fad3dac358bbf6193e6d172b",
+  "head": "457860bafba0145b308a4245e275e48f6c855186",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -22,7 +22,7 @@
   "hidden": [],
   "patches": {
     "drop-ripgrep-vendor": {
-      "oid": "e79d134ff8a19a1c72780892aa5edb1f93667e6c"
+      "oid": "457860bafba0145b308a4245e275e48f6c855186"
     },
     "dti-split-tool": {
       "oid": "9e76e0647fd0cd58b9c820211c8eaaba1ca57c1a"
@@ -34,19 +34,19 @@
       "oid": "d9148a4f765fb67e42d1ac043abf9c4a67476067"
     },
     "ltx23-base-import": {
-      "oid": "503983ce606d8f2a3670926bc8ab12769fda70ea"
+      "oid": "a88919bab5b87cd60fc66541d83cc9dc479fec9f"
     },
     "nnc-shared-library": {
-      "oid": "1609afade280a767645cf15240045c95e8cab94f"
+      "oid": "ad12fa99827370eeb5268405eed64de11ab73cd0"
     },
     "no-advertising-flag": {
-      "oid": "a1f56e57e48348146b842a061b31cbc8a9dc7d05"
+      "oid": "2a44b40cc3cecb0e9e414f4bc576b87870249754"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "c3c373e02aa5b0ca0d97c2a576694f73dc2440fb"
+      "oid": "e2a0edc211d00976c653baac758c2dc59faf72e9"
     },
     "quantizer-codec-flag": {
-      "oid": "ab67a95609022bb0594c902dfc521825e88253d6"
+      "oid": "257e22bb745895a2cf7238928a6cd4af24bec0f8"
     },
     "raw-video-output": {
       "oid": "8ce6d491cfd717fad370172009eda303f085235e"
@@ -55,13 +55,13 @@
       "oid": "e3f127c314b8d70f5d891220c4a2f5aba6a701de"
     },
     "separate-lora-flag": {
-      "oid": "0adac0b5d3822e7c00431eed74274b9765f9d001"
+      "oid": "9548de604f6360f83eb8e63f3e0db3bb09f003a2"
     },
     "spec-json-flag": {
-      "oid": "526719faf3ee5a90900f46d885000d50bfe1702a"
+      "oid": "4cc6b9f5db2f2dd6deb1bc9851b4620aad9ed5ce"
     },
     "terse-import-progress": {
-      "oid": "d9211b41088177bcdd0c970c6e2a47f04b887f41"
+      "oid": "dedbbaf80f184fe6536659a781faf3b98a411cbc"
     }
   }
 }
