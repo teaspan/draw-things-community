@@ -2899,9 +2899,9 @@ private final class NutMuxer {
 
   private func mainHeader() -> [UInt8] {
     var payload = [UInt8]()
-    appendVLC(3, to: &payload)
+    appendVLC(3, to: &payload)  // version
     appendVLC(UInt64(lastSyncpointIndex.count), to: &payload)
-    appendVLC(32767, to: &payload)
+    appendVLC(32767, to: &payload)  // max_distance
     appendVLC(UInt64(timeBases.count), to: &payload)
     for timeBase in timeBases {
       appendVLC(UInt64(timeBase.num), to: &payload)
@@ -2909,16 +2909,16 @@ private final class NutMuxer {
     }
     for (flags, count) in [(Self.flagInvalid, 65), (Self.frameFlags, 1), (Self.flagInvalid, 189)] {
       appendVLC(flags, to: &payload)
-      appendVLC(6, to: &payload)
-      appendSignedVLC(0, to: &payload)
-      appendVLC(1, to: &payload)
-      appendVLC(0, to: &payload)
-      appendVLC(0, to: &payload)
-      appendVLC(0, to: &payload)
+      appendVLC(6, to: &payload)  // fields: pts, mul, stream, size, res, count
+      appendSignedVLC(0, to: &payload)  // pts delta
+      appendVLC(1, to: &payload)  // data_size_mul
+      appendVLC(0, to: &payload)  // stream_id
+      appendVLC(0, to: &payload)  // data_size_lsb
+      appendVLC(0, to: &payload)  // reserved_count
       appendVLC(UInt64(count), to: &payload)
     }
-    appendVLC(0, to: &payload)
-    appendVLC(0, to: &payload)
+    appendVLC(0, to: &payload)  // header_count_minus1
+    appendVLC(0, to: &payload)  // main_flags
     return payload
   }
 
@@ -2926,16 +2926,16 @@ private final class NutMuxer {
     streamId: Int, streamClass: UInt64, fourcc: [UInt8], maxPtsDistance: Int
   ) -> [UInt8] {
     var payload = [UInt8]()
-    appendVLC(UInt64(streamId), to: &payload)
+    appendVLC(UInt64(streamId), to: &payload)  // time_base_id
     appendVLC(streamClass, to: &payload)
     appendVLC(UInt64(fourcc.count), to: &payload)
     payload.append(contentsOf: fourcc)
     appendVLC(UInt64(streamId), to: &payload)
     appendVLC(UInt64(Self.msbPtsShift), to: &payload)
     appendVLC(UInt64(maxPtsDistance), to: &payload)
-    appendVLC(0, to: &payload)
-    appendVLC(0, to: &payload)
-    appendVLC(0, to: &payload)
+    appendVLC(0, to: &payload)  // decode_delay
+    appendVLC(0, to: &payload)  // stream_flags
+    appendVLC(0, to: &payload)  // codec_specific_data
     return payload
   }
 
@@ -2945,9 +2945,9 @@ private final class NutMuxer {
       streamId: 0, streamClass: 0, fourcc: video.fourcc, maxPtsDistance: ticksPerSecond)
     appendVLC(UInt64(video.width), to: &payload)
     appendVLC(UInt64(video.height), to: &payload)
-    appendVLC(1, to: &payload)
-    appendVLC(1, to: &payload)
-    appendVLC(0, to: &payload)
+    appendVLC(1, to: &payload)  // sample_width (square pixels)
+    appendVLC(1, to: &payload)  // sample_height
+    appendVLC(0, to: &payload)  // colorspace_type
     return payload
   }
 
@@ -2955,23 +2955,23 @@ private final class NutMuxer {
     var payload = streamHeaderCommon(
       streamId: 1, streamClass: 1, fourcc: audio.fourcc, maxPtsDistance: audio.sampleRate)
     appendVLC(UInt64(audio.sampleRate), to: &payload)
-    appendVLC(1, to: &payload)
+    appendVLC(1, to: &payload)  // samplerate_denom
     appendVLC(UInt64(audio.channels), to: &payload)
     return payload
   }
 
   private func infoPacket(_ metadata: [(String, String)]) -> [UInt8] {
     var payload = [UInt8]()
-    appendVLC(0, to: &payload)
-    appendSignedVLC(0, to: &payload)
-    appendVLC(0, to: &payload)
-    appendVLC(0, to: &payload)
+    appendVLC(0, to: &payload)  // stream_id_plus1: whole file
+    appendSignedVLC(0, to: &payload)  // chapter_id
+    appendVLC(0, to: &payload)  // chapter_start
+    appendVLC(0, to: &payload)  // chapter_len
     appendVLC(UInt64(metadata.count), to: &payload)
     for (name, value) in metadata {
       let nameBytes = Array(name.utf8)
       appendVLC(UInt64(nameBytes.count), to: &payload)
       payload.append(contentsOf: nameBytes)
-      appendSignedVLC(-1, to: &payload)
+      appendSignedVLC(-1, to: &payload)  // type: UTF-8 string
       var truncated = value
       while truncated.utf8.count > 1020 {
         truncated = String(truncated.dropLast())
