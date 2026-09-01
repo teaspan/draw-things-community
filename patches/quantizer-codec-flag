@@ -5,18 +5,15 @@ Date:   2026-09-01 21:11:06 +0000
 
 Add --codec to ModelQuantizer
 
-Replaces the per-version recipe's codec for the matmul bulk only, which is the
-same split the app's three quantize actions make. Convolutions, ada_ln
-projections, embedders and 1-D tensors keep the recipe's own codecs, so this is
-upstream's own factorization rather than a new one. Sixteen call sites route
-through a bulkCodec helper that returns the recipe's literal unless overridden,
-and default reproduces current output byte for byte.
+The flag replaces the codec for the matmul bulk only. Convolutions, ada_ln
+projections, embedders and 1-D tensors keep the codecs of the per-version
+recipe, which is the same split the app's three quantize actions make.
+Sixteen call sites go through a bulkCodec helper that returns the recipe's
+codec unless overridden, so the default output is unchanged byte for byte.
 
-Palettizing is DP-bound and takes hours on a 22B DiT where i8x is about eight
-passes per row, so this turns quantize-overnight-before-you-can-test into a few
-minutes. The i8x artifact is separately the only encoding an Apple Neural
-Engine can consume, which is worth having on its own account.
+Palettizing takes hours on a 22B DiT. i8x takes minutes, and it is the only
+encoding the Apple Neural Engine accepts.
 
-Only plain i8x is validated here. The K-quant subtypes are plumbed end to end
-but unexercised, and the iq* formats are importance-matrix quants by
-construction while this flag passes no imatrix, so they run at their worst.
+Only plain i8x has been tested. The K-quant subtypes are wired through but
+unexercised. The iq* formats need an importance matrix, which this flag does
+not supply, so they quantize poorly.
