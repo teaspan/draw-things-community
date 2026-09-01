@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "6dea7d977de00b74eddc6b39c1314067cd234800",
-  "head": "e2a470cae1a9da524699602151be2f68d2a491e8",
+  "prev": "bd4e39f2d09df8689b047beeefaf7e23411bd63d",
+  "head": "1a679f03a993e202b1d2c50659aa355ae9273a67",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -22,7 +22,7 @@
   "hidden": [],
   "patches": {
     "drop-ripgrep-vendor": {
-      "oid": "e2a470cae1a9da524699602151be2f68d2a491e8"
+      "oid": "1a679f03a993e202b1d2c50659aa355ae9273a67"
     },
     "dti-split-tool": {
       "oid": "84243c8479687fcc6f0d00080afee426524ff8fd"
@@ -34,19 +34,19 @@
       "oid": "37508f2d3b6402be69f1099857fd9b8a171935c4"
     },
     "ltx23-base-import": {
-      "oid": "f56f1cccba54ceac550ed354481a0fcf50ce13dc"
+      "oid": "caa8faaab2e0a0a315e5d4979afbb896b3970b84"
     },
     "nnc-shared-library": {
-      "oid": "11d01ecbdbb25bdc4c7e07879e786b666228daf4"
+      "oid": "241e6b237442a43b3992d3acd10d324f998bba50"
     },
     "no-advertising-flag": {
-      "oid": "b4225ab545c3dbd038ad94928a866519495627de"
+      "oid": "f1b2a694a4ca2a1cdd11c3fbaa6b06927e38385c"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "8e46af578d6cbfd2705435e40094f8d7ea0fe44c"
+      "oid": "9ec1ca80f013e4c640bcf779635d5327163b68d1"
     },
     "quantizer-codec-flag": {
-      "oid": "8d523b2a37c9976a1f5145f704d0212f766ede8a"
+      "oid": "68f4188ba3978eaa9b458e4248843c200e415aff"
     },
     "raw-video-output": {
       "oid": "77a1d4f8f94c6ea5bc0ff3f0a0acb78238274ab7"
@@ -55,13 +55,13 @@
       "oid": "c22d1ba4a57878da9e9f9d8e84205de3d3b95280"
     },
     "separate-lora-flag": {
-      "oid": "28a142e7bd1bba41ed2469f1464eb0201cdaed2d"
+      "oid": "1992781c67c60eccb15c398438573ba2f2b0d1a8"
     },
     "spec-json-flag": {
-      "oid": "6f4a59faeee483583cca571649c5bddb19827f29"
+      "oid": "cb3320d733ca9084925326f18763bbde562a9e05"
     },
     "terse-import-progress": {
-      "oid": "555e1d10ac36fa83cb5e954a7b3633243e621214"
+      "oid": "6e550a117f2615eb1f3034edc83f4d211a8dcdc8"
     }
   }
 }
