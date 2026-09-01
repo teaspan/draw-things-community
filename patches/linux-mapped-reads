@@ -3,7 +3,7 @@ Top:    0f4b1cc27b24539c001da2bafa5eb2f9d600de88
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
 Date:   2026-09-01 21:58:00 +0000
 
-Map whole-file reads on Linux
+Mmap whole-file reads (on Linux)
 
-Linux Foundation ignores .mappedIfSafe and reads the whole file into memory.
-.alwaysMapped is honoured. Darwin is unchanged.
+Foundation ignores mappedIfSafe on Linux, and slurps/wires the whole file
+into memory instead, but alwaysMapped is honoured.
