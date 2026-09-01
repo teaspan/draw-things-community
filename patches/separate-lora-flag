@@ -6,5 +6,7 @@ Date:   2026-09-01 21:58:01 +0000
 Add --separate-lora to gRPCServerCLI
 
 A merged LoRA bypasses the weights cache, so an f16 base re-reads the
-checkpoint on every generation. The app setting that avoids this is
-unreachable from the server. LoHa still merges.
+checkpoint on every generation.  Add the app setting that avoids this
+by not merging them at all
+
+(LoHa still merges)
