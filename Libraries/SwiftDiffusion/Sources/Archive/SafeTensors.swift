@@ -144,31 +144,8 @@ public final class SafeTensors {
   }
 }
 
-public enum SafeTensorsQuantizationError: Error, LocalizedError {
-  case orphanScales(count: Int, example: String)
-  case scaledE5M2
-  case unappliedScale(count: Int, example: String, entry: String)
-  case unsupportedDtypes(count: Int, example: String, dtype: String)
-
-  public var errorDescription: String? {
-    switch self {
-    case .orphanScales:
-      return "Found F8_E4M3 tensors with an unrecognized scale convention."
-    case .scaledE5M2:
-      return "Found F8_E5M2 tensors with quantization scales. Scaled-E5M2 is not supported."
-    case .unappliedScale(_, _, let entry):
-      return "Found tensors with a \(entry) entry that would be ignored."
-    case .unsupportedDtypes(_, _, let dtype):
-      return "Found tensors with an unusable dtype (\(dtype))."
-    }
-  }
-}
-
 extension SafeTensors {
-  public func applyingScaledFP8WeightScales(skippingKeyPrefixes: [String]) throws -> TensorArchive {
-    func isSkipped(_ key: String) -> Bool {
-      skippingKeyPrefixes.contains { key.hasPrefix($0) }
-    }
+  public func applyingScaledFP8WeightScales() -> TensorArchive {
     func stemScoped(_ key: String) -> [String] {
       guard key.hasSuffix(".weight") else { return [] }
       let stem = String(key.dropLast(".weight".count))
@@ -177,17 +154,8 @@ extension SafeTensors {
     func isScaleNamed(_ key: String) -> Bool {
       key.hasSuffix("weight_scale") || key.hasSuffix("scale_weight")
     }
-    if states.keys.contains(where: isScaleNamed)
-      && states.values.contains(where: { $0.storage.FP8_E5M2 })
-    {
-      throw SafeTensorsQuantizationError.scaledE5M2
-    }
-    let foreign = unsupportedDtypes.filter { key, _ in
-      !isSkipped(key) && !key.hasSuffix(".comfy_quant")
-    }
-    if let worst = foreign.min(by: { $0.key < $1.key }) {
-      throw SafeTensorsQuantizationError.unsupportedDtypes(
-        count: foreign.count, example: worst.key, dtype: worst.value)
+    func tensors(_ count: Int) -> String {
+      count == 1 ? "1 tensor" : "\(count) tensors"
     }
     var scaleValues = [String: Float]()
     for (key, descriptor) in states
@@ -207,7 +175,7 @@ extension SafeTensors {
     var scales = [String: Float]()
     var orphans = [String]()
     var unapplied = [(String, String)]()
-    for (key, descriptor) in states where !isSkipped(key) && !isScaleNamed(key) {
+    for (key, descriptor) in states where !isScaleNamed(key) {
       if descriptor.storage.FP8_E4M3 {
         if let scale = scaleFor(key) {
           scales[key] = scale
@@ -218,14 +186,33 @@ extension SafeTensors {
         unapplied.append((key, entry))
       }
     }
-    if !orphans.isEmpty {
-      throw SafeTensorsQuantizationError.orphanScales(
-        count: orphans.count, example: orphans.sorted()[0])
+    var warnings = [String]()
+    let e5m2 = states.filter { $0.value.storage.FP8_E5M2 }
+    if !scaleValues.isEmpty, let worst = e5m2.min(by: { $0.key < $1.key }) {
+      warnings.append(
+        "\(tensors(e5m2.count)) use F8_E5M2 in a file that carries quantization scales "
+          + "(for example \(worst.key)). Scaled E5M2 is not implemented, so they import unscaled.")
+    }
+    let foreign = unsupportedDtypes.filter { key, _ in !key.hasSuffix(".comfy_quant") }
+    if let worst = foreign.min(by: { $0.key < $1.key }) {
+      warnings.append(
+        "\(tensors(foreign.count)) use a dtype the reader cannot decode "
+          + "(\(worst.value), for example \(worst.key)). They are skipped.")
+    }
+    if let worst = orphans.min() {
+      warnings.append(
+        "\(tensors(orphans.count)) use F8_E4M3 with no matching scale entry "
+          + "(for example \(worst)). They import unscaled.")
     }
     if let worst = unapplied.min(by: { $0.0 < $1.0 }) {
       let leaf = worst.1.split(separator: ".").last.map(String.init) ?? worst.1
-      throw SafeTensorsQuantizationError.unappliedScale(
-        count: unapplied.count, example: worst.0, entry: leaf)
+      warnings.append(
+        "\(tensors(unapplied.count)) carry a \(leaf) entry that does not apply to them "
+          + "(for example \(worst.0)). The entry is ignored.")
+    }
+    if !warnings.isEmpty {
+      FileHandle.standardError.write(
+        Data(warnings.map { "warning: \($0)\n" }.joined().utf8))
     }
     guard !scales.isEmpty else { return self }
     return ScaledFP8Archive(base: self, scales: scales)
