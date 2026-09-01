@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "bd4e39f2d09df8689b047beeefaf7e23411bd63d",
-  "head": "1a679f03a993e202b1d2c50659aa355ae9273a67",
+  "prev": "335a19e1fe3fb2d3cda62d3cdf750e166be0f498",
+  "head": "56c5edb11ed25ef1749800d0542053c13476f720",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -22,7 +22,7 @@
   "hidden": [],
   "patches": {
     "drop-ripgrep-vendor": {
-      "oid": "1a679f03a993e202b1d2c50659aa355ae9273a67"
+      "oid": "56c5edb11ed25ef1749800d0542053c13476f720"
     },
     "dti-split-tool": {
       "oid": "84243c8479687fcc6f0d00080afee426524ff8fd"
@@ -37,16 +37,16 @@
       "oid": "caa8faaab2e0a0a315e5d4979afbb896b3970b84"
     },
     "nnc-shared-library": {
-      "oid": "241e6b237442a43b3992d3acd10d324f998bba50"
+      "oid": "b26da22444804d22b95d6dbba483a10542717308"
     },
     "no-advertising-flag": {
-      "oid": "f1b2a694a4ca2a1cdd11c3fbaa6b06927e38385c"
+      "oid": "4317482f10c7506cc5dbcd096510460389ce2ce6"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "9ec1ca80f013e4c640bcf779635d5327163b68d1"
+      "oid": "ecc4958b8432f13b6e927b99669d219a0421e2c6"
     },
     "quantizer-codec-flag": {
-      "oid": "68f4188ba3978eaa9b458e4248843c200e415aff"
+      "oid": "81f575e09705053fd8e94b145e9f282feb149020"
     },
     "raw-video-output": {
       "oid": "77a1d4f8f94c6ea5bc0ff3f0a0acb78238274ab7"
@@ -55,13 +55,13 @@
       "oid": "c22d1ba4a57878da9e9f9d8e84205de3d3b95280"
     },
     "separate-lora-flag": {
-      "oid": "1992781c67c60eccb15c398438573ba2f2b0d1a8"
+      "oid": "1c2a2be2869653b9d2f2db080ff032f6ea3eaca7"
     },
     "spec-json-flag": {
-      "oid": "cb3320d733ca9084925326f18763bbde562a9e05"
+      "oid": "6786dea0d73ae20901896ba9753fe83b473ee5fe"
     },
     "terse-import-progress": {
-      "oid": "6e550a117f2615eb1f3034edc83f4d211a8dcdc8"
+      "oid": "86d71082a3fa19cd86f74235e04cb66c2474b3dd"
     }
   }
 }

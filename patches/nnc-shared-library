@@ -5,12 +5,6 @@ Date:   2026-09-01 21:32:00 +0000
 
 Link ccv and NNC as one shared library
 
-Each of the six binaries carried its own copy of the 970 MB .nv_fatbin, all
-of the ccv host code, and sqlite. WORKSPACE.linux now pre-declares @sqlite3
-with a split BUILD, and pins @s4nnc, @ccv and @build_bazel_rules_cuda to the
-teaspan forks, which add a cc_shared_library and a cc_import to
-nnc/BUILD.bazel and mark the ccv host sub-libraries alwayslink. Eight
-Libraries BUILD files redirect @ccv//lib:ccv to @s4nnc//nnc:C_ccv so the
-static payload cannot be linked in again. sqlite lives in the shared library
-because Store.swift opens handles that ccv_nnc_tensor_read consumes, and
-both must use the same sqlite.
+Each binary carried its own 970 MB fatbin. The Libraries BUILD files
+redirect @ccv//lib:ccv to @s4nnc//nnc:C_ccv so the static copy cannot come
+back.
