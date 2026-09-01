@@ -1,10 +1,10 @@
 Bottom: 1053175739b626959df7ac1b8da20aeab18a9d1d
 Top:    4edeed7c087049dff5405c3595313eed79e7bfab
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-09-01 21:11:05 +0000
+Date:   2026-09-01 21:11:06 +0000
 
 Add --no-advertising to gRPCServerCLI
 
 GRPCServerAdvertiser starts unconditionally after bind and multicasts to
-224.0.0.251:5353 forever, which is unwanted on a shared fabric. Default
-behaviour is unchanged.
+224.0.0.251:5353 for the life of the process. On a shared network that is
+unwanted. The flag turns it off. Default behaviour is unchanged.
