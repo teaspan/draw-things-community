@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "26c08f2b867c2cbc5f4a5df9e0aa752dda0f2e22",
-  "head": "6eb9cddee6e7904a64ca81224c5b8dc3cd3888f3",
+  "prev": "e85bc3272f875cbab8f708223bb88e8e0aa989fd",
+  "head": "8820df45004b6a58b7f0bfd4b43d5784bf25c7d6",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -22,7 +22,7 @@
   "hidden": [],
   "patches": {
     "drop-ripgrep-vendor": {
-      "oid": "6eb9cddee6e7904a64ca81224c5b8dc3cd3888f3"
+      "oid": "8820df45004b6a58b7f0bfd4b43d5784bf25c7d6"
     },
     "dti-split-tool": {
       "oid": "9e76e0647fd0cd58b9c820211c8eaaba1ca57c1a"
@@ -61,7 +61,7 @@
       "oid": "b9314dfe4a84a04fdb91244bfca404bd8ef67da4"
     },
     "terse-import-progress": {
-      "oid": "ad082b8f2580c22a1c14b140b268b0ef1e781e17"
+      "oid": "c85f198d91a7a4228e7be7e78c3711a268684161"
     }
   }
 }

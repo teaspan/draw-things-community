@@ -5,5 +5,5 @@ Date:   2026-09-01 21:58:01 +0000
 
 Stop reprinting Importing: 100%
 
-expectedTotalAccess is an estimate. Once the real count passes it the ratio
-pins at 1.0 and the 100% line is printed on every step.
+expectedTotalAccess is an estimate.  Once the real count passes it, the ratio
+pins at 1.0 and the 100% line is spammed on every step
