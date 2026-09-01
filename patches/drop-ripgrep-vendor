@@ -1,7 +1,7 @@
-Bottom: 55164966bcb5d6936a9ec50f856fde40bb5357be
-Top:    ff7573618b1ddda484d80aad6a1c161b408135d7
+Bottom: c3aef9fd0638864289e7037ca4ca97c494857fc5
+Top:    94534bb472fb1384078883092ebb7a1ea67169d3
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-09-01 08:17:02 +0000
+Date:   2026-09-01 09:12:20 +0000
 
 Drop the Ripgrep WORKSPACE stanzas the public mirror cannot satisfy
 

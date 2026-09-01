@@ -1,16 +1,14 @@
 {
   "version": 5,
-  "prev": "e803544806970f57a8696e9bd49d184420d8ab1d",
-  "head": "f2192dc20c6619dbe91327a67dc5ca2dd3a1861f",
+  "prev": "6ada88326ae672a20b121878a33f748cb9dd92ca",
+  "head": "f3796c07088f9c864506ba496d72f1439046097d",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
     "linux-mapped-reads",
     "linux-portability",
     "linux-raw-video-output",
-    "ltx23-base-import"
-  ],
-  "unapplied": [
+    "ltx23-base-import",
     "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
@@ -20,10 +18,11 @@
     "terse-import-progress",
     "drop-ripgrep-vendor"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "drop-ripgrep-vendor": {
-      "oid": "e7655cd3cd7912501d810494bcdb002075106d33"
+      "oid": "f3796c07088f9c864506ba496d72f1439046097d"
     },
     "dti-split-tool": {
       "oid": "0eb585fa96db6f7b8c9655daab61e5bab35f25b8"
@@ -41,28 +40,28 @@
       "oid": "f2192dc20c6619dbe91327a67dc5ca2dd3a1861f"
     },
     "nnc-shared-library": {
-      "oid": "c313eed5cd26106d010f48147ef6c8155ef469b0"
+      "oid": "14f1a3b5f76c7945640e5e8e702f77bdb9560f7f"
     },
     "no-advertising-flag": {
-      "oid": "b0b32569c1c5079a7394b668550fe4ecfb916100"
+      "oid": "b09fe29e2835cb1b7185f9bf9b9478e939424752"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "cee50c07c54565caa52695aacf9dc7c2b3a74866"
+      "oid": "b848711bef2d2f80b535b1ca950eb27289a85303"
     },
     "quantizer-codec-flag": {
-      "oid": "5ed9d90684a10ffa6be10ba8242dbac49744cee0"
+      "oid": "ee60bb6aaba4f405c75b28a10d98b3d47776af42"
     },
     "scaled-fp8-import": {
       "oid": "4ae6eb65a0cb96ad6e29c952c3102ea64acd73c8"
     },
     "separate-lora-flag": {
-      "oid": "bf78cfad0e11c595c35c3fdb527f5ee9b3420615"
+      "oid": "90c211f3569dfcd21a0839f0054d5457d05c15b8"
     },
     "spec-json-flag": {
-      "oid": "cd6b72947516a9eb3f2c57c9603362d89f55a989"
+      "oid": "6d77e7778dcbe15a571eed67f756af0927f663d1"
     },
     "terse-import-progress": {
-      "oid": "d470543b0cb4470e715fbbdffa6099c555cf619c"
+      "oid": "79a5c79700ce794d348362a25b61c47f85ce2ea4"
     }
   }
 }
