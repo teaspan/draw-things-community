@@ -129,7 +129,7 @@ private struct Progress {
   private let total: Int
   private let interactive: Bool
   private var done = 0
-  private var lastReported = -1
+  private var lastReported = -10
 
   init(_ label: String, total: Int) {
     self.label = label
