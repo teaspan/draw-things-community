@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "5d044350d781ea3ae857965e992b21dfb13aba4f",
-  "head": "5dc60b684c9287a64f9f1192059463a83b0f3ecb",
+  "prev": "1253aba44b406c0b523ee3badc953b3fc6ecc27d",
+  "head": "d9a8c078a9a942e7269b2a98c595ac43085c3f48",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -17,7 +17,8 @@
     "spec-json-flag",
     "terse-import-progress",
     "drop-ripgrep-vendor",
-    "merge-tool"
+    "merge-tool",
+    "refresh-temp"
   ],
   "unapplied": [],
   "hidden": [],
@@ -54,6 +55,9 @@
     },
     "raw-video-output": {
       "oid": "8ce6d491cfd717fad370172009eda303f085235e"
+    },
+    "refresh-temp": {
+      "oid": "d9a8c078a9a942e7269b2a98c595ac43085c3f48"
     },
     "scaled-fp8-import": {
       "oid": "e3f127c314b8d70f5d891220c4a2f5aba6a701de"
