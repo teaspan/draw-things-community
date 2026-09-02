@@ -119,3 +119,13 @@ swift_binary(
         "@s4nnc//nnc",
     ],
 )
+
+swift_binary(
+    name = "dtiMerge",
+    srcs = glob(["dtiMerge/*.swift"]),
+    deps = [
+        "//Libraries/SwiftDiffusion",
+        "@SwiftArgumentParser//:ArgumentParser",
+        "@s4nnc//nnc",
+    ],
+)
