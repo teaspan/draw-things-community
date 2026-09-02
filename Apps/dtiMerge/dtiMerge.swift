@@ -160,20 +160,21 @@ private struct Progress {
 }
 
 private func openAll(
-  _ graph: DynamicGraph, _ files: [String], _ opened: [String: DynamicGraph.Store] = [:],
+  _ graph: DynamicGraph, _ files: [String], from index: Int = 0,
+  _ opened: [String: DynamicGraph.Store] = [:],
   _ body: ([String: DynamicGraph.Store]) throws -> Void
 ) rethrows {
-  guard opened.count < files.count else {
+  guard index < files.count else {
     try body(opened)
     return
   }
-  let file = files[opened.count]
+  let file = files[index]
   _ = try graph.openStore(
     file, flags: .readOnly, externalStore: TensorData.externalStore(filePath: file)
   ) { store in
     var opened = opened
     opened[file] = store
-    try openAll(graph, files, opened, body)
+    try openAll(graph, files, from: index + 1, opened, body)
   }
 }
 
