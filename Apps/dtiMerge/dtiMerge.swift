@@ -15,6 +15,10 @@ private let anyCodec: DynamicGraph.Store.Codec = [
 
 private let mixableDataTypes: Set<DataType> = [.Float16, .BFloat16, .Float32]
 
+private let lossyCodecs: DynamicGraph.Store.Codec = [
+  .ezm7, .q4p, .q5p, .q6p, .q7p, .q8p, .i8x,
+]
+
 private let loraSuffixes = [
   "__up__", "__down__", "__mid__", "__w1_a__", "__w1_b__", "__w2_a__", "__w2_b__",
 ]
@@ -273,19 +277,15 @@ struct DTIMerge: ParsableCommand {
     -> [String]
   {
     let keys = store.keys
-    var dataTypes = [String: Int]()
     var codecs = [String: Int]()
     for key in keys {
-      if let meta = store.read(like: key) {
-        dataTypes[describe(meta.dataType), default: 0] += 1
-      }
       codecs[describe(store.codec(for: key) ?? []), default: 0] += 1
     }
     let strength = weight.map { String(format: "%.3f", $0) } ?? "     "
     return [
       "  \(role.padding(toLength: 7, withPad: " ", startingAt: 0)) \(strength)  "
         + "\((file as NSString).lastPathComponent)",
-      "                   \(keys.count) tensors  \(histogram(dataTypes))  \(histogram(codecs))",
+      "                   \(keys.count) tensors  \(histogram(codecs))",
     ]
   }
 
@@ -424,41 +424,54 @@ struct DTIMerge: ParsableCommand {
         var copiedCount = 0
         var promotedCount = 0
         var overriddenCount = 0
+        var dataTypes = [String: Int]()
+        var loraDataTypes = [String: DataType]()
 
         for key in primaryKeys {
           compose.step(key)
-          guard let meta = primary.read(like: key) else { continue }
-          if !(primary.codec(for: key) ?? []).isEmpty { promotedCount += 1 }
+          let storedCodec = primary.codec(for: key) ?? []
+          if !storedCodec.intersection(lossyCodecs).isEmpty { promotedCount += 1 }
 
           let override =
             key.hasPrefix(encoderNamespace)
             ? encoder : (key.hasPrefix(decoderNamespace) ? decoder : nil)
           if let override = override, let source = stores[override],
+            let expected = primary.read(like: key)?.shape,
             let tensor = source.read(key, kind: .CPU, codec: anyCodec),
-            elements(tensor.shape) == elements(meta.shape)
+            elements(tensor.shape) == elements(expected)
           {
             try out.write(key, tensor: tensor, strict: true, codec: [])
+            dataTypes[describe(tensor.dataType), default: 0] += 1
+            if loraStems.contains(key) { loraDataTypes[key] = tensor.dataType }
             overriddenCount += 1
             continue
           }
 
+          guard let base = primary.read(key, kind: .CPU, codec: anyCodec) else { continue }
+          let dataType = base.dataType
+          let shape = base.shape
+          let format = base.format
+          dataTypes[describe(dataType), default: 0] += 1
+          if loraStems.contains(key) { loraDataTypes[key] = dataType }
+
           var accumulator: DynamicGraph.Tensor<Float32>? = nil
-          var complete = mixableDataTypes.contains(meta.dataType)
+          var complete = mixableDataTypes.contains(dataType)
           if complete {
-            for parent in parents {
+            accumulator =
+              parents[0].weight * graph.variable(Tensor<Float32>(from: base).toGPU(0))
+            for parent in parents.dropFirst() {
               guard let source = stores[parent.file],
                 let raw = source.read(key, kind: .CPU, codec: anyCodec),
-                elements(raw.shape) == elements(meta.shape)
+                elements(raw.shape) == elements(shape)
               else {
                 complete = false
                 break
               }
               let term = graph.variable(Tensor<Float32>(from: raw).toGPU(0))
-                .reshaped(format: meta.format, shape: meta.shape)
-              accumulator =
-                accumulator.map {
-                  Functional.add(left: $0, right: term, leftScalar: 1, rightScalar: parent.weight)
-                } ?? parent.weight * term
+                .reshaped(format: format, shape: shape)
+              accumulator = accumulator.map {
+                Functional.add(left: $0, right: term, leftScalar: 1, rightScalar: parent.weight)
+              }
             }
           }
           if complete {
@@ -467,13 +480,13 @@ struct DTIMerge: ParsableCommand {
                 .read(key, kind: .CPU, codec: anyCodec),
                 let subtrahend = stores[difference.subtrahend]?
                   .read(key, kind: .CPU, codec: anyCodec),
-                elements(minuend.shape) == elements(meta.shape),
-                elements(subtrahend.shape) == elements(meta.shape)
+                elements(minuend.shape) == elements(shape),
+                elements(subtrahend.shape) == elements(shape)
               else { continue }
               let left = graph.variable(Tensor<Float32>(from: minuend).toGPU(0))
-                .reshaped(format: meta.format, shape: meta.shape)
+                .reshaped(format: format, shape: shape)
               let right = graph.variable(Tensor<Float32>(from: subtrahend).toGPU(0))
-                .reshaped(format: meta.format, shape: meta.shape)
+                .reshaped(format: format, shape: shape)
               let gap = Functional.add(left: left, right: right, leftScalar: 1, rightScalar: -1)
               accumulator = accumulator.map {
                 Functional.add(
@@ -483,14 +496,13 @@ struct DTIMerge: ParsableCommand {
           }
 
           guard complete, let result = accumulator else {
-            guard let tensor = primary.read(key, kind: .CPU, codec: anyCodec) else { continue }
-            try out.write(key, tensor: tensor, strict: true, codec: [])
+            try out.write(key, tensor: base, strict: true, codec: [])
             copiedCount += 1
             continue
           }
           let mixed = result.rawValue.toCPU()
           let narrowed: AnyTensor
-          switch meta.dataType {
+          switch dataType {
           case .BFloat16: narrowed = Tensor<BFloat16>(from: mixed)
           case .Float16: narrowed = Tensor<FloatType>(from: mixed)
           default: narrowed = mixed
@@ -501,7 +513,8 @@ struct DTIMerge: ParsableCommand {
         compose.finish()
         print(
           "  composed \(mixedCount) mixed, \(copiedCount) copied from the primary, "
-            + "\(overriddenCount) taken whole, \(promotedCount) promoted from a codec")
+            + "\(overriddenCount) taken whole, \(promotedCount) promoted from a lossy codec")
+        print("  datatypes \(histogram(dataTypes))")
 
         guard !loras.isEmpty else { return }
         let targets = primaryKeys.filter { loraStems.contains($0) }
@@ -517,9 +530,11 @@ struct DTIMerge: ParsableCommand {
           var bake = Progress("bake", total: targets.count)
           for key in targets {
             bake.step(key)
-            guard let meta = out.read(like: key) else { continue }
+            guard let shape = out.read(like: key)?.shape,
+              let dataType = loraDataTypes[key]
+            else { continue }
             switch loader.mergeLoRA(
-              graph, name: key, store: out, dataType: meta.dataType, shape: meta.shape,
+              graph, name: key, store: out, dataType: dataType, shape: shape,
               of: FloatType.self)
             {
             case .final(let tensor):
