@@ -119,6 +119,38 @@ private func humanDuration(_ seconds: Double) -> String {
   return "\(whole / 3600)h\(String(format: "%02d", (whole % 3600) / 60))m"
 }
 
+private func recorded(_ weight: Float) -> Double {
+  return (Double(weight) * 1_000_000).rounded() / 1_000_000
+}
+
+private func basename(_ path: String) -> String {
+  return (path as NSString).lastPathComponent
+}
+
+private struct Recipe: Encodable {
+  struct Item: Encodable {
+    var name: String
+    var weight: Double
+  }
+  struct Delta: Encodable {
+    var minuend: String
+    var subtrahend: String
+    var weight: Double
+  }
+  struct LoRA: Encodable {
+    var file: String
+    var weight: Double
+  }
+  var mode: String
+  var output: String
+  var items: [Item]
+  var deltas: [Delta]?
+  var loras: [LoRA]?
+  var encoder: String?
+  var decoder: String?
+  var note: String?
+}
+
 private func fileSize(_ path: String) -> Int {
   let attributes = try? FileManager.default.attributesOfItem(atPath: path)
   return (attributes?[.size] as? NSNumber)?.intValue ?? 0
@@ -558,31 +590,22 @@ struct DTIMerge: ParsableCommand {
     }
 
     if let recipeJson = recipeJson {
-      var recipe: [String: Any] = [
-        "mode": mode.rawValue,
-        "output": (output as NSString).lastPathComponent,
-        "items": parents.map { ["name": ($0.file as NSString).lastPathComponent, "weight": $0.weight] },
-      ]
-      if !differences.isEmpty {
-        recipe["deltas"] = differences.map {
-          [
-            "minuend": ($0.minuend as NSString).lastPathComponent,
-            "subtrahend": ($0.subtrahend as NSString).lastPathComponent,
-            "weight": $0.weight,
-          ]
-        }
-      }
-      if !loras.isEmpty {
-        recipe["loras"] = loras.map {
-          ["file": ($0.file as NSString).lastPathComponent, "weight": $0.weight]
-        }
-      }
-      if let encoder = encoder { recipe["encoder"] = (encoder as NSString).lastPathComponent }
-      if let decoder = decoder { recipe["decoder"] = (decoder as NSString).lastPathComponent }
-      if let note = note { recipe["note"] = note }
-      let data = try JSONSerialization.data(
-        withJSONObject: recipe, options: [.prettyPrinted, .sortedKeys])
-      try data.write(to: URL(fileURLWithPath: recipeJson))
+      let recipe = Recipe(
+        mode: mode.rawValue, output: basename(output),
+        items: parents.map { Recipe.Item(name: basename($0.file), weight: recorded($0.weight)) },
+        deltas: differences.isEmpty
+          ? nil
+          : differences.map {
+            Recipe.Delta(
+              minuend: basename($0.minuend), subtrahend: basename($0.subtrahend),
+              weight: recorded($0.weight))
+          },
+        loras: loras.isEmpty
+          ? nil : loras.map { Recipe.LoRA(file: basename($0.file), weight: recorded($0.weight)) },
+        encoder: encoder.map(basename), decoder: decoder.map(basename), note: note)
+      let encoder = JSONEncoder()
+      encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+      try encoder.encode(recipe).write(to: URL(fileURLWithPath: recipeJson))
       print("  recipe \(recipeJson)")
     }
 
