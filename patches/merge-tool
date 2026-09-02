@@ -1,0 +1,22 @@
+Bottom: 8f8747841908824bd950b9fd92c830f2ca44ae6b
+Top:    8f8747841908824bd950b9fd92c830f2ca44ae6b
+Author: Teaspan <314463419+teaspan@users.noreply.github.com>
+Date:   2026-09-02 12:30:27 +0000
+
+Add dtiMerge, a CLI for merging checkpoints and LoRAs
+
+Upstream mixes models in the macOS app only.  What survives in the open
+tree is Libraries/DataModels/Sources/mixing.fbs, the recipe schema, with
+no consumer, so the mode names and the 0.6 LoRA default follow it.
+
+LoRALoader.mergeLoRA supplies the LoRA arithmetic unchanged.  It is a
+function of name, dataType and shape, so driving it from a store's own
+key list needs no built model graph, and LoRAImporter has already folded
+alpha over rank into the stored factors, which leaves strength a plain
+scalar.
+
+Quantized and ezm7 inputs promote to raw, both being lossy.  Datatypes
+are preserved per tensor because ccv_nnc_tensor_read cannot convert 16F
+to 16BF and LTX-2.3 carries four 16BF tensors inside an otherwise f16
+conversion.  Shapes reconcile squeezed, since a q6p conversion writes
+[1, 1, 1, 128] where the f16 one writes [128].

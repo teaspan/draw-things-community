@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "2c6dc47cbfaddc5ba2d8006f4e2e7d4d7361dbf2",
-  "head": "1b32837421d0870fc6bbfe37cc3e7d1b5a5e2b48",
+  "prev": "5d044350d781ea3ae857965e992b21dfb13aba4f",
+  "head": "5dc60b684c9287a64f9f1192059463a83b0f3ecb",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -16,7 +16,8 @@
     "separate-lora-flag",
     "spec-json-flag",
     "terse-import-progress",
-    "drop-ripgrep-vendor"
+    "drop-ripgrep-vendor",
+    "merge-tool"
   ],
   "unapplied": [],
   "hidden": [],
@@ -35,6 +36,9 @@
     },
     "ltx23-base-import": {
       "oid": "a815b14c745a84c946cecc8c46f3622f246c5b3a"
+    },
+    "merge-tool": {
+      "oid": "5dc60b684c9287a64f9f1192059463a83b0f3ecb"
     },
     "nnc-shared-library": {
       "oid": "d80a94abd475970829c7b3880a0a266853696626"
