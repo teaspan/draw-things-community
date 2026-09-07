@@ -136,7 +136,7 @@ git_repository(
 
 git_repository(
     name = "build_bazel_rules_cuda",
-    commit = "9d881f53aab05d78c05e20bc3f3e10ee423a1656",
+    commit = "4cd3e57dda8c618218fde349164db2bb09522142",
     remote = "https://github.com/teaspan/rules_cuda.git",
 )
 
