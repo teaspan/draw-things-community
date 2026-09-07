@@ -5,7 +5,8 @@ Date:   2026-09-07 03:05:33 +0000
 
 Support raw audio/video output in NUT container
 
-Write a simple raw output form.  Useful fallback when AVFoundation is absent,
-or you just wanted the raw frames and audio.  Produces uncompressed rgb48le
-video and pcm_f32le audio in the NUT container format:
+Useful fallback when AVFoundation is absent e.g. on Linux, or you just wanted the
+raw frames and audio.  Produces uncompressed rgb48le video and pcm_f32le audio in
+the NUT container format:
 https://git.ffmpeg.org/gitweb/nut.git/blob_plain/HEAD:/docs/nut.txt
+which you can convert with ffmpeg or play with mpv/iina/ffplay. warning: big files
