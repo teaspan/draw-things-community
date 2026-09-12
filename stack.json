@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "3dbb9e9490c0dbb938be4bd4218ed10cac726484",
-  "head": "63f1f6ca339f9843a3a79aea1304bfeaea6f6c51",
+  "prev": "b4633b3755fe95bdbb36979cdcd12e618ba519d9",
+  "head": "e4ebb6149320f4c32a1647b3f3c363ba2d0438c8",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -9,9 +9,7 @@
     "linux-portability",
     "raw-video-output",
     "ltx23-base-import",
-    "nnc-shared-library"
-  ],
-  "unapplied": [
+    "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
@@ -20,6 +18,7 @@
     "terse-import-progress",
     "merge-tool"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
@@ -35,19 +34,19 @@
       "oid": "d6a5a132bbcd13098c0857092f191f54edc4a9cf"
     },
     "merge-tool": {
-      "oid": "17a4e00a886e48e41261aef15f82416326dcc968"
+      "oid": "e4ebb6149320f4c32a1647b3f3c363ba2d0438c8"
     },
     "nnc-shared-library": {
       "oid": "63f1f6ca339f9843a3a79aea1304bfeaea6f6c51"
     },
     "no-advertising-flag": {
-      "oid": "29da6bc25845f3f4fcbf23dc9d9c0a352745c3c9"
+      "oid": "dbb328f21e667473a4a4bbea5feb445ae41d370b"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "8805e1dbb1d76bf65c9e7204d49d8066ebebe825"
+      "oid": "9ec9fb6213d240441e52538f77f6e34008c7ca13"
     },
     "quantizer-codec-flag": {
-      "oid": "7492aad44115158b820ffdf0411aa2b9af09d8bb"
+      "oid": "695f401d2d53ca0befdd6803182cf44d805dbb0a"
     },
     "raw-video-output": {
       "oid": "856c8dd14f743fb4424c42c3cb46a6d2b0f13868"
@@ -56,13 +55,13 @@
       "oid": "f120d60d213aa6c530720eb26601f672f1065099"
     },
     "separate-lora-flag": {
-      "oid": "78c8813ce2252507f8c3c8def2789da62a2912bd"
+      "oid": "f7e287791a8b44c3c9997fc1fdbe11f2112fcc0f"
     },
     "spec-json-flag": {
-      "oid": "e5e5d599151dd305bfadeca66c617ed4e1e736af"
+      "oid": "fc98d53ace5274bf5f80874c9e499b30a513dfeb"
     },
     "terse-import-progress": {
-      "oid": "1147eb1ba69579700276ecea5f1ac6461ac3a6d4"
+      "oid": "833a727fa66748868838f23927afa65bb32d59a8"
     }
   }
 }
