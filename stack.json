@@ -1,6 +1,6 @@
 {
   "version": 5,
-  "prev": "d51d94cdf5226d54e603b4480136032f33d0c88f",
+  "prev": "c8425ae283c5dce968db286981cc938e7b7ccdd9",
   "head": "2d69175012da22c1ed331bfba60a36fa6d55b351",
   "applied": [
     "dti-split-tool",
@@ -18,14 +18,10 @@
     "separate-lora-flag",
     "spec-json-flag",
     "terse-import-progress",
-    "drop-ripgrep-vendor",
     "merge-tool"
   ],
   "hidden": [],
   "patches": {
-    "drop-ripgrep-vendor": {
-      "oid": "187090841567b9fc30a1047f7ef955b63b967242"
-    },
     "dti-split-tool": {
       "oid": "f1f2852456c226d1542fa9ce38469c567521c17a"
     },
