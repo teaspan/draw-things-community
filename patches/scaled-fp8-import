@@ -1,7 +1,7 @@
 Bottom: d3a6f71c861b618739c386ea623eacc01683ad30
 Top:    0e71c96b14756dda6b9b5dbdaa01a2df16b3fd02
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-09-12 12:57:03 +1000
+Date:   2026-09-12 03:05:17 +0000
 
 Apply ComfyUI's scaled-FP8 weight scales when importing safetensors
 
