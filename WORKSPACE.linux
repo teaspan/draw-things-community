@@ -128,13 +128,13 @@ dflat_deps()
 
 git_repository(
     name = "s4nnc",
-    commit = "f7fbbd42d8b3d404a1dfa1ad0e21656310bb9db6",
+    commit = "512e34ddc67e30553716546d582b46933d1bd525",
     remote = "https://github.com/teaspan/s4nnc.git",
 )
 
 git_repository(
     name = "ccv",
-    commit = "d738002b811aec8fea452d7ba58a44ca61292f4c",
+    commit = "1cb0ce2b4cde45316484b9ab188c228875bf1da4",
     remote = "https://github.com/teaspan/ccv.git",
 )
 
