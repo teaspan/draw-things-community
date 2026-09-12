@@ -2614,6 +2614,8 @@ private final class LocalGenerationRunner {
             AVVideoAllowFrameReorderingKey: true,
           ],
         ]
+      case .rgb48le, .rgb24, .gbrpf16le:
+        fatalError("Raw pixel formats require .nut output")
       }
     }
 
