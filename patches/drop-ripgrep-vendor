@@ -1,7 +1,7 @@
-Bottom: ff194b6b8805e14e307255352d37eb606c66baec
-Top:    ff194b6b8805e14e307255352d37eb606c66baec
+Bottom: 07dfd00af1d70a03b897631f23231e44f3b53696
+Top:    7bfda7c007dc1b9289e9ccf740d6a7785688fb56
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-09-12 12:58:06 +1000
+Date:   2026-09-07 03:10:52 +0000
 
 Drop the Ripgrep WORKSPACE stanzas
 
