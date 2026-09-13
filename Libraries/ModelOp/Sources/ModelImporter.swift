@@ -336,7 +336,7 @@ public final class ModelImporter {
       if isPruned {
         FileHandle.standardError.write(
           Data(
-            "error: pruned MiniMax H3 (curve-basis adaLN) cannot be imported; restore the full form with prep-model --donor first\n"
+            "can't import pruned MiniMax H3 (curve-basis adaLN)\n"
               .utf8))
         throw UnpickleError.tensorNotFound
       }
@@ -345,7 +345,7 @@ public final class ModelImporter {
       if !isRef2va && !fileName.contains("fl2va") {
         FileHandle.standardError.write(
           Data(
-            "warning: file name says neither fl2va nor ref2va, assuming fl2va; set modifier in custom.json if this is the ref2va release\n"
+            "assuming fl2va\n"
               .utf8))
       }
       modelVersion = .minimaxH3
