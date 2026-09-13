@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "f935008352f2113acd2edbbad9d3cd52224e519e",
-  "head": "a1fb29709426fc85b0e7df2b9b7dcf96f22cb2a9",
+  "prev": "e3b6e5f6320e4d73412736a06a2a09c814ff18fb",
+  "head": "58853e96a10c1f0e7f802e88bc74e034f7700f94",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -16,7 +16,8 @@
     "separate-lora-flag",
     "spec-json-flag",
     "terse-import-progress",
-    "merge-tool"
+    "merge-tool",
+    "minimax-h3-base-import"
   ],
   "unapplied": [],
   "hidden": [],
@@ -35,6 +36,9 @@
     },
     "merge-tool": {
       "oid": "a1fb29709426fc85b0e7df2b9b7dcf96f22cb2a9"
+    },
+    "minimax-h3-base-import": {
+      "oid": "58853e96a10c1f0e7f802e88bc74e034f7700f94"
     },
     "nnc-shared-library": {
       "oid": "5ecdb7ead488a4b82777a1124747b8928eec7db8"
