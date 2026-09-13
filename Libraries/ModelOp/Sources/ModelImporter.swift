@@ -142,6 +142,16 @@ public final class ModelImporter {
       && stateDict.keys.contains {
         $0.contains("transformer_blocks.0.prompt_scale_shift_table")
       }
+    let isMiniMaxH3 =
+      stateDict.contains { key, descriptor in
+        descriptor.shape.last == 5_376
+          && (key.contains("blocks.49.attn.qkv_proj.weight")
+            || key.contains("transformer_blocks.49.attn.to_q.weight"))
+      }
+      && stateDict.keys.contains {
+        $0.contains("audio_patch_proj.") || $0.contains("audio_proj_in.")
+      }
+      && stateDict.keys.contains { $0.contains("token_refiner.") }
     var isPixArtSigmaXL =
       !isSD3Large && !isLongCatVideoAvatar && !isLTX2_3
       && stateDict.keys.contains {
@@ -322,6 +332,33 @@ public final class ModelImporter {
       inputDim = 128
       expectedTotalAccess = 5746
       isDiffusersFormat = false
+    } else if isMiniMaxH3 {
+      let isPruned = stateDict.contains { key, descriptor in
+        key.hasSuffix("adaln_t_table")
+          || (key.hasSuffix("adaln_proj.linear.weight") && descriptor.shape.last == 8)
+      }
+      if isPruned {
+        FileHandle.standardError.write(
+          Data(
+            "can't import pruned MiniMax H3 (curve-basis adaLN)\n"
+              .utf8))
+        throw UnpickleError.tensorNotFound
+      }
+      let fileName = URL(fileURLWithPath: filePath).lastPathComponent.lowercased()
+      let isRef2va = fileName.contains("ref2va")
+      if !isRef2va && !fileName.contains("fl2va") {
+        FileHandle.standardError.write(
+          Data(
+            "assuming fl2va\n"
+              .utf8))
+      }
+      modelVersion = .minimaxH3
+      modifier = isRef2va ? .ref2va : .fl2va
+      inputDim = 24
+      expectedTotalAccess = 2392
+      isDiffusersFormat = stateDict.keys.contains {
+        $0.contains("transformer_blocks.49.attn.to_q.weight")
+      }
     } else if isPixArtSigmaXL {
       modelVersion = .pixart
       modifier = .none
@@ -565,9 +602,9 @@ public final class ModelImporter {
         throw Error.noTextEncoder
       case .ernieImage, .flux2, .flux2_9b, .flux2_4b, .flux3_5b, .mossImage:
         throw Error.noTextEncoder
-      case .ltx2, .ltx2_3, .seedvr2_3b, .seedvr2_7b, .ideogram4, .krea2:
+      case .ltx2, .ltx2_3, .seedvr2_3b, .seedvr2_7b, .ideogram4, .krea2, .minimaxH3:
         throw Error.noTextEncoder
-      case .kandinsky21, .minimaxH3:
+      case .kandinsky21:
         fatalError()
       }
     }
@@ -831,7 +868,10 @@ public final class ModelImporter {
     case .hiDreamI1:
       conditionalLength = 4096
       batchSize = 1
-    case .hiDreamO1, .qwenImage2_1, .minimaxH3:
+    case .minimaxH3:
+      conditionalLength = 5_120
+      batchSize = 1
+    case .hiDreamO1, .qwenImage2_1:
       fatalError()
     case .qwenImage:
       conditionalLength = 3854
@@ -926,7 +966,7 @@ public final class ModelImporter {
         }
         let vectors: [DynamicGraph.Tensor<FloatType>]
         switch modelVersion {
-        case .longcatVideoAvatar1_5, .minimaxH3:
+        case .longcatVideoAvatar1_5:
           fatalError()
         case .sdxlBase, .ssd1b:
           vectors = [graph.variable(.CPU, .WC(batchSize, 2816), of: FloatType.self)]
@@ -939,7 +979,7 @@ public final class ModelImporter {
           .cosmos2_5_2b, .wan22_5b, .zImage, .ernieImage, .flux2, .flux2_9b, .flux2_4b, .flux3_5b,
           .mossImage,
           .ltx2,
-          .ltx2_3, .seedvr2_3b, .seedvr2_7b, .ideogram4, .krea2:
+          .ltx2_3, .seedvr2_3b, .seedvr2_7b, .ideogram4, .krea2, .minimaxH3:
           vectors = []
         case .kandinsky21, .v1, .v2:
           fatalError()
@@ -1043,7 +1083,17 @@ public final class ModelImporter {
           ).map {
             graph.variable(.CPU, format: .NHWC, shape: $0, of: FloatType.self)
           }
-      case .hiDreamO1, .qwenImage2_1, .minimaxH3:
+      case .minimaxH3:
+        cArr =
+          [
+            graph.variable(.CPU, .HWC(1, 4, 32), of: FloatType.self),
+            graph.variable(.CPU, .HWC(1, 2, 5_376), of: FloatType.self),
+            graph.variable(.CPU, .NHWC(1, 1_030, 1, 128), of: FloatType.self),
+          ]
+          + (0..<(50 * 18 + 4)).map { _ in
+            graph.variable(.CPU, .HWC(1, 1, 5_376), of: FloatType.self)
+          }
+      case .hiDreamO1, .qwenImage2_1:
         fatalError()
       case .qwenImage:
         cArr =
@@ -1382,7 +1432,14 @@ public final class ModelImporter {
           usesFlashAttention: .scale1, outputResidual: false, inputResidual: false)
         (unetFixed, unetFixedMapper) = HiDreamFixed(
           timesteps: 1, layers: (16, 32), outputTimesteps: false)
-      case .hiDreamO1, .qwenImage2_1, .minimaxH3:
+      case .minimaxH3:
+        (unetMapper, unet) = MiniMaxH3(
+          hiddenSize: 5_376, layers: 50, textLength: 2, audioLength: 4, videoFrames: 1,
+          videoHeight: 64, videoWidth: 64, usesFlashAttention: .scale1)
+        (unetFixedMapper, unetFixed) = MiniMaxH3Fixed(
+          timesteps: 1, hiddenSize: 5_376, layers: 50, textLength: (0, 2),
+          usesFlashAttention: .scale1)
+      case .hiDreamO1, .qwenImage2_1:
         fatalError()
       case .qwenImage:
         (unetMapper, unet) = QwenImage(
@@ -1655,7 +1712,13 @@ public final class ModelImporter {
             graph.variable(.CPU, .HWC(1, 128, 4096), of: FloatType.self)  // Llama encoder hidden states.
           }
         tEmb = nil
-      case .hiDreamO1, .qwenImage2_1, .minimaxH3:
+      case .minimaxH3:
+        crossattn = [
+          graph.variable(.CPU, .HWC(1, 2, 5_120), of: FloatType.self),
+          graph.variable(.CPU, .HWC(1, 2, 256), of: FloatType.self),
+        ]
+        tEmb = nil
+      case .hiDreamO1, .qwenImage2_1:
         fatalError()
       case .qwenImage:
         crossattn =
@@ -1905,7 +1968,7 @@ public final class ModelImporter {
             stateDict[String(key.dropFirst(6))] = value
           }
         }
-      } else if modelVersion == .ltx2_3 {
+      } else if modelVersion == .ltx2_3 || modelVersion == .minimaxH3 {
         for (key, value) in stateDict {
           if key.hasPrefix("model.diffusion_model.") {
             stateDict[String(key.dropFirst(22))] = value
@@ -1993,7 +2056,7 @@ public final class ModelImporter {
             .hiDreamO1, .qwenImage2_1, .wan22_5b, .qwenImage, .cosmos2_5_2b, .auraflow, .zImage,
             .ernieImage, .flux2, .flux2_9b, .flux2_4b, .flux3_5b, .mossImage, .ltx2, .ltx2_3,
             .longcatVideoAvatar1_5,
-            .ideogram4, .krea2:
+            .ideogram4, .krea2, .minimaxH3:
             let inputs: [DynamicGraph.Tensor<FloatType>] =
               [xTensor] + (tEmb.map { [$0] } ?? []) + cArr
             unet.compile(inputs: inputs)
@@ -2002,7 +2065,7 @@ public final class ModelImporter {
             UNetMappingFixed = unetFixedMapper(isDiffusersFormat ? .diffusers : .generativeModels)
             modelPrefix = "dit"
             modelPrefixFixed = "dit"
-          case .v1, .v2, .kandinsky21, .wurstchenStageB, .seedvr2_3b, .seedvr2_7b, .minimaxH3:
+          case .v1, .v2, .kandinsky21, .wurstchenStageB, .seedvr2_3b, .seedvr2_7b:
             fatalError()
           }
           func reverseMapping(original: ModelWeightMapping) -> [String: [String]] {
@@ -2355,7 +2418,11 @@ public final class ModelImporter {
           if $0.keys.count != 1857 {
             throw Error.tensorWritesFailed
           }
-        case .hiDreamO1, .qwenImage2_1, .minimaxH3:
+        case .minimaxH3:
+          if $0.keys.count != 2392 {
+            throw Error.tensorWritesFailed
+          }
+        case .hiDreamO1, .qwenImage2_1:
           fatalError()
         case .wan22_5b:
           let count = $0.keys.count
@@ -2713,7 +2780,11 @@ extension ModelImporter {
       clipEncoder = "\(fileName)_f16.ckpt"
     case .wurstchenStageC:
       textEncoder = nil
-    case .kandinsky21, .wurstchenStageB, .minimaxH3:
+    case .minimaxH3:
+      textEncoder = fileNames.first {
+        $0.hasSuffix("_qwen_3_vl_32b_50_i8x.ckpt")
+      }
+    case .kandinsky21, .wurstchenStageB:
       fatalError()
     }
 
@@ -3078,7 +3149,15 @@ extension ModelImporter {
         .init(file: "ltx_2.3_spatial_upscaler_x1.5_f16.ckpt", scale: .x1_5),
       ]
       specification.hiresFixScale = finetuneScale * 2
-    case .ltx2, .seedvr2_3b, .seedvr2_7b, .minimaxH3:
+    case .minimaxH3:
+      if specification.textEncoder == nil {
+        specification.textEncoder = "qwen_3_vl_32b_50_i8x.ckpt"
+      }
+      if specification.autoencoder == nil {
+        specification.autoencoder = "minimax_h3_vae_f16.ckpt"
+      }
+      specification.objective = .u(conditionScale: 1000)
+    case .ltx2, .seedvr2_3b, .seedvr2_7b:
       fatalError()
     case .kandinsky21, .wurstchenStageB:
       fatalError()
