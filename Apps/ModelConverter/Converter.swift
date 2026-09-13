@@ -155,7 +155,12 @@ struct Converter: ParsableCommand {
       if autoencoder == nil {
         autoencoder = "wan_v2.1_video_vae_f16.ckpt"
       }
-    case .hiDreamI1, .hiDreamO1, .minimaxH3:
+    case .minimaxH3:
+      textEncoder = "qwen_3_vl_32b_50_i8x.ckpt"
+      if autoencoder == nil {
+        autoencoder = "minimax_h3_vae_f16.ckpt"
+      }
+    case .hiDreamI1, .hiDreamO1:
       fatalError()
     case .qwenImage:
       fatalError()
