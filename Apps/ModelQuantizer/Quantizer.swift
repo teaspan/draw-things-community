@@ -19,7 +19,7 @@ struct Quantizer: ParsableCommand {
       hidream_o1,
       qwen_image, wan_v2.2_5b, z_image, ernie_image, flux2, flux2_9b, flux2_4b, flux3_5b,
       cosmos2.5_2b, cosmos2.5_2.9b, ltx2, ltx2.3,
-      seedvr2_3b, seedvr2_7b, ideogram_4, krea_2, moss_image
+      seedvr2_3b, seedvr2_7b, ideogram_4, krea_2, moss_image, minimax_h3
       """)
   var modelVersion: String
 
@@ -310,7 +310,26 @@ struct Quantizer: ParsableCommand {
               }
             }
           case .minimaxH3:
-            fatalError()
+            if !key.hasPrefix("__dit__") {
+              $0.write(key, tensor: tensor)
+            } else if key.contains("refiner_") || key.contains("embedder")
+              || key.contains("proj_out")
+            {
+              $0.write(key, tensor: fp16)
+            } else if squeezedDims > 1 {
+              if key.contains("adaln_") {
+                $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+              } else if key.contains("norm_out_") {
+                $0.write(key, tensor: fp16, codec: .ezm7)
+              } else {
+                let bulk = bulkCodec([.q8p, .ezm7])
+                $0.write(
+                  key, tensor: fp16,
+                  codec: shape[1] % 256 != 0 && bulk.contains(.i8x) ? [.i8x, .ezm7] : bulk)
+              }
+            } else {
+              $0.write(key, tensor: fp16, codec: .ezm7)
+            }
           case .ltx2, .ltx2_3, .longcatVideoAvatar1_5:
             if !key.hasPrefix("__dit__") {
               $0.write(key, tensor: tensor)
