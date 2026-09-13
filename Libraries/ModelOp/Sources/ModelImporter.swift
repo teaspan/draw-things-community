@@ -534,13 +534,29 @@ public final class ModelImporter {
       isDiffusersFormat = true
     } else if isMiniMaxH3 {
       // Pruned variants replace the timestep embedder with a timestep table and low-rank modulations.
-      guard !stateDict.keys.contains(where: { $0.hasSuffix("adaln_t_table") }) else {
+      guard
+        !stateDict.contains(where: { key, descriptor in
+          key.hasSuffix("adaln_t_table")
+            || (key.hasSuffix("adaln_proj.linear.weight") && descriptor.shape.last == 8)
+        })
+      else {
+        FileHandle.standardError.write(
+          Data(
+            "can't import pruned MiniMax H3 (curve-basis adaLN)\n"
+              .utf8))
         throw UnpickleError.tensorNotFound
       }
       modelVersion = .minimaxH3
       // FL2VA and Ref2VA checkpoints have the same weights, only the file name tells them apart.
-      modifier =
-        (filePath as NSString).lastPathComponent.lowercased().contains("ref2va") ? .ref2va : .fl2va
+      let fileName = (filePath as NSString).lastPathComponent.lowercased()
+      let isRef2va = fileName.contains("ref2va")
+      if !isRef2va && !fileName.contains("fl2va") {
+        FileHandle.standardError.write(
+          Data(
+            "assuming fl2va\n"
+              .utf8))
+      }
+      modifier = isRef2va ? .ref2va : .fl2va
       inputDim = 24
       expectedTotalAccess = 2_710
       isDiffusersFormat = stateDict.keys.contains {
