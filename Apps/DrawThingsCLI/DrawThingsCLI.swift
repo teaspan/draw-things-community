@@ -2733,7 +2733,7 @@ private final class LocalGenerationRunner {
 }
 
 private func pixelShort(_ value: FloatType) -> UInt16 {
-  UInt16(min(max(Int((value + 1) * 32767.5), 0), 65535))
+  UInt16((min(max(Float(value), -1), 1) + 1) * 32767.5)
 }
 
 private func halfBits(_ value: Float) -> UInt16 {
