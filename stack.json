@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "f27c9a70d10a25f518bd0e2a81a77b4f18154523",
-  "head": "18c2fd0b481ff25b143dad890845201ffd4213bd",
+  "prev": "e83b5d9495bd8b3fc525f38337323d11b96e885c",
+  "head": "13c3852615546fca85fcacb90c2cf26c3980dee6",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -9,7 +9,9 @@
     "linux-portability",
     "raw-video-output",
     "ltx23-base-import",
-    "nnc-shared-library",
+    "nnc-shared-library"
+  ],
+  "unapplied": [
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
@@ -19,7 +21,6 @@
     "merge-tool",
     "minimax-h3-base-import"
   ],
-  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
