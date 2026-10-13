@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "13b8222c8c6f0c6cb8b33b15cbb87a06bb1acc72",
-  "head": "214ea52d8cf4e61f5e7e8c51e93114b01ceb2e73",
+  "prev": "f2e5a12a9477b3ff529f19d6fc5cc3236c634bcf",
+  "head": "4014d4af0ccdd89b07a03979e2a973fc52b52c36",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -14,10 +14,10 @@
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
     "separate-lora-flag",
-    "spec-json-flag"
+    "spec-json-flag",
+    "terse-import-progress"
   ],
   "unapplied": [
-    "terse-import-progress",
     "merge-tool",
     "minimax-h3-base-import"
   ],
@@ -66,7 +66,7 @@
       "oid": "214ea52d8cf4e61f5e7e8c51e93114b01ceb2e73"
     },
     "terse-import-progress": {
-      "oid": "58d74bd85967982e1193de08c7cb8a2e82c572bc"
+      "oid": "4014d4af0ccdd89b07a03979e2a973fc52b52c36"
     }
   }
 }
