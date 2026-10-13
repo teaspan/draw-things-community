@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "23540c2ed4c0c3bb5c9ab42a9886957200fbc658",
-  "head": "c51d0a2b1ebe0b4a8a97e97b25702eb4ef3ca658",
+  "prev": "5e1d34e80b5698a1a2d0bf727ce877ea32c3eeee",
+  "head": "977a2c19dfd11f8bdc4ecf6a1d77e7f76f7adfb7",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -15,12 +15,11 @@
     "quantizer-codec-flag",
     "separate-lora-flag",
     "spec-json-flag",
-    "terse-import-progress"
-  ],
-  "unapplied": [
+    "terse-import-progress",
     "merge-tool",
     "minimax-h3-base-import"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
@@ -36,10 +35,10 @@
       "oid": "b9e519271dafac2f21abfc4613e18416a77e6bb2"
     },
     "merge-tool": {
-      "oid": "6b5d31ea80e0a78c1ebd9d4ea44a46490720511e"
+      "oid": "05c63bbffadcc6c4670270ac10a58df2eada300b"
     },
     "minimax-h3-base-import": {
-      "oid": "2d02a1103c1565fbe9714bd277b70574c4ea8cff"
+      "oid": "977a2c19dfd11f8bdc4ecf6a1d77e7f76f7adfb7"
     },
     "nnc-shared-library": {
       "oid": "13c3852615546fca85fcacb90c2cf26c3980dee6"
