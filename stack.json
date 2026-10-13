@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "7f5597c6122fa156e69c33d78a22ad39ba1cdfe6",
-  "head": "13c3852615546fca85fcacb90c2cf26c3980dee6",
+  "prev": "41643f75a87a3e46aa129a0fb4f98d775004eb0d",
+  "head": "874a7ac7f833bcb1b034736910ea5b158b2c1107",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -9,14 +9,14 @@
     "linux-portability",
     "raw-video-output",
     "ltx23-base-import",
-    "nnc-shared-library"
-  ],
-  "unapplied": [
+    "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
     "separate-lora-flag",
-    "spec-json-flag",
+    "spec-json-flag"
+  ],
+  "unapplied": [
     "terse-import-progress",
     "merge-tool",
     "minimax-h3-base-import"
@@ -45,13 +45,13 @@
       "oid": "13c3852615546fca85fcacb90c2cf26c3980dee6"
     },
     "no-advertising-flag": {
-      "oid": "dd9df41b385b79305ab59afef4d1658025811e92"
+      "oid": "b822fbef6bbb45e33512d7df6d5350851083e9ea"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "80c07e9bfca07b5bc8fc257ba5ee8d7eaea86e7e"
+      "oid": "8638fe2921bb34541e12d45da20dbf81e8ffbbe7"
     },
     "quantizer-codec-flag": {
-      "oid": "be35f443dd9b0ea19c18fb0cf08139a0b882f9f9"
+      "oid": "0f975c1bf16af4f111edab9a7c52aa3914786104"
     },
     "raw-video-output": {
       "oid": "6b87362ed5a0149500fd6765772069d54f5d359f"
@@ -60,10 +60,10 @@
       "oid": "a1f9ff755ecf1095593e785e3debcf8a05f5e2f3"
     },
     "separate-lora-flag": {
-      "oid": "cf0900fc6e45bc53cff1dbbe8552632ba03101dc"
+      "oid": "3d36c72bfa971aa0324f5a3517111cbe24469125"
     },
     "spec-json-flag": {
-      "oid": "6e8785bf02c10b2305775c81995e73a7ae75cbb4"
+      "oid": "874a7ac7f833bcb1b034736910ea5b158b2c1107"
     },
     "terse-import-progress": {
       "oid": "58d74bd85967982e1193de08c7cb8a2e82c572bc"
