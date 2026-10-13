@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "a25c695e50f1e9f70e069a6d7f9e45f10be04201",
-  "head": "c66fa92bc499799cdf54a667ac72326f6c6ef442",
+  "prev": "13b8222c8c6f0c6cb8b33b15cbb87a06bb1acc72",
+  "head": "214ea52d8cf4e61f5e7e8c51e93114b01ceb2e73",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -14,8 +14,7 @@
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
     "separate-lora-flag",
-    "spec-json-flag",
-    "refresh-temp"
+    "spec-json-flag"
   ],
   "unapplied": [
     "terse-import-progress",
@@ -57,9 +56,6 @@
     "raw-video-output": {
       "oid": "6b87362ed5a0149500fd6765772069d54f5d359f"
     },
-    "refresh-temp": {
-      "oid": "c66fa92bc499799cdf54a667ac72326f6c6ef442"
-    },
     "scaled-fp8-import": {
       "oid": "a1f9ff755ecf1095593e785e3debcf8a05f5e2f3"
     },
@@ -67,7 +63,7 @@
       "oid": "3d36c72bfa971aa0324f5a3517111cbe24469125"
     },
     "spec-json-flag": {
-      "oid": "874a7ac7f833bcb1b034736910ea5b158b2c1107"
+      "oid": "214ea52d8cf4e61f5e7e8c51e93114b01ceb2e73"
     },
     "terse-import-progress": {
       "oid": "58d74bd85967982e1193de08c7cb8a2e82c572bc"
