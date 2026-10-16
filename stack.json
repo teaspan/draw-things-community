@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "1f62bb80712b65280afa486f8966e43e13f4c8ca",
-  "head": "84c36733f12c07338116cfc680d26ac7c2f8a50e",
+  "prev": "413c27c325c1190228593eb9100e794a3a600b1b",
+  "head": "ea443abbf97925c8be55a2e4d642d7817cc29a01",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -9,7 +9,8 @@
     "linux-portability",
     "raw-video-output",
     "ltx23-base-import",
-    "nnc-shared-library"
+    "nnc-shared-library",
+    "refresh-temp"
   ],
   "unapplied": [
     "no-advertising-flag",
@@ -55,6 +56,9 @@
     },
     "raw-video-output": {
       "oid": "0295112a3ada9cfc4dd35cf4a641ba7b2624b521"
+    },
+    "refresh-temp": {
+      "oid": "ea443abbf97925c8be55a2e4d642d7817cc29a01"
     },
     "scaled-fp8-import": {
       "oid": "1c4e071d0465cc325b3d66077c28d6d0f2dd5afc"
