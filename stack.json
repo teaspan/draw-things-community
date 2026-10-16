@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "2efaa973596ab320bd764f03440cb56978f08222",
-  "head": "172083906512ffcfcb78f06e961e70c1628e29b0",
+  "prev": "74a446090329c13b7d0384e57e0b8653df3550a5",
+  "head": "9278750d7e7cc20ea99c90926070ecfdb351370a",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -9,9 +9,7 @@
     "linux-portability",
     "raw-video-output",
     "ltx23-base-import",
-    "nnc-shared-library"
-  ],
-  "unapplied": [
+    "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
@@ -21,6 +19,7 @@
     "merge-tool",
     "minimax-h3-base-import"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
@@ -36,22 +35,22 @@
       "oid": "dcedf3bf92f1ef9db790de870b67ca44b816eec3"
     },
     "merge-tool": {
-      "oid": "d04b237bfbfa57c2a6e54bad704a1d1a1a817e8e"
+      "oid": "e58a25ff932f92aa706447df7e1f7807d6ebae00"
     },
     "minimax-h3-base-import": {
-      "oid": "98c2fa0915ff61cc5c30ea446be2c04e8dff83dd"
+      "oid": "9278750d7e7cc20ea99c90926070ecfdb351370a"
     },
     "nnc-shared-library": {
       "oid": "172083906512ffcfcb78f06e961e70c1628e29b0"
     },
     "no-advertising-flag": {
-      "oid": "c775f1f34e1f3b03cfc316ec65a232edef470ca0"
+      "oid": "443e9a5c83c58309f34caa26765c9b8da5d1160f"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "30c3fd8e9d2ecf86bcc6b12ac44b968465936f39"
+      "oid": "c9b51bb09fc422115ba516c0426f142102872682"
     },
     "quantizer-codec-flag": {
-      "oid": "5d213d2df28ef0aa8c7fc91553af7228bd695113"
+      "oid": "47f6230ada1a30c21e0681dad2276bcedfd54ad7"
     },
     "raw-video-output": {
       "oid": "0295112a3ada9cfc4dd35cf4a641ba7b2624b521"
@@ -60,13 +59,13 @@
       "oid": "1c4e071d0465cc325b3d66077c28d6d0f2dd5afc"
     },
     "separate-lora-flag": {
-      "oid": "cb1da2c762d165351a242dbb90abe3c8c74c55d2"
+      "oid": "965094829dc9cc4635c19f5c41648acfbf3698da"
     },
     "spec-json-flag": {
-      "oid": "53516fdd6d5bc8abb1a9b8ee8199a86a233b9435"
+      "oid": "a8a93a453e00e00fe2d72e667fb5cf0ba9936427"
     },
     "terse-import-progress": {
-      "oid": "4c633429b2d960054d2989a25058fad3b6a8ad04"
+      "oid": "3a4b4a024320ac091261c4a3daeead64a1e41d4a"
     }
   }
 }
