@@ -1,6 +1,22 @@
 Bottom: 7d07720b959c549d7077d4584399e152e48d8f92
 Top:    d11ea2278bed927f88a39af0dcfde5c41df333b3
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-10-17 12:59:06 +0000
+Date:   2026-10-17 13:06:14 +0000
 
 Implement Qwen Image 2.1 base model import
+
+Upstream ships Qwen Image 2.1 inference and LoRA import but converts the
+base model out of tree. The importer arms are lifted from LoRAImporter's
+working .qwenImage2_1 wiring.
+
+Comfy-Org's repackage fuses the SwiGLU halves as img_mlp.gate_up, gate
+rows first, so the block mappers now accept that name as well.
+
+txt_in.text_norm is zero-centred, and the catalog's converted ckpt stores
+1 + raw. The importer applies the shift itself because LoRAImporter writes
+a LoRA's .diff through the model's own mapper, where a shift would add 1
+to a norm delta.
+
+Base and Turbo share one tensor set and differ only in base's
+shift_terminal, so the schedule is chosen by the file name. The quantizer
+keeps context_norm raw, as the catalog's q6p does.
