@@ -2143,7 +2143,11 @@ public final class ModelImporter {
               mapping["\(prefix).gate_up.weight"] = ModelWeightElement(Array(gate) + Array(up))
             }
             UNetMapping = mapping
-            UNetMappingFixed = unetFixedMapper(.diffusers)
+            var mappingFixed = unetFixedMapper(.diffusers)
+            mappingFixed["txt_in.text_norm.weight"] = mappingFixed["txt_in.text_norm.weight"].map {
+              ModelWeightElement(Array($0), shift: 1)
+            }
+            UNetMappingFixed = mappingFixed
             modelPrefix = "dit"
             modelPrefixFixed = "dit"
           case .mossImage:
