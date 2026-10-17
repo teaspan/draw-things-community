@@ -19,7 +19,7 @@ struct Quantizer: ParsableCommand {
       hidream_o1,
       qwen_image, wan_v2.2_5b, z_image, ernie_image, flux2, flux2_9b, flux2_4b, flux3_5b,
       cosmos2.5_2b, cosmos2.5_2.9b, ltx2, ltx2.3,
-      seedvr2_3b, seedvr2_7b, ideogram_4, krea_2, moss_image, minimax_h3
+      seedvr2_3b, seedvr2_7b, ideogram_4, krea_2, moss_image, minimax_h3, qwen_image_2.1
       """)
   var modelVersion: String
 
@@ -253,7 +253,25 @@ struct Quantizer: ParsableCommand {
                 $0.write(key, tensor: fp16, codec: .ezm7)
               }
             }
-          case .qwenImage, .qwenImage2_1, .krea2, .ernieImage, .seedvr2_3b, .seedvr2_7b:
+          case .qwenImage2_1:
+            if key.contains("context_norm") {
+              $0.write(key, tensor: tensor)
+            } else if key.contains("embedder") || key.contains("pos_embed")
+              || key.contains("-linear-")
+            {
+              $0.write(key, tensor: fp16)
+            } else {
+              if squeezedDims > 1 {
+                if key.contains("ada_ln") {
+                  $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+                } else {
+                  $0.write(key, tensor: fp16, codec: bulkCodec([.q6p, .ezm7]))
+                }
+              } else {
+                $0.write(key, tensor: fp16, codec: .ezm7)
+              }
+            }
+          case .qwenImage, .krea2, .ernieImage, .seedvr2_3b, .seedvr2_7b:
             if key.contains("embedder") || key.contains("pos_embed") || key.contains("-linear-") {
               $0.write(key, tensor: fp16)
             } else {
