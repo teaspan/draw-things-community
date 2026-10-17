@@ -152,6 +152,11 @@ public final class ModelImporter {
         $0.contains("audio_patch_proj.") || $0.contains("audio_proj_in.")
       }
       && stateDict.keys.contains { $0.contains("token_refiner.") }
+    let isQwenImage2_1 =
+      stateDict.contains { key, descriptor in
+        descriptor.shape.last == 4_096 && key.contains("transformer_blocks.31.attn.to_q.weight")
+      }
+      && stateDict.keys.contains { $0.contains("txt_in.text_norm.weight") }
     var isPixArtSigmaXL =
       !isSD3Large && !isLongCatVideoAvatar && !isLTX2_3
       && stateDict.keys.contains {
@@ -366,6 +371,12 @@ public final class ModelImporter {
       isDiffusersFormat = stateDict.keys.contains {
         $0.contains("transformer_blocks.49.attn.to_q.weight")
       }
+    } else if isQwenImage2_1 {
+      modelVersion = .qwenImage2_1
+      modifier = .kontext
+      inputDim = 64
+      expectedTotalAccess = 300
+      isDiffusersFormat = true
     } else if isPixArtSigmaXL {
       modelVersion = .pixart
       modifier = .none
@@ -880,7 +891,10 @@ public final class ModelImporter {
     case .minimaxH3:
       conditionalLength = 5_120
       batchSize = 1
-    case .hiDreamO1, .qwenImage2_1:
+    case .qwenImage2_1:
+      conditionalLength = 4096
+      batchSize = 1
+    case .hiDreamO1:
       fatalError()
     case .qwenImage:
       conditionalLength = 3854
@@ -1103,7 +1117,14 @@ public final class ModelImporter {
           + (0..<(50 * 18 + 4)).map { _ in
             graph.variable(.CPU, .HWC(1, 1, 5_376), of: FloatType.self)
           }
-      case .hiDreamO1, .qwenImage2_1:
+      case .qwenImage2_1:
+        cArr =
+          [graph.variable(.CPU, .NHWC(1, 64 * 64, 1, 128), of: FloatType.self)]
+          + (0..<5).map { _ in graph.variable(.CPU, .WC(1, 4096), of: FloatType.self) }
+          + (0..<64).map { _ in
+            graph.variable(.CPU, .NHWC(1, 132, 32, 128), of: FloatType.self)
+          }
+      case .hiDreamO1:
         fatalError()
       case .qwenImage:
         cArr =
@@ -1450,7 +1471,23 @@ public final class ModelImporter {
         (unetFixedMapper, unetFixed) = MiniMaxH3Fixed(
           timesteps: 1, hiddenSize: 5_376, layers: 50, textLength: (0, 2),
           usesFlashAttention: .scale1)
-      case .hiDreamO1, .qwenImage2_1:
+      case .qwenImage2_1:
+        (unetMapper, unet) = QwenImage2_1(
+          FloatType.self, batchSize: 1, height: 64, width: 64, prefixLength: 132,
+          channels: 4096, layers: 32, usesFlashAttention: .scaleMerged)
+        let qwenImage2_1FixedMapper: ModelWeightMapper
+        (qwenImage2_1FixedMapper, unetFixed) = QwenImage2_1Fixed(
+          FloatType.self, batchSize: 1, textLength: 128, referenceLength: 4, timesteps: 1,
+          channels: 4096, layers: 32, segments: [(128, false), (4, true)],
+          usesFlashAttention: .scaleMerged)
+        unetFixedMapper = { format in
+          var mapping = qwenImage2_1FixedMapper(format)
+          mapping["txt_in.text_norm.weight"] = mapping["txt_in.text_norm.weight"].map {
+            ModelWeightElement(Array($0), shift: 1)
+          }
+          return mapping
+        }
+      case .hiDreamO1:
         fatalError()
       case .qwenImage:
         (unetMapper, unet) = QwenImage(
@@ -1731,7 +1768,15 @@ public final class ModelImporter {
           graph.variable(.CPU, .HWC(1, 2, 256), of: FloatType.self),
         ]
         tEmb = nil
-      case .hiDreamO1, .qwenImage2_1:
+      case .qwenImage2_1:
+        crossattn = [
+          graph.variable(.CPU, .HWC(1, 128, 4096), of: FloatType.self),
+          graph.variable(.CPU, .WC(2, 256), of: FloatType.self),
+          graph.variable(.CPU, .NHWC(1, 132, 1, 128), of: FloatType.self),
+          graph.variable(.CPU, .WC(4, 64), of: FloatType.self),
+        ]
+        tEmb = nil
+      case .hiDreamO1:
         fatalError()
       case .qwenImage:
         crossattn =
@@ -1981,7 +2026,9 @@ public final class ModelImporter {
             stateDict[String(key.dropFirst(6))] = value
           }
         }
-      } else if modelVersion == .ltx2_3 || modelVersion == .minimaxH3 {
+      } else if modelVersion == .ltx2_3 || modelVersion == .minimaxH3
+        || modelVersion == .qwenImage2_1
+      {
         for (key, value) in stateDict {
           if key.hasPrefix("model.diffusion_model.") {
             stateDict[String(key.dropFirst(22))] = value
@@ -2436,7 +2483,11 @@ public final class ModelImporter {
           if $0.keys.count != 2392 {
             throw Error.tensorWritesFailed
           }
-        case .hiDreamO1, .qwenImage2_1:
+        case .qwenImage2_1:
+          if $0.keys.count != 300 {
+            throw Error.tensorWritesFailed
+          }
+        case .hiDreamO1:
           fatalError()
         case .wan22_5b:
           let count = $0.keys.count
@@ -2738,7 +2789,11 @@ extension ModelImporter {
       t5Encoder = fileNames.first {
         $0.hasSuffix("_t5_xxl_encoder_f16.ckpt")
       }
-    case .hiDreamO1, .qwenImage2_1:
+    case .qwenImage2_1:
+      textEncoder = fileNames.first {
+        $0.hasSuffix("_qwen_3_vl_8b_instruct_i8x.ckpt")
+      }
+    case .hiDreamO1:
       textEncoder = nil
     case .wan22_5b:
       textEncoder = fileNames.first {
@@ -3006,7 +3061,28 @@ extension ModelImporter {
         .init(sigmaMin: 0, sigmaMax: 1, conditionScale: 1_000))
       // For HiDream, the hires fix trigger scale is 1.5 of the finetune scale.
       specification.hiresFixScale = (finetuneScale * 3 + 1) / 2
-    case .hiDreamO1, .qwenImage2_1:
+    case .qwenImage2_1:
+      if specification.textEncoder == nil {
+        specification.textEncoder = "qwen_3_vl_8b_instruct_i8x.ckpt"
+      }
+      if specification.autoencoder == nil {
+        specification.autoencoder = "qwen_image_2.1_vae_f16.ckpt"
+      }
+      specification.highPrecisionAutoencoder = true
+      specification.objective = .u(conditionScale: 1000)
+      if fileName.contains("turbo") {
+        specification.noiseDiscretization = .rf(
+          .init(sigmaMin: 0, sigmaMax: 1, conditionScale: 1_000))
+      } else {
+        FileHandle.standardError.write(
+          Data(
+            "assuming base schedule\n"
+              .utf8))
+        specification.noiseDiscretization = .rf(
+          .init(sigmaMin: 0, sigmaMax: 1, conditionScale: 1_000, shiftTerminal: 0.02))
+      }
+      specification.hiresFixScale = 40
+    case .hiDreamO1:
       specification.objective = .u(conditionScale: 1000)
       specification.noiseDiscretization = .rf(
         .init(sigmaMin: 0, sigmaMax: 1, conditionScale: 1_000))
