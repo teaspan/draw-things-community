@@ -209,6 +209,9 @@ private func TransformerBlockFixed<T: TensorNumeric>(
     mapping["\(prefix).attn.to_out.0.weight"] = [unifyHeads.weight.name]
     mapping["\(prefix).img_mlp.proj.weight"] = [up.weight.name]
     mapping["\(prefix).img_mlp.gate_layer.weight"] = [gate.weight.name]
+    mapping["\(prefix).img_mlp.gate_up.weight"] = ModelWeightElement([
+      gate.weight.name, up.weight.name,
+    ])
     mapping["\(prefix).img_mlp.out.weight"] = [down.weight.name]
     return mapping
   }
@@ -320,6 +323,9 @@ private func TransformerBlock<T: TensorNumeric>(
     mapping["\(prefix).attn.to_out.0.weight"] = [unifyHeads.weight.name]
     mapping["\(prefix).img_mlp.proj.weight"] = [up.weight.name]
     mapping["\(prefix).img_mlp.gate_layer.weight"] = [gate.weight.name]
+    mapping["\(prefix).img_mlp.gate_up.weight"] = ModelWeightElement([
+      gate.weight.name, up.weight.name,
+    ])
     mapping["\(prefix).img_mlp.out.weight"] = [down.weight.name]
     return mapping
   }
