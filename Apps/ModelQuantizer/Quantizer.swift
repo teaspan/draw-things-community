@@ -327,7 +327,7 @@ struct Quantizer: ParsableCommand {
               $0.write(key, tensor: fp16)
             } else {
               if squeezedDims > 1 {
-                $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+                $0.write(key, tensor: fp16, codec: bulkCodec([.q8p, .ezm7]))
               } else {
                 $0.write(key, tensor: fp16, codec: .ezm7)
               }
@@ -340,7 +340,7 @@ struct Quantizer: ParsableCommand {
               $0.write(key, tensor: fp16)
             } else {
               if squeezedDims > 1 {
-                $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+                $0.write(key, tensor: fp16, codec: bulkCodec([.q8p, .ezm7]))
               } else {
                 $0.write(key, tensor: fp16, codec: .ezm7)
               }
