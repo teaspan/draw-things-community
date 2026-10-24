@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "6233a03d4622f7c4aca2648c2fafac8ac2fba07f",
-  "head": "112c5a2bd706de0eb76beaf31bbe258ac6bdd1b0",
+  "prev": "66874d025375f6422ea0626bfad3b219b12a8cee",
+  "head": "d4198c6b41496d07f97722de6fa2d516e6b9fc3e",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -12,7 +12,8 @@
     "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
-    "quantizer-codec-flag"
+    "quantizer-codec-flag",
+    "refresh-temp"
   ],
   "unapplied": [
     "separate-lora-flag",
@@ -63,6 +64,9 @@
     },
     "raw-video-output": {
       "oid": "5effb7c1c17c9579ef347183cd67441a5ded98b2"
+    },
+    "refresh-temp": {
+      "oid": "d4198c6b41496d07f97722de6fa2d516e6b9fc3e"
     },
     "scaled-fp8-import": {
       "oid": "e54477fbd62ce3d2e8764386944415dac6a1e81d"
