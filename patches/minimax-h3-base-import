@@ -1,7 +1,7 @@
-Bottom: 16575102660a741816aea4921d65803a4a4eab01
-Top:    7d07720b959c549d7077d4584399e152e48d8f92
+Bottom: a2dfe00014a096c4f4d92e04b644abff3299ae3f
+Top:    a2dfe00014a096c4f4d92e04b644abff3299ae3f
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-10-16 09:43:58 +0000
+Date:   2026-10-24 09:17:48 +0000
 
 Implement MiniMax H3 base model import and quantization
 
