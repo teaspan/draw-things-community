@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "4e185cf41a89099a923abd00c1d11781832b63cd",
-  "head": "ae6b9d08f0b695f17887a03d452eb8ec1b4118b3",
+  "prev": "4559ab983277ae31b3adb0cad52dccadf2ce1c83",
+  "head": "2076dc5bc193f3d6be570daa9ee4a4f93b888057",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -12,9 +12,7 @@
     "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
-    "quantizer-codec-flag"
-  ],
-  "unapplied": [
+    "quantizer-codec-flag",
     "separate-lora-flag",
     "spec-json-flag",
     "terse-import-progress",
@@ -22,6 +20,7 @@
     "minimax-h3-base-import",
     "qwen-image-2.1-base-import"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
@@ -37,10 +36,10 @@
       "oid": "29f16b890d66f0b4813d02390922e6db5caf9a8b"
     },
     "merge-tool": {
-      "oid": "193926bd6dfb7159891828221d8ad29a948f2983"
+      "oid": "22f65bb2f4e5f0579e2c4b9b25e4733b6913f5e4"
     },
     "minimax-h3-base-import": {
-      "oid": "29383488ddea10afcd3a01e798308fdb4414bce9"
+      "oid": "89b94b8507e8784a1bb5ac6df186637b1b935b9a"
     },
     "nnc-shared-library": {
       "oid": "8b31c79c150729402abdbdd2fbcf63574ec74999"
@@ -55,7 +54,7 @@
       "oid": "ae6b9d08f0b695f17887a03d452eb8ec1b4118b3"
     },
     "qwen-image-2.1-base-import": {
-      "oid": "08b3951e04dd5571004d603218964f0f3a7df282"
+      "oid": "2076dc5bc193f3d6be570daa9ee4a4f93b888057"
     },
     "raw-video-output": {
       "oid": "5effb7c1c17c9579ef347183cd67441a5ded98b2"
@@ -64,13 +63,13 @@
       "oid": "e54477fbd62ce3d2e8764386944415dac6a1e81d"
     },
     "separate-lora-flag": {
-      "oid": "656d86d7f0946f1d17113682abb4e7ba0c8d4aee"
+      "oid": "5199c2c9299855368a22927adba04b42740f61e1"
     },
     "spec-json-flag": {
-      "oid": "3dd341da5dc60d708c4f325c1780e76a36139491"
+      "oid": "d710483e8d0e918992c32febdd2d6b0752339a7a"
     },
     "terse-import-progress": {
-      "oid": "c08c82a149125ca7b16221960cb80117ca11aeae"
+      "oid": "c996814020a8751bce6eb571ed26ce248737d219"
     }
   }
 }
