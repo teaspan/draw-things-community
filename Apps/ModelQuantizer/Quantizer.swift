@@ -326,7 +326,9 @@ struct Quantizer: ParsableCommand {
             } else if key.contains("embedder") || key.contains("final_linear") {
               $0.write(key, tensor: fp16)
             } else {
-              if squeezedDims > 1 {
+              if squeezedDims > 1 && key.contains("ada_ln") {
+                $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+              } else if squeezedDims > 1 {
                 $0.write(key, tensor: fp16, codec: bulkCodec([.q8p, .ezm7]))
               } else {
                 $0.write(key, tensor: fp16, codec: .ezm7)
@@ -339,7 +341,9 @@ struct Quantizer: ParsableCommand {
             } else if key.contains("embedder") || key.contains("-linear-") {
               $0.write(key, tensor: fp16)
             } else {
-              if squeezedDims > 1 {
+              if squeezedDims > 1 && key.contains("ada_ln") {
+                $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+              } else if squeezedDims > 1 {
                 $0.write(key, tensor: fp16, codec: bulkCodec([.q8p, .ezm7]))
               } else {
                 $0.write(key, tensor: fp16, codec: .ezm7)
