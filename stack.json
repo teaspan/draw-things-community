@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "ce9142fd94bb6961d641009e2756dfaccc5a873d",
-  "head": "977b93256934caf8847ef02755b2e5ed5d7893d3",
+  "prev": "768f40ae8023cef12775be1e840a2c24382e44af",
+  "head": "29383488ddea10afcd3a01e798308fdb4414bce9",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -17,8 +17,7 @@
     "spec-json-flag",
     "terse-import-progress",
     "merge-tool",
-    "minimax-h3-base-import",
-    "refresh-temp"
+    "minimax-h3-base-import"
   ],
   "unapplied": [
     "qwen-image-2.1-base-import"
@@ -41,7 +40,7 @@
       "oid": "193926bd6dfb7159891828221d8ad29a948f2983"
     },
     "minimax-h3-base-import": {
-      "oid": "eedc0487d91b25403ff4d29b7672c130536a94a7"
+      "oid": "29383488ddea10afcd3a01e798308fdb4414bce9"
     },
     "nnc-shared-library": {
       "oid": "8b31c79c150729402abdbdd2fbcf63574ec74999"
@@ -60,9 +59,6 @@
     },
     "raw-video-output": {
       "oid": "5effb7c1c17c9579ef347183cd67441a5ded98b2"
-    },
-    "refresh-temp": {
-      "oid": "977b93256934caf8847ef02755b2e5ed5d7893d3"
     },
     "scaled-fp8-import": {
       "oid": "e54477fbd62ce3d2e8764386944415dac6a1e81d"
