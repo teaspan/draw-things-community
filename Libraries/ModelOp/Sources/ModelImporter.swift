@@ -2339,6 +2339,18 @@ public final class ModelImporter {
                     return "__\(modelPrefixFixed)__[\($0)]"
                   }
                   let _ = interrupt()
+                } else if modelVersion == .mossImage,
+                  value.contains(where: { $0.hasPrefix("t-time_embedder_2-0-") })
+                {
+                  value.write(
+                    graph: graph,
+                    to: store, tensor: Tensor<Float>(from: tensors[0]), format: value.format,
+                    isDiagonalUp: false, isDiagonalDown: false
+                  ) {
+                    let _ = interrupt()
+                    return "__\(modelPrefixFixed)__[\($0)]"
+                  }
+                  let _ = interrupt()
                 } else if value.count > 1 {
                   value.write(
                     graph: graph,
