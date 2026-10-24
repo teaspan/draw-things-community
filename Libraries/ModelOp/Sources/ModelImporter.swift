@@ -252,6 +252,9 @@ public final class ModelImporter {
       && stateDict.keys.contains {
         $0.contains("txtfusion.projector.weight") || $0.contains("text_fusion.projector.weight")
       }
+    let isMOSSImage = stateDict.keys.contains {
+      $0.contains("proj.ffn_up_gate.weight")
+    }
     let modifier: SamplerModifier
     let modelVersion: ModelVersion
     let inputDim: Int
@@ -549,6 +552,12 @@ public final class ModelImporter {
       isDiffusersFormat = stateDict.keys.contains {
         $0.contains("transformer_blocks.27.attn.to_q.weight")
       }
+    } else if isMOSSImage {
+      modelVersion = .mossImage
+      modifier = .none
+      inputDim = 32
+      expectedTotalAccess = 379
+      isDiffusersFormat = false
     } else {
       throw UnpickleError.tensorNotFound
     }
@@ -848,7 +857,8 @@ public final class ModelImporter {
     let batchSize: Int
     switch modelVersion {
     case .mossImage:
-      fatalError()
+      conditionalLength = 4_096
+      batchSize = 1
     case .longcatVideoAvatar1_5:
       conditionalLength = 4096
       batchSize = 1
@@ -951,7 +961,11 @@ public final class ModelImporter {
       let filePath = ModelZoo.filePathForModelDownloaded("\(self.modelName)_f16.ckpt")
       switch modelVersion {
       case .mossImage:
-        fatalError()
+        cArr = [
+          graph.variable(
+            Tensor<FloatType>(
+              from: MOSSImageRotaryPositionEmbedding(height: 32, width: 32, tokenLengths: [32])))
+        ]
       case .longcatVideoAvatar1_5:
         let rot = Tensor<FloatType>(
           from: WanRotaryPositionEmbedding(
@@ -1285,7 +1299,13 @@ public final class ModelImporter {
       var additionalMappings = [(prefix: String, mapping: ModelWeightMapping)]()
       switch modelVersion {
       case .mossImage:
-        fatalError()
+        (unetMapper, unet) = MOSSImage(
+          FloatType.self, batchSize: 1, tokenLength: 32, height: 64, width: 64, channels: 3_072,
+          layers: 42, skippableLayers: [], skipsLayers: false, usesFlashAttention: .scale1)
+        unetReader = nil
+        (unetFixedMapper, unetFixed) = MOSSImageFixed(
+          FloatType.self, batchSize: 1, tokenLengths: [32], timesteps: 1, channels: 3_072,
+          usesFlashAttention: .scale1)
       case .longcatVideoAvatar1_5:
         (unetMapper, unet) = LongCatVideoAvatar(
           time: 1, height: 64, width: 64, channels: 4_096, layers: 48, intermediateSize: 11_008,
@@ -1668,7 +1688,14 @@ public final class ModelImporter {
       let crossattn: [DynamicGraph.AnyTensor]
       switch modelVersion {
       case .mossImage:
-        fatalError()
+        crossattn = [
+          graph.variable(.CPU, .HWC(1, 32, 4_096), of: FloatType.self),
+          graph.variable(
+            Tensor<FloatType>(
+              from: MOSSImageRotaryPositionEmbedding(height: 0, width: 0, tokenLengths: [32]))),
+          graph.variable(.CPU, .WC(1, 256), of: FloatType.self),
+        ]
+        tEmb = nil
       case .longcatVideoAvatar1_5:
         crossattn = [
           graph.variable(.CPU, .HWC(1, 512, 4096), of: FloatType.self),
@@ -2017,6 +2044,14 @@ public final class ModelImporter {
             stateDict[String(key.dropFirst(6))] = value
           }
         }
+      } else if modelVersion == .mossImage {
+        for (key, value) in stateDict {
+          if key.hasPrefix("model.diffusion_model.") {
+            stateDict[String(key.dropFirst(22))] = value
+          } else if key.hasPrefix("model.") {
+            stateDict[String(key.dropFirst(6))] = value
+          }
+        }
       } else if modelVersion == .krea2 {
         // Remove the model.diffusion_model / model prefix.
         for (key, value) in stateDict {
@@ -2112,10 +2147,21 @@ public final class ModelImporter {
             UNetMappingFixed = unetFixedMapper(.generativeModels)
             modelPrefix = "stage_c"
             modelPrefixFixed = "stage_c_fixed"
+          case .mossImage:
+            var inputs: [DynamicGraph.AnyTensor] = [xTensor] + (tEmb.map { [$0] } ?? []) + cArr
+            inputs.append(graph.variable(.CPU, .HWC(1, 32, 3_072), of: Float.self))
+            inputs.append(
+              contentsOf: (0..<8).map { _ in graph.variable(.CPU, .HWC(1, 1, 3_072), of: Float.self) })
+            unet.compile(inputs: inputs)
+            unetFixed.compile(inputs: crossattn)
+            UNetMapping = unetMapper(isDiffusersFormat ? .diffusers : .generativeModels)
+            UNetMappingFixed = unetFixedMapper(isDiffusersFormat ? .diffusers : .generativeModels)
+            modelPrefix = "dit"
+            modelPrefixFixed = "dit"
           case .pixart, .sd3, .sd3Large, .flux1, .hunyuanVideo, .wan21_14b, .wan21_1_3b, .hiDreamI1,
             .hiDreamO1, .qwenImage2_1, .wan22_5b, .qwenImage, .cosmos2_5_2b,
             .cosmos2_5_2_9b, .auraflow, .zImage, .ernieImage, .flux2, .flux2_9b, .flux2_4b,
-            .flux3_5b, .mossImage, .ltx2, .ltx2_3,
+            .flux3_5b, .ltx2, .ltx2_3,
             .longcatVideoAvatar1_5,
             .ideogram4, .krea2, .minimaxH3:
             let inputs: [DynamicGraph.Tensor<FloatType>] =
@@ -2315,6 +2361,18 @@ public final class ModelImporter {
                     return "__\(modelPrefixFixed)__[\($0)]"
                   }
                   let _ = interrupt()
+                } else if modelVersion == .mossImage,
+                  value.contains(where: { $0.hasPrefix("t-time_embedder_2-0-") })
+                {
+                  value.write(
+                    graph: graph,
+                    to: store, tensor: Tensor<Float>(from: tensors[0]), format: value.format,
+                    isDiagonalUp: false, isDiagonalDown: false
+                  ) {
+                    let _ = interrupt()
+                    return "__\(modelPrefixFixed)__[\($0)]"
+                  }
+                  let _ = interrupt()
                 } else if value.count > 1 {
                   value.write(
                     graph: graph,
@@ -2412,7 +2470,9 @@ public final class ModelImporter {
       try graph.openStore(filePath) {
         switch modelVersion {
         case .mossImage:
-          fatalError()
+          if $0.keys.count != 524 {
+            throw Error.tensorWritesFailed
+          }
         case .longcatVideoAvatar1_5:
           if $0.keys.count < 2_600 {
             throw Error.tensorWritesFailed
@@ -2710,7 +2770,7 @@ extension ModelImporter {
 
     switch modelVersion {
     case .mossImage:
-      fatalError()
+      textEncoder = "qwen_3.5_9b_i5x.ckpt"
     case .longcatVideoAvatar1_5:
       textEncoder = "umt5_xxl_encoder_q8p.ckpt"
     case .v1:
@@ -2876,7 +2936,11 @@ extension ModelImporter {
 
     switch modelVersion {
     case .mossImage:
-      fatalError()
+      if specification.autoencoder == nil {
+        specification.autoencoder = "flux_2_vae_f16.ckpt"
+      }
+      specification.objective = .u(conditionScale: 1000)
+      specification.hiresFixScale = (finetuneScale * 3 + 1) / 2
     case .longcatVideoAvatar1_5:
       if specification.textEncoder == nil {
         specification.textEncoder = "umt5_xxl_encoder_q8p.ckpt"
