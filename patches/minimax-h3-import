@@ -3,7 +3,7 @@ Top:    88fb031b3696fcd4e800e0711d8ac72ed4064152
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
 Date:   2026-10-25 10:42:05 +0000
 
-Import and quantize MiniMax H3 base models.
+Import and quantize MiniMax H3 models.
 
 The quantizer matches the codec of every tensor in the catalog's i8x
 and q6p files.
