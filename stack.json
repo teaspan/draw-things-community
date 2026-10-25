@@ -1,6 +1,6 @@
 {
   "version": 5,
-  "prev": "e794d9f2482a54def6c6c89179a534b373f9afe9",
+  "prev": "7db11d258db88c7902ae51de27823a12726a131a",
   "head": "40d60f4ce775e2a83a88933bb778e069ee6f1cec",
   "applied": [
     "dti-split-tool",
@@ -16,7 +16,7 @@
     "separate-lora-flag",
     "spec-json-flag",
     "merge-tool",
-    "minimax-h3-base-import",
+    "minimax-h3-import",
     "qwen-image-2.1-base-import",
     "moss-image-base-import"
   ],
@@ -38,7 +38,7 @@
     "merge-tool": {
       "oid": "48dc4dd62e214b99c86f3f958499f4c946d798ce"
     },
-    "minimax-h3-base-import": {
+    "minimax-h3-import": {
       "oid": "9712ae9db3f5bb6746d3171c3bbc0daac73830a5"
     },
     "moss-image-base-import": {
