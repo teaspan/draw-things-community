@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "d25a1e8761ef7a4684927832a283ce7133867eff",
-  "head": "ed5e1e7c965900e6eff360259e7691d9e57eef62",
+  "prev": "ebcb28d0134e377343f75b9a0f2b41f8f25aecf6",
+  "head": "4c809c4894213d1bd84e22bc57bada3dae1a936b",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -11,9 +11,7 @@
     "ltx23-import",
     "nnc-shared-library",
     "no-advertising-flag",
-    "quantizer-bf16-passthrough"
-  ],
-  "unapplied": [
+    "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
     "separate-lora-flag",
     "spec-json-flag",
@@ -22,6 +20,7 @@
     "qwen-image-2.1-import",
     "moss-image-import"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
@@ -37,13 +36,13 @@
       "oid": "bc05956a79e3b6b7929e6596c4d385cd3fa29bc6"
     },
     "merge-tool": {
-      "oid": "828c2f5b76d5b696f9e49a9ddee7db95eeb34d49"
+      "oid": "e4b5fe47c728f670c583f98426ee736df37728a0"
     },
     "minimax-h3-import": {
-      "oid": "8978f47e7980a5fbfd776af29c6f406933f80177"
+      "oid": "0da1d59fb771ade7f3de8202b6d334f7e3e7dccd"
     },
     "moss-image-import": {
-      "oid": "2e9603c1c3353cc8c6362170a8e7e61e81e07053"
+      "oid": "4c809c4894213d1bd84e22bc57bada3dae1a936b"
     },
     "nnc-shared-library": {
       "oid": "67af5fd31c2d096011c5a77fd7bd81de1f0bc010"
@@ -55,10 +54,10 @@
       "oid": "ed5e1e7c965900e6eff360259e7691d9e57eef62"
     },
     "quantizer-codec-flag": {
-      "oid": "23bb18e69c5206f19183fd23d67068e74a018a59"
+      "oid": "4ccd7320f683848d44268f8ce502ce13ca7cd3ce"
     },
     "qwen-image-2.1-import": {
-      "oid": "c1df647bceca99536944de1317b7d533ac476a20"
+      "oid": "dc1d3bd8dd033b9c067f29b2183285e2b093b479"
     },
     "raw-video-output": {
       "oid": "5b6a53d612f77128874c02ec0b36873885a1d61e"
@@ -67,10 +66,10 @@
       "oid": "4edc1bdcae4494378e4c08903312dbeb57a15d60"
     },
     "separate-lora-flag": {
-      "oid": "c12618b535c4fc2c11136cac168fbb0057e64760"
+      "oid": "fddebe7c2f0e4c85596ed21a0fb581c759c76034"
     },
     "spec-json-flag": {
-      "oid": "46485bf5b4b5a2ae3de356520f04be7bc11b1067"
+      "oid": "122591a239dace8dab9b4f9d7448dae0d3047674"
     }
   }
 }
