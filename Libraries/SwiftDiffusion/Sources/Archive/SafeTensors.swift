@@ -70,7 +70,6 @@ public final class SafeTensors {
   public var data: Data
   public let bufferStart: Int
   public let states: [String: TensorDescriptor]
-  public let unsupportedDtypes: [String: String]
   public init?(url: URL) {
     guard let data = try? Data(contentsOf: url, options: .mappedIfSafe) else { return nil }
     guard data.count >= 8 else { return nil }
@@ -84,7 +83,6 @@ public final class SafeTensors {
         with: data[8..<(8 + headerSize)]) as? [String: Any]
     else { return nil }
     var states = [String: TensorDescriptor]()
-    var unsupportedDtypes = [String: String]()
     for (key, value) in jsonDict {
       guard let value = value as? [String: Any], let offsets = value["data_offsets"] as? [Int],
         let dtype = (value["dtype"] as? String)?.lowercased(), var shape = value["shape"] as? [Int],
@@ -107,7 +105,6 @@ public final class SafeTensors {
           || dtype == "double" || dtype == "bf16" || dtype == "bfloat16" || dtype == "f8_e4m3"
           || dtype == "f8_e5m2"
       else {
-        unsupportedDtypes[key] = dtype.uppercased()
         continue
       }
       let BF16 = (dtype == "bf16" || dtype == "bfloat16")
@@ -139,81 +136,26 @@ public final class SafeTensors {
     }
     self.data = data
     self.states = states
-    self.unsupportedDtypes = unsupportedDtypes
     bufferStart = 8 + Int(headerSize)
   }
 }
 
 extension SafeTensors {
   public func applyingScaledFP8WeightScales() -> TensorArchive {
-    func stemScoped(_ key: String) -> [String] {
-      guard key.hasSuffix(".weight") else { return [] }
-      let stem = String(key.dropLast(".weight".count))
-      return [stem + ".scale_weight", stem + ".comfy_quant"]
-    }
-    func isScaleNamed(_ key: String) -> Bool {
-      key.hasSuffix("weight_scale") || key.hasSuffix("scale_weight")
-    }
-    func tensors(_ count: Int) -> String {
-      count == 1 ? "1 tensor" : "\(count) tensors"
-    }
-    var scaleValues = [String: Float]()
-    for (key, descriptor) in states
-    where isScaleNamed(key) && descriptor.storage.dataType == .Float32 {
-      scaleValues[key] = data.withUnsafeBytes {
-        $0.loadUnaligned(fromByteOffset: bufferStart + descriptor.storageOffset, as: Float.self)
-      }
-    }
-    let headerKeys = Set(states.keys).union(unsupportedDtypes.keys)
-    func scaleFor(_ key: String) -> Float? {
-      if let value = scaleValues[key + "_scale"] { return value }
-      return stemScoped(key).lazy.compactMap { scaleValues[$0] }.first
-    }
-    func scaleEntryFor(_ key: String) -> String? {
-      ([key + "_scale"] + stemScoped(key)).first { headerKeys.contains($0) }
-    }
     var scales = [String: Float]()
-    var orphans = [String]()
-    var unapplied = [(String, String)]()
-    for (key, descriptor) in states
-    where !isScaleNamed(key) && descriptor.storage.size > 0 {
-      if descriptor.storage.FP8_E4M3 {
-        if let scale = scaleFor(key) {
-          scales[key] = scale
-        } else if !scaleValues.isEmpty {
-          orphans.append(key)
-        }
-      } else if let entry = scaleEntryFor(key) {
-        unapplied.append((key, entry))
+    for (key, descriptor) in states where descriptor.storage.FP8_E4M3 {
+      var scaleKeys = [key + "_scale"]
+      if key.hasSuffix(".weight") {
+        scaleKeys.append(String(key.dropLast("weight".count)) + "scale_weight")
       }
-    }
-    var warnings = [String]()
-    let e5m2 = states.filter { $0.value.storage.FP8_E5M2 }
-    if !scaleValues.isEmpty, let worst = e5m2.min(by: { $0.key < $1.key }) {
-      warnings.append(
-        "\(tensors(e5m2.count)) use F8_E5M2 in a file that carries quantization scales "
-          + "(for example \(worst.key)). Scaled E5M2 is not implemented, so they import unscaled.")
-    }
-    let foreign = unsupportedDtypes.filter { key, _ in !key.hasSuffix(".comfy_quant") }
-    if let worst = foreign.min(by: { $0.key < $1.key }) {
-      warnings.append(
-        "\(tensors(foreign.count)) use a dtype the reader cannot decode "
-          + "(\(worst.value), for example \(worst.key)). They are skipped.")
-    }
-    if let worst = orphans.min() {
-      warnings.append(
-        "\(tensors(orphans.count)) use F8_E4M3 with no matching scale entry "
-          + "(for example \(worst)). They import unscaled.")
-    }
-    if let worst = unapplied.min(by: { $0.0 < $1.0 }) {
-      let leaf = worst.1.split(separator: ".").last.map(String.init) ?? worst.1
-      warnings.append(
-        "\(tensors(unapplied.count)) carry a \(leaf) entry that does not apply to them "
-          + "(for example \(worst.0)). The entry is ignored.")
-    }
-    if !warnings.isEmpty {
-      FileHandle.standardError.write(
-        Data(warnings.map { "warning: \($0)\n" }.joined().utf8))
+      guard
+        let scale = scaleKeys.lazy.compactMap({ self.states[$0] }).first(where: {
+          $0.storage.dataType == .Float32
+        })
+      else { continue }
+      scales[key] = data.withUnsafeBytes {
+        $0.loadUnaligned(fromByteOffset: bufferStart + scale.storageOffset, as: Float.self)
+      }
     }
     guard !scales.isEmpty else { return self }
     return ScaledFP8Archive(base: self, scales: scales)
@@ -228,8 +170,7 @@ private final class ScaledFP8Archive: TensorArchive {
     self.scales = scales
   }
   func with<T>(_ tensorDescriptor: TensorDescriptor, block: (AnyTensor) throws -> T) throws -> T {
-    guard tensorDescriptor.storage.FP8_E4M3, let scale = scales[tensorDescriptor.storage.name]
-    else {
+    guard let scale = scales[tensorDescriptor.storage.name] else {
       return try base.with(tensorDescriptor, block: block)
     }
     return try base.with(tensorDescriptor) { tensor in
