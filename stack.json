@@ -1,6 +1,6 @@
 {
   "version": 5,
-  "prev": "1ffecf86dbd3fe1522b561155275ea658ce4328d",
+  "prev": "fbf356e4d82c011c60cef5d856ecfe823aa8f00c",
   "head": "40d60f4ce775e2a83a88933bb778e069ee6f1cec",
   "applied": [
     "dti-split-tool",
@@ -17,7 +17,7 @@
     "spec-json-flag",
     "merge-tool",
     "minimax-h3-import",
-    "qwen-image-2.1-base-import",
+    "qwen-image-2.1-import",
     "moss-image-import"
   ],
   "unapplied": [],
@@ -56,7 +56,7 @@
     "quantizer-codec-flag": {
       "oid": "b210836ac91d903f398e9b8aa5f999ecce6cff28"
     },
-    "qwen-image-2.1-base-import": {
+    "qwen-image-2.1-import": {
       "oid": "cafa6c110c6fd89b5fa4b82186806b01069896bf"
     },
     "raw-video-output": {
