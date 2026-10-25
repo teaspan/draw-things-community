@@ -5,6 +5,7 @@ Date:   2026-10-25 12:38:21 +0000
 
 Apply ComfyUI's scaled-FP8 weight scales when importing safetensors
 
-Fix scaled-FP8 model imports ignoring the scale. The archive is wrapped,
-rather than ModelWeightElement.scale set, so a combined-source gather
-can carry a different scale per source.
+The importer decoded ComfyUI's scaled E4M3 weights but ignored their
+weight_scale and scale_weight entries. Wrap the archive rather than set
+ModelWeightElement.scale, so that a gather over several source tensors
+applies each source's own scale.
