@@ -1,6 +1,6 @@
 {
   "version": 5,
-  "prev": "c4dc51850bb1716385896408a6f4cdc803396c3b",
+  "prev": "e794d9f2482a54def6c6c89179a534b373f9afe9",
   "head": "40d60f4ce775e2a83a88933bb778e069ee6f1cec",
   "applied": [
     "dti-split-tool",
@@ -8,7 +8,7 @@
     "linux-mapped-reads",
     "linux-portability",
     "raw-video-output",
-    "ltx23-base-import",
+    "ltx23-import",
     "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
@@ -32,7 +32,7 @@
     "linux-portability": {
       "oid": "04a671024df388ac137cff36b01a57a0f63ff4ff"
     },
-    "ltx23-base-import": {
+    "ltx23-import": {
       "oid": "085d5b3afd913940718a380ed8441846fae94791"
     },
     "merge-tool": {
