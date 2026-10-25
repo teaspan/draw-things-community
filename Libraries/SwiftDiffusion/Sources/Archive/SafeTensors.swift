@@ -134,55 +134,23 @@ public final class SafeTensors {
         storageOffset: offsetStart, shape: shape, strides: strides)
       states[key] = tensorDescriptor
     }
+    for (key, descriptor) in states
+    where descriptor.storage.FP8_E4M3 || descriptor.storage.FP8_E5M2 {
+      let scaleKeys =
+        key.hasSuffix(".weight")
+        ? [key + "_scale", String(key.dropLast("weight".count)) + "scale_weight"] : [key + "_scale"]
+      guard
+        let scale = scaleKeys.compactMap({ states[$0] }).first(where: {
+          $0.storage.dataType == .Float32 && $0.storage.size == MemoryLayout<Float>.size
+        })
+      else { continue }
+      states[key]?.storage.scale = data.withUnsafeBytes {
+        $0.loadUnaligned(fromByteOffset: 8 + Int(headerSize) + scale.storageOffset, as: Float.self)
+      }
+    }
     self.data = data
     self.states = states
     bufferStart = 8 + Int(headerSize)
-  }
-}
-
-extension SafeTensors {
-  public func applyingScaledFP8WeightScales() -> TensorArchive {
-    var scales = [String: Float]()
-    for (key, descriptor) in states where descriptor.storage.FP8_E4M3 {
-      var scaleKeys = [key + "_scale"]
-      if key.hasSuffix(".weight") {
-        scaleKeys.append(String(key.dropLast("weight".count)) + "scale_weight")
-      }
-      guard
-        let scale = scaleKeys.lazy.compactMap({ self.states[$0] }).first(where: {
-          $0.storage.dataType == .Float32
-        })
-      else { continue }
-      scales[key] = data.withUnsafeBytes {
-        $0.loadUnaligned(fromByteOffset: bufferStart + scale.storageOffset, as: Float.self)
-      }
-    }
-    guard !scales.isEmpty else { return self }
-    return ScaledFP8Archive(base: self, scales: scales)
-  }
-}
-
-private final class ScaledFP8Archive: TensorArchive {
-  private let base: SafeTensors
-  private let scales: [String: Float]
-  init(base: SafeTensors, scales: [String: Float]) {
-    self.base = base
-    self.scales = scales
-  }
-  func with<T>(_ tensorDescriptor: TensorDescriptor, block: (AnyTensor) throws -> T) throws -> T {
-    guard let scale = scales[tensorDescriptor.storage.name] else {
-      return try base.with(tensorDescriptor, block: block)
-    }
-    return try base.with(tensorDescriptor) { tensor in
-      guard var f32 = tensor as? Tensor<Float> else { return try block(tensor) }
-      f32.withUnsafeMutableBytes { bytes in
-        guard let pointer = bytes.baseAddress?.assumingMemoryBound(to: Float.self) else { return }
-        for i in 0..<(bytes.count / MemoryLayout<Float>.size) {
-          pointer[i] *= scale
-        }
-      }
-      return try block(f32)
-    }
   }
 }
 
@@ -251,13 +219,14 @@ extension TensorDataArchive {
           )
           f32.withUnsafeMutableBytes {
             guard let f32 = $0.baseAddress?.assumingMemoryBound(to: Float.self) else { return }
+            let scale = tensorDescriptor.storage.scale
             if tensorDescriptor.storage.FP8_E4M3 {
               for i in 0..<count {
-                f32[i] = F8_E4M3[Int(fp8[i])]
+                f32[i] = F8_E4M3[Int(fp8[i])] * scale
               }
             } else if tensorDescriptor.storage.FP8_E5M2 {
               for i in 0..<count {
-                f32[i] = F8_E5M2[Int(fp8[i])]
+                f32[i] = F8_E5M2[Int(fp8[i])] * scale
               }
             }
           }
@@ -311,13 +280,14 @@ extension TensorDataArchive {
           )
           f32.withUnsafeMutableBytes {
             guard let f32 = $0.baseAddress?.assumingMemoryBound(to: Float.self) else { return }
+            let scale = tensorDescriptor.storage.scale
             if tensorDescriptor.storage.FP8_E4M3 {
               for i in 0..<count {
-                f32[i] = F8_E4M3[Int(fp8[i])]
+                f32[i] = F8_E4M3[Int(fp8[i])] * scale
               }
             } else if tensorDescriptor.storage.FP8_E5M2 {
               for i in 0..<count {
-                f32[i] = F8_E5M2[Int(fp8[i])]
+                f32[i] = F8_E5M2[Int(fp8[i])] * scale
               }
             }
           }
