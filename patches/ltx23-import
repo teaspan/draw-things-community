@@ -1,9 +1,9 @@
 Bottom: 1afb4024f49a7f80f73f816a98a0480529e7f7f9
 Top:    a8dd3c3ba6a4e7f429363364201ffd5dc1c4520f
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-10-25 06:37:47 +0000
+Date:   2026-10-25 10:42:05 +0000
 
-Implement LTX-2.3 base model import
+Implement LTX-2.3 model import
 
 The aggregate_embed weights are written BF16 because the text feature
 extractor runs BF16 and ccv_nnc_tensor_read cannot convert.
