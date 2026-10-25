@@ -1,12 +1,9 @@
 Bottom: 26a4baacb4112c1c3e0bbaae7622d52ec5c71f0e
 Top:    88fb031b3696fcd4e800e0711d8ac72ed4064152
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-10-25 06:38:55 +0000
+Date:   2026-10-25 10:29:40 +0000
 
-Implement MiniMax H3 base model import and quantization
+Import and quantize MiniMax H3 base models.
 
-Upstream ships MiniMax H3 inference and LoRA import but converts the base
-model out of tree. The importer arms are lifted from LoRAImporter's working
-.minimaxH3 wiring. The quantizer recipe reproduces the catalog's own i8x and
-q6p files, which keep the token refiner, embedders and output heads raw and
-palettize adaLN at q8p.
+The quantizer matches the codec of every tensor in the catalog's i8x
+and q6p files.
