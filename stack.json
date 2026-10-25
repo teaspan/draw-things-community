@@ -1,6 +1,6 @@
 {
   "version": 5,
-  "prev": "7db11d258db88c7902ae51de27823a12726a131a",
+  "prev": "1ffecf86dbd3fe1522b561155275ea658ce4328d",
   "head": "40d60f4ce775e2a83a88933bb778e069ee6f1cec",
   "applied": [
     "dti-split-tool",
@@ -18,7 +18,7 @@
     "merge-tool",
     "minimax-h3-import",
     "qwen-image-2.1-base-import",
-    "moss-image-base-import"
+    "moss-image-import"
   ],
   "unapplied": [],
   "hidden": [],
@@ -41,7 +41,7 @@
     "minimax-h3-import": {
       "oid": "9712ae9db3f5bb6746d3171c3bbc0daac73830a5"
     },
-    "moss-image-base-import": {
+    "moss-image-import": {
       "oid": "40d60f4ce775e2a83a88933bb778e069ee6f1cec"
     },
     "nnc-shared-library": {
