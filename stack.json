@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "60a8349944e1c6497acf5034f457a85099ecefbd",
-  "head": "2e9603c1c3353cc8c6362170a8e7e61e81e07053",
+  "prev": "7b395d068b744e1aadc6f5beec2bd4b590b10c68",
+  "head": "abef3435254d6e12d9f30d7dab92852aa36623be",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -11,7 +11,9 @@
     "ltx23-import",
     "nnc-shared-library",
     "no-advertising-flag",
-    "quantizer-bf16-passthrough",
+    "quantizer-bf16-passthrough"
+  ],
+  "unapplied": [
     "quantizer-codec-flag",
     "separate-lora-flag",
     "spec-json-flag",
@@ -20,7 +22,6 @@
     "qwen-image-2.1-import",
     "moss-image-import"
   ],
-  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
