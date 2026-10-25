@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "ff0eca7c91487c49efe749f7330f67201908f133",
-  "head": "db5d4a4dfb64335c743800dde5922c1f79158ea8",
+  "prev": "73199d6824461ae69fb72a1e8ac0af3a5df969f6",
+  "head": "45605450c6e1965973ee75a78a8c5dd8d84f0f5d",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -15,7 +15,6 @@
     "quantizer-codec-flag",
     "separate-lora-flag",
     "spec-json-flag",
-    "terse-import-progress",
     "merge-tool",
     "minimax-h3-base-import",
     "qwen-image-2.1-base-import",
@@ -37,13 +36,13 @@
       "oid": "085d5b3afd913940718a380ed8441846fae94791"
     },
     "merge-tool": {
-      "oid": "fdaa89e06b9de151a6f3165b9761f303eacf0443"
+      "oid": "48dc4dd62e214b99c86f3f958499f4c946d798ce"
     },
     "minimax-h3-base-import": {
-      "oid": "2f0c52d494db71f7c6adcefe8881c4f7248a5a79"
+      "oid": "f5be94ca2b30c6db200232ee766d79afb0a1d2ae"
     },
     "moss-image-base-import": {
-      "oid": "db5d4a4dfb64335c743800dde5922c1f79158ea8"
+      "oid": "45605450c6e1965973ee75a78a8c5dd8d84f0f5d"
     },
     "nnc-shared-library": {
       "oid": "448a07740b9717846a5bc9ac7467bc1b2f9ee7d9"
@@ -58,7 +57,7 @@
       "oid": "b210836ac91d903f398e9b8aa5f999ecce6cff28"
     },
     "qwen-image-2.1-base-import": {
-      "oid": "6ecda868861e237f1a796fe94549911bf5fbfc87"
+      "oid": "d17a5dc9f88096e2069a711e9208d7fad7455dfa"
     },
     "raw-video-output": {
       "oid": "5b6a53d612f77128874c02ec0b36873885a1d61e"
@@ -71,9 +70,6 @@
     },
     "spec-json-flag": {
       "oid": "59d660e61c25eac1fb901f7633e93353c42a11fe"
-    },
-    "terse-import-progress": {
-      "oid": "ae247718d13d2a7dea1d7823342a32ac5aaece24"
     }
   }
 }
