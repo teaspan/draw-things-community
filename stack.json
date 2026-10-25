@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "b81443d90e1322fc04bc8d3f200ee80b590a2376",
-  "head": "6daa4faa4c4405675870d39eca0169a93b053288",
+  "prev": "36486dfc32424697564eab239457ddc774bf348d",
+  "head": "cfa4636273ca0c15b9e88e1ad3c24cd8a28a6566",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -42,7 +42,7 @@
       "oid": "9712ae9db3f5bb6746d3171c3bbc0daac73830a5"
     },
     "moss-image-base-import": {
-      "oid": "6daa4faa4c4405675870d39eca0169a93b053288"
+      "oid": "cfa4636273ca0c15b9e88e1ad3c24cd8a28a6566"
     },
     "nnc-shared-library": {
       "oid": "448a07740b9717846a5bc9ac7467bc1b2f9ee7d9"
@@ -57,7 +57,7 @@
       "oid": "b210836ac91d903f398e9b8aa5f999ecce6cff28"
     },
     "qwen-image-2.1-base-import": {
-      "oid": "477fd8620ad0812621040f6e3a9b7fba6293f389"
+      "oid": "cafa6c110c6fd89b5fa4b82186806b01069896bf"
     },
     "raw-video-output": {
       "oid": "5b6a53d612f77128874c02ec0b36873885a1d61e"
