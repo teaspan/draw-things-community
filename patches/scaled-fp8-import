@@ -3,9 +3,9 @@ Top:    629c49acbde5d744c7bd6665b2bb715e3519b26b
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
 Date:   2026-10-25 13:22:28 +0000
 
-Apply ComfyUI's scaled-FP8 weight scales when importing safetensors
+Add scaled FP8 support when importing.
 
-The importer decoded ComfyUI's scaled E4M3 weights but ignored their
-weight_scale and scale_weight entries. Wrap the archive rather than set
-ModelWeightElement.scale, so that a gather over several source tensors
-applies each source's own scale.
+ComfyUI's scaled FP8 checkpoints store an F32 weight_scale or scale_weight
+beside each FP8 weight. The importer ignored it, so those weights came in
+off by a factor of 1/scale. Applying the scale while decoding covers every
+importer that reads safetensors.
