@@ -1,10 +1,12 @@
 {
   "version": 5,
-  "prev": "7200a0bb422b5f96cb5cd327c7a20580152bf518",
-  "head": "d0e1243e1e088b9f6381676a4f8cad9c45b7d085",
+  "prev": "000d00bb3803ddd183544e4d60989a19f90af7ac",
+  "head": "f79278ed1de48ab3e57130e564d19b5b3aec5771",
   "applied": [
     "dti-split-tool",
-    "scaled-fp8-import",
+    "scaled-fp8-import"
+  ],
+  "unapplied": [
     "linux-mapped-reads",
     "linux-portability",
     "raw-video-output",
@@ -20,7 +22,6 @@
     "qwen-image-2.1-import",
     "moss-image-import"
   ],
-  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
