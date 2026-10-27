@@ -2054,7 +2054,7 @@ public final class ModelImporter {
           }
         }
       } else if modelVersion == .ltx2_3 || modelVersion == .minimaxH3
-        || modelVersion == .qwenImage2_1
+        || modelVersion == .qwenImage2_1 || modelVersion == .mossImage
       {
         for (key, value) in stateDict {
           if key.hasPrefix("model.diffusion_model.") {
