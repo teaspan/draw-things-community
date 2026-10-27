@@ -1,12 +1,10 @@
 {
   "version": 5,
-  "prev": "78c60177449c22bd32df3001982b210c7ce5f0f4",
-  "head": "f79278ed1de48ab3e57130e564d19b5b3aec5771",
+  "prev": "7200a0bb422b5f96cb5cd327c7a20580152bf518",
+  "head": "d0e1243e1e088b9f6381676a4f8cad9c45b7d085",
   "applied": [
     "dti-split-tool",
-    "scaled-fp8-import"
-  ],
-  "unapplied": [
+    "scaled-fp8-import",
     "linux-mapped-reads",
     "linux-portability",
     "raw-video-output",
@@ -22,55 +20,56 @@
     "qwen-image-2.1-import",
     "moss-image-import"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
       "oid": "0bda3dccec40ed71e09313a25b8549e03bfc2f2c"
     },
     "linux-mapped-reads": {
-      "oid": "5b93f173341f972d6d7fdf2c7b880895d4b08af3"
+      "oid": "ca27d7195cf8c01d89979087c16c1d644b57b6d4"
     },
     "linux-portability": {
-      "oid": "8521af8ec90f2e7f9f31a2864db0d04834d3f769"
+      "oid": "e1108639f9d9ab502fc6ec34846e9c1e1dce216b"
     },
     "ltx23-import": {
-      "oid": "9a8bd2627e0343d95f45b43cde0fd761e4a5e912"
+      "oid": "68a6c4f79c14ada6e9f5420b820b381fde68fa48"
     },
     "merge-tool": {
-      "oid": "23a0349febaabc70058cbd3565c868a2ac3aca29"
+      "oid": "ea58c94a9c6c672ba018b5ea9f061a577bd1ec39"
     },
     "minimax-h3-import": {
-      "oid": "a63b13ff075b9c1685b409289077cb8d5d180aa6"
+      "oid": "16243042664fa98814eb0eb5abcac6fd08626328"
     },
     "moss-image-import": {
-      "oid": "2eab663726487c2642677f0497b0b1153aa0b457"
+      "oid": "d0e1243e1e088b9f6381676a4f8cad9c45b7d085"
     },
     "nnc-shared-library": {
-      "oid": "636fba7f496658550fa6515e9d965816421a2142"
+      "oid": "4460e1d6e3a97fbd2c327d994bb85c9579670482"
     },
     "no-advertising-flag": {
-      "oid": "36872346f5f5d5b21e722d9e862de712d60d2c2e"
+      "oid": "3cb862fdeee60cf909334bdde008d3a583137f40"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "8268d1e2ed36441faec47a5efeda88e3db161b1b"
+      "oid": "7fb175c411cbfe5a5e939801130b7119ae88d3cb"
     },
     "quantizer-codec-flag": {
-      "oid": "8a85494a6a58d6ca28fa4f1dad8beaf8ab1421eb"
+      "oid": "edf8c71cc1093caa57bc62784db9b34fed3ad8e0"
     },
     "qwen-image-2.1-import": {
-      "oid": "3f8d5c80f48aceb9b32f4e30cabe987ecb6e1d73"
+      "oid": "d88a508070f61be230f80205f5632328d9065f6f"
     },
     "raw-video-output": {
-      "oid": "24b247c9b4219ddefe85c879596faebc6b9644a0"
+      "oid": "0f0a8243d1ef8041b66f5de0ac6be91c76326f34"
     },
     "scaled-fp8-import": {
       "oid": "f79278ed1de48ab3e57130e564d19b5b3aec5771"
     },
     "separate-lora-flag": {
-      "oid": "f5e2b735038ee184e8374f09308ab0da7dc8ad26"
+      "oid": "c9252a24fa20d49151b58be3b1678cbc586c2431"
     },
     "spec-json-flag": {
-      "oid": "690e04487125880ffdb7dc7ac64a1c8889a9db9b"
+      "oid": "89fd4cebc9ca1c1bc0db90f5ee32191d278463f0"
     }
   }
 }
