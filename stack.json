@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "13fd07fffc198f8c7d5a5388a3e7ac5ed43a9901",
-  "head": "f4c86d51a367933c0f2e04ca824bc926ef3598da",
+  "prev": "a8ea72512c38a9d23d0a5943007a15ca6ac081d9",
+  "head": "f1b6ff0508b1977cf71436da7fb5fc8778234d85",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -9,9 +9,7 @@
     "linux-portability",
     "raw-video-output",
     "ltx23-import",
-    "nnc-shared-library"
-  ],
-  "unapplied": [
+    "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
@@ -22,6 +20,7 @@
     "qwen-image-2.1-import",
     "moss-image-import"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
@@ -37,28 +36,28 @@
       "oid": "9a8bd2627e0343d95f45b43cde0fd761e4a5e912"
     },
     "merge-tool": {
-      "oid": "0fcf0729b3d202e2d4a07faf3cc69af3c008f459"
+      "oid": "4f7fe62a0a63e89e092efd9e7f099b26f0a1cf1d"
     },
     "minimax-h3-import": {
-      "oid": "eeee8154e72bd2c3551ef6e24b55fed3290db4c2"
+      "oid": "7fcd0a125069498e3395808a5628c5dd8c0a70e6"
     },
     "moss-image-import": {
-      "oid": "7e87d3789377ac0d7f427f7775d1ca16d505e63b"
+      "oid": "f1b6ff0508b1977cf71436da7fb5fc8778234d85"
     },
     "nnc-shared-library": {
       "oid": "f4c86d51a367933c0f2e04ca824bc926ef3598da"
     },
     "no-advertising-flag": {
-      "oid": "1778cf8dafadd4e66b931fc8f59e49cd2388ad35"
+      "oid": "f7f96bb094ac939da97062e0ad4a64fa7999e97f"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "bd0669745aa127b68c7185a3c39c80abc22b51a6"
+      "oid": "513132d1dedbe03b62158fbbab7091a8fb88f5cd"
     },
     "quantizer-codec-flag": {
-      "oid": "0454e889a444b8c5df06a4a440f5b1ac26fd90ee"
+      "oid": "e47f589d5a7fddc52cd51d3f612831974cd98465"
     },
     "qwen-image-2.1-import": {
-      "oid": "9d74cc04488f5e09e540e1e2120c81fbcebeb210"
+      "oid": "fba5e0cb41757e935c5953205ca2f2db48a399e3"
     },
     "raw-video-output": {
       "oid": "24b247c9b4219ddefe85c879596faebc6b9644a0"
@@ -67,10 +66,10 @@
       "oid": "bf04f47211b41acd7f51827f028a39b115b8e0fc"
     },
     "separate-lora-flag": {
-      "oid": "27ff5cdae70428539d8e17bfb2f398544378afc3"
+      "oid": "88f7b181f47709bdfc322d26910baa468b3a91d6"
     },
     "spec-json-flag": {
-      "oid": "3c279e73239ca38875cee86956beddeb236de5b2"
+      "oid": "15daafd07ce9e1397af6ea0858c24280b0b937ef"
     }
   }
 }
