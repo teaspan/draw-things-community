@@ -1,16 +1,17 @@
 {
   "version": 5,
-  "prev": "3be09251cefed8f4ec9843c71da3e1aeafa9661c",
-  "head": "fb0291c59e975bc91f1a1dd1a2cbbd1b0f31d37c",
-  "applied": [],
-  "unapplied": [
+  "prev": "65ffaee38e114e86770a7f354878044f1a2e8019",
+  "head": "aaff2510edbf3683fb1297f7bdd0f83b7fc863c0",
+  "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
     "linux-mapped-reads",
     "linux-portability",
     "raw-video-output",
     "ltx23-import",
-    "nnc-shared-library",
+    "nnc-shared-library"
+  ],
+  "unapplied": [
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
@@ -24,16 +25,16 @@
   "hidden": [],
   "patches": {
     "dti-split-tool": {
-      "oid": "958f6651818bffeca7fe9a8785f8b441b800a91c"
+      "oid": "0bda3dccec40ed71e09313a25b8549e03bfc2f2c"
     },
     "linux-mapped-reads": {
-      "oid": "962003957f5ba83879cfc454cd1d62c68f4547a9"
+      "oid": "5b93f173341f972d6d7fdf2c7b880895d4b08af3"
     },
     "linux-portability": {
-      "oid": "f307eea055ebe474173f9280e9d7048d3b7476ff"
+      "oid": "8521af8ec90f2e7f9f31a2864db0d04834d3f769"
     },
     "ltx23-import": {
-      "oid": "bfbd5cd4914b2a44b85f13f8a7282786c2aaf8ed"
+      "oid": "9a8bd2627e0343d95f45b43cde0fd761e4a5e912"
     },
     "merge-tool": {
       "oid": "0fcf0729b3d202e2d4a07faf3cc69af3c008f459"
@@ -45,7 +46,7 @@
       "oid": "7e87d3789377ac0d7f427f7775d1ca16d505e63b"
     },
     "nnc-shared-library": {
-      "oid": "f5c3d39c8dd38da948a9a5fe13c2ccea229b0035"
+      "oid": "aaff2510edbf3683fb1297f7bdd0f83b7fc863c0"
     },
     "no-advertising-flag": {
       "oid": "1778cf8dafadd4e66b931fc8f59e49cd2388ad35"
@@ -60,10 +61,10 @@
       "oid": "9d74cc04488f5e09e540e1e2120c81fbcebeb210"
     },
     "raw-video-output": {
-      "oid": "e8d586aa51a6c2673d4c3115972fb2624ec9db96"
+      "oid": "24b247c9b4219ddefe85c879596faebc6b9644a0"
     },
     "scaled-fp8-import": {
-      "oid": "b5d7359dcc143757ac66a3ab8cbe4832a4bb191c"
+      "oid": "bf04f47211b41acd7f51827f028a39b115b8e0fc"
     },
     "separate-lora-flag": {
       "oid": "27ff5cdae70428539d8e17bfb2f398544378afc3"
