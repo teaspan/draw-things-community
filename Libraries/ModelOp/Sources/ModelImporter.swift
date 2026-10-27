@@ -157,9 +157,6 @@ public final class ModelImporter {
         descriptor.shape.last == 4_096 && key.contains("transformer_blocks.31.attn.to_q.weight")
       }
       && stateDict.keys.contains { $0.contains("txt_in.text_norm.weight") }
-    let isMOSSImage =
-      stateDict.keys.contains { $0.contains("proj.ffn_up_gate.weight") }
-      && stateDict.keys.contains { $0.contains("video_embedder.weight") }
     var isPixArtSigmaXL =
       !isSD3Large && !isLongCatVideoAvatar && !isLTX2_3
       && stateDict.keys.contains {
@@ -255,6 +252,9 @@ public final class ModelImporter {
       && stateDict.keys.contains {
         $0.contains("txtfusion.projector.weight") || $0.contains("text_fusion.projector.weight")
       }
+    let isMOSSImage =
+      stateDict.keys.contains { $0.contains("proj.ffn_up_gate.weight") }
+      && stateDict.keys.contains { $0.contains("video_embedder.weight") }
     let modifier: SamplerModifier
     let modelVersion: ModelVersion
     let inputDim: Int
@@ -380,12 +380,6 @@ public final class ModelImporter {
       inputDim = 64
       expectedTotalAccess = 300
       isDiffusersFormat = true
-    } else if isMOSSImage {
-      modelVersion = .mossImage
-      modifier = .none
-      inputDim = 32
-      expectedTotalAccess = 379
-      isDiffusersFormat = false
     } else if isPixArtSigmaXL {
       modelVersion = .pixart
       modifier = .none
@@ -558,6 +552,12 @@ public final class ModelImporter {
       isDiffusersFormat = stateDict.keys.contains {
         $0.contains("transformer_blocks.27.attn.to_q.weight")
       }
+    } else if isMOSSImage {
+      modelVersion = .mossImage
+      modifier = .none
+      inputDim = 32
+      expectedTotalAccess = 379
+      isDiffusersFormat = false
     } else {
       throw UnpickleError.tensorNotFound
     }
@@ -2044,6 +2044,14 @@ public final class ModelImporter {
             stateDict[String(key.dropFirst(6))] = value
           }
         }
+      } else if modelVersion == .mossImage {
+        for (key, value) in stateDict {
+          if key.hasPrefix("model.diffusion_model.") {
+            stateDict[String(key.dropFirst(22))] = value
+          } else if key.hasPrefix("model.") {
+            stateDict[String(key.dropFirst(6))] = value
+          }
+        }
       } else if modelVersion == .krea2 {
         // Remove the model.diffusion_model / model prefix.
         for (key, value) in stateDict {
@@ -2054,7 +2062,7 @@ public final class ModelImporter {
           }
         }
       } else if modelVersion == .ltx2_3 || modelVersion == .minimaxH3
-        || modelVersion == .qwenImage2_1 || modelVersion == .mossImage
+        || modelVersion == .qwenImage2_1
       {
         for (key, value) in stateDict {
           if key.hasPrefix("model.diffusion_model.") {
@@ -2139,6 +2147,17 @@ public final class ModelImporter {
             UNetMappingFixed = unetFixedMapper(.generativeModels)
             modelPrefix = "stage_c"
             modelPrefixFixed = "stage_c_fixed"
+          case .mossImage:
+            var inputs: [DynamicGraph.AnyTensor] = [xTensor] + (tEmb.map { [$0] } ?? []) + cArr
+            inputs.append(graph.variable(.CPU, .HWC(1, 32, 3_072), of: Float.self))
+            inputs.append(
+              contentsOf: (0..<8).map { _ in graph.variable(.CPU, .HWC(1, 1, 3_072), of: Float.self) })
+            unet.compile(inputs: inputs)
+            unetFixed.compile(inputs: crossattn)
+            UNetMapping = unetMapper(isDiffusersFormat ? .diffusers : .generativeModels)
+            UNetMappingFixed = unetFixedMapper(isDiffusersFormat ? .diffusers : .generativeModels)
+            modelPrefix = "dit"
+            modelPrefixFixed = "dit"
           case .pixart, .sd3, .sd3Large, .flux1, .hunyuanVideo, .wan21_14b, .wan21_1_3b, .hiDreamI1,
             .hiDreamO1, .qwenImage2_1, .wan22_5b, .qwenImage, .cosmos2_5_2b,
             .cosmos2_5_2_9b, .auraflow, .zImage, .ernieImage, .flux2, .flux2_9b, .flux2_4b,
@@ -2147,17 +2166,6 @@ public final class ModelImporter {
             .ideogram4, .krea2, .minimaxH3:
             let inputs: [DynamicGraph.Tensor<FloatType>] =
               [xTensor] + (tEmb.map { [$0] } ?? []) + cArr
-            unet.compile(inputs: inputs)
-            unetFixed.compile(inputs: crossattn)
-            UNetMapping = unetMapper(isDiffusersFormat ? .diffusers : .generativeModels)
-            UNetMappingFixed = unetFixedMapper(isDiffusersFormat ? .diffusers : .generativeModels)
-            modelPrefix = "dit"
-            modelPrefixFixed = "dit"
-          case .mossImage:
-            var inputs: [DynamicGraph.AnyTensor] = [xTensor] + (tEmb.map { [$0] } ?? []) + cArr
-            inputs.append(graph.variable(.CPU, .HWC(1, 32, 3_072), of: Float.self))
-            inputs.append(
-              contentsOf: (0..<8).map { _ in graph.variable(.CPU, .HWC(1, 1, 3_072), of: Float.self) })
             unet.compile(inputs: inputs)
             unetFixed.compile(inputs: crossattn)
             UNetMapping = unetMapper(isDiffusersFormat ? .diffusers : .generativeModels)
