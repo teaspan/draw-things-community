@@ -144,6 +144,8 @@ public final class SafeTensors {
           [DataType.Float32, .Float16].contains($0.storage.dataType)
             && [1, descriptor.shape[0]].contains($0.shape[0])
             && $0.shape.dropFirst().allSatisfy { $0 == 1 }
+            && $0.storage.size == $0.shape[0] * ($0.storage.dataType == .Float32 ? 4 : 2)
+            && 8 + Int(headerSize) + $0.storageOffset + $0.storage.size <= data.count
         })
       else { continue }
       states[key]?.storage.scales = data.withUnsafeBytes {
