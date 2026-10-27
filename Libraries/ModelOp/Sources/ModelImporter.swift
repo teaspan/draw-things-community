@@ -252,9 +252,9 @@ public final class ModelImporter {
       && stateDict.keys.contains {
         $0.contains("txtfusion.projector.weight") || $0.contains("text_fusion.projector.weight")
       }
-    let isMOSSImage =
-      stateDict.keys.contains { $0.contains("proj.ffn_up_gate.weight") }
-      && stateDict.keys.contains { $0.contains("video_embedder.weight") }
+    let isMOSSImage = stateDict.keys.contains {
+      $0.contains("proj.ffn_up_gate.weight")
+    }
     let modifier: SamplerModifier
     let modelVersion: ModelVersion
     let inputDim: Int
