@@ -273,7 +273,23 @@ struct Quantizer: ParsableCommand {
                 $0.write(key, tensor: fp16, codec: .ezm7)
               }
             }
-          case .qwenImage, .krea2, .ernieImage, .seedvr2_3b, .seedvr2_7b:
+          case .krea2:
+            if key.contains("refiner_") || key.contains("final_linear")
+              || key.contains("scale_shift_table")
+            {
+              $0.write(key, tensor: fp16)
+            } else {
+              if squeezedDims > 1 {
+                if key.contains("time_mod_proj") {
+                  $0.write(key, tensor: fp16, codec: [.q8p, .ezm7])
+                } else {
+                  $0.write(key, tensor: fp16, codec: bulkCodec([.q6p, .ezm7]))
+                }
+              } else {
+                $0.write(key, tensor: fp16, codec: .ezm7)
+              }
+            }
+          case .qwenImage, .ernieImage, .seedvr2_3b, .seedvr2_7b:
             if key.contains("embedder") || key.contains("pos_embed") || key.contains("-linear-") {
               $0.write(key, tensor: fp16)
             } else {
