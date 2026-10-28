@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "23eee54b3892d267b44b88c86ef3aa34891660f3",
-  "head": "13303091497b099518d894908e0405b5e084cd39",
+  "prev": "daf63b40f36487671c6cac7d87add8d91d125c6d",
+  "head": "93927a7990f02b61b5f66fdc531e3d6035b7d750",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -18,7 +18,8 @@
     "merge-tool",
     "minimax-h3-import",
     "qwen-image-2.1-import",
-    "moss-image-import"
+    "moss-image-import",
+    "quantizer-krea2-recipe"
   ],
   "unapplied": [],
   "hidden": [],
@@ -55,6 +56,9 @@
     },
     "quantizer-codec-flag": {
       "oid": "920dc7c13328bafe10c367bd1c48927d59cb8a77"
+    },
+    "quantizer-krea2-recipe": {
+      "oid": "93927a7990f02b61b5f66fdc531e3d6035b7d750"
     },
     "qwen-image-2.1-import": {
       "oid": "925588e4dda2767e7ae635ae257bbce764c7bd33"
