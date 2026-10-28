@@ -29,11 +29,12 @@ struct Quantizer: ParsableCommand {
   @Option(
     name: .shortAndLong,
     help: """
-      Codec for the matmul bulk: q4p, q5p, q6p, q7p, q8p, ezm7, i8x, or an i8x
-      subtype (i8x:q6k, i8x:q5k, i8x:q4k, i8x:q3k, i8x:q2k, i8x:iq3s,
-      i8x:iq3xxs, i8x:iq2s, i8x:iq2xs, i8x:iq2xxs). Convolutions, ada_ln,
-      embedders and 1-D tensors keep the model version's own codecs.
-      Defaults to the model version's codec throughout.
+      Codec for the matmul bulk: q4p, q5p, q6p, q7p, q8p, ezm7, i8x, i6x, or
+      i4x. The i8x subtypes i8x:q6k, i8x:q5k, i8x:q4k, i8x:q3k, i8x:q2k,
+      i8x:iq3s, i8x:iq3xxs, i8x:iq2s, i8x:iq2xs and i8x:iq2xxs remain
+      available. Convolutions, ada_ln, embedders and 1-D tensors keep the
+      model version's own codecs. Defaults to the model version's codec
+      throughout.
       """)
   var codec: String = "default"
 
@@ -47,6 +48,8 @@ struct Quantizer: ParsableCommand {
     case "q7p": return [.q7p, .ezm7]
     case "q8p": return [.q8p, .ezm7]
     case "i8x": return [.i8x, .ezm7]
+    case "i6x": return [.i8x(.q6k), .ezm7]
+    case "i4x": return [.i8x([.q4k, .hadamard256]), .ezm7]
     case "i8x:q6k": return [.i8x(.q6k), .ezm7]
     case "i8x:q5k": return [.i8x(.q5k), .ezm7]
     case "i8x:q4k": return [.i8x(.q4k), .ezm7]
