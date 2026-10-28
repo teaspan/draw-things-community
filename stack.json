@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "339e71ca94da4bd378a83667ea86bd8e8b281950",
-  "head": "87db3079c448cf7d4bd60e6b3cc16d627c403e16",
+  "prev": "9d8f75851e23fdf3b229ef26de96b227449cfe0a",
+  "head": "ed6d0f6188a00ff523175959d67b0a39e60f78a3",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -12,8 +12,7 @@
     "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
-    "quantizer-codec-flag",
-    "refresh-temp"
+    "quantizer-codec-flag"
   ],
   "unapplied": [
     "separate-lora-flag",
@@ -56,16 +55,13 @@
       "oid": "3998b9d48cadf2dc3d38296c1d12f5e9046bf3e0"
     },
     "quantizer-codec-flag": {
-      "oid": "3863831e708f6b14cd71963a940374436569bf89"
+      "oid": "ed6d0f6188a00ff523175959d67b0a39e60f78a3"
     },
     "qwen-image-2.1-import": {
       "oid": "fad4a5b0a85ed708f6883bb09d55c0176e4e5667"
     },
     "raw-video-output": {
       "oid": "518e84ed35975e34fa3240c879c1abb83fd672ab"
-    },
-    "refresh-temp": {
-      "oid": "87db3079c448cf7d4bd60e6b3cc16d627c403e16"
     },
     "scaled-fp8-import": {
       "oid": "2e271c417b151769b39fe63361d32dde74b522ba"
