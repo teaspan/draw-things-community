@@ -10,6 +10,7 @@ let package = Package(
     .executable(name: "draw-things-cli", targets: ["DrawThingsCLI"]),
     .executable(name: "dti-split", targets: ["dtiSplit"]),
     .executable(name: "dti-merge", targets: ["dtiMerge"]),
+    .executable(name: "draw-things-quantizer", targets: ["ModelQuantizer"]),
     .library(name: "_MediaGenerationKit", targets: ["_MediaGenerationKit"]),
   ],
   dependencies: [
@@ -540,6 +541,15 @@ let package = Package(
         .product(name: "NNC", package: "s4nnc"),
       ],
       path: "Apps/dtiMerge"
+    ),
+    .executableTarget(
+      name: "ModelQuantizer",
+      dependencies: [
+        "Diffusion",
+        .product(name: "ArgumentParser", package: "swift-argument-parser"),
+        .product(name: "NNC", package: "s4nnc"),
+      ],
+      path: "Apps/ModelQuantizer"
     ),
     .target(
       name: "DeviceAttestation",
