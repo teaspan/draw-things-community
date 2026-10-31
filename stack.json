@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "0d2ce97a32350ac8f3f299de07cd0e83a8b0b0b0",
-  "head": "9888457b0f17571a74d7ba0dfbe66a86f266ba51",
+  "prev": "be8bd7587c105536023829d35e1e160e956f83ec",
+  "head": "f8ee975bf41c788a31353aa3136c48744c2356c6",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -9,7 +9,9 @@
     "linux-portability",
     "raw-video-output",
     "ltx23-import",
-    "nnc-shared-library",
+    "nnc-shared-library"
+  ],
+  "unapplied": [
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
@@ -22,7 +24,6 @@
     "quantizer-krea2-recipe",
     "quantizer-product"
   ],
-  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
