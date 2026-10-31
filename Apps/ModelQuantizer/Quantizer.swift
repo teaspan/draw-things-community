@@ -322,7 +322,10 @@ struct Quantizer: ParsableCommand {
               } else if key.contains("norm_out_") {
                 $0.write(key, tensor: fp16, codec: .ezm7)
               } else {
-                $0.write(key, tensor: fp16, codec: bulkCodec([.q8p, .ezm7]))
+                let bulk = bulkCodec([.q8p, .ezm7])
+                $0.write(
+                  key, tensor: fp16,
+                  codec: shape[1] % 256 != 0 && bulk.contains(.i8x) ? [.i8x, .ezm7] : bulk)
               }
             } else {
               $0.write(key, tensor: fp16, codec: .ezm7)
