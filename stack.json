@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "de74dd32a40b9bcf03550bc7db689667abb04cf3",
-  "head": "5fdcbe842fd7e9f05726c104c2c0488c6282e995",
+  "prev": "5a9bbf5751409d450671a6752c1f0a576f322963",
+  "head": "5b89b3fe971bc3d160392731237b52a5990f480d",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -16,14 +16,13 @@
     "separate-lora-flag",
     "spec-json-flag",
     "merge-tool",
-    "minimax-h3-import"
-  ],
-  "unapplied": [
+    "minimax-h3-import",
     "qwen-image-2.1-import",
     "moss-image-import",
     "quantizer-krea2-recipe",
     "quantizer-product"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
@@ -45,7 +44,7 @@
       "oid": "5fdcbe842fd7e9f05726c104c2c0488c6282e995"
     },
     "moss-image-import": {
-      "oid": "0358b5af1e08a47ad46c3e783216973b616e5990"
+      "oid": "db45f69e16ebef8dd6fa0f54124765d776fc09ae"
     },
     "nnc-shared-library": {
       "oid": "f8ee975bf41c788a31353aa3136c48744c2356c6"
@@ -60,13 +59,13 @@
       "oid": "4f287ad21eebabb7522f2c15acd58a2a40659729"
     },
     "quantizer-krea2-recipe": {
-      "oid": "4985037267f9f9184f1c32cf0df1d9086951f10c"
+      "oid": "33217d4947e68d75d247b5273d7349e4d69a46f5"
     },
     "quantizer-product": {
-      "oid": "c1aa9a4b7f022eeca4ed42027cb5a411a60b536a"
+      "oid": "5b89b3fe971bc3d160392731237b52a5990f480d"
     },
     "qwen-image-2.1-import": {
-      "oid": "a9f4f21ee07c4ec4cd47904f0bca7d9395dbad1e"
+      "oid": "db2fab576f833825f97f94b8ffa0b1c1d472bbaa"
     },
     "raw-video-output": {
       "oid": "518e84ed35975e34fa3240c879c1abb83fd672ab"
