@@ -1,6 +1,6 @@
-Bottom: 73fdd99c19f3218d31b9f91b75401115f6927b25
-Top:    54263a2a5bff68eb8c1fd38c84a06d6f09634956
+Bottom: 489420df169c7cf85439e651cbf03ace82cf1654
+Top:    c3cd233c9b40d591393fbfcd34c3a6e86156cdc6
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-10-31 10:22:33 +0000
+Date:   2026-10-31 11:37:51 +0000
 
 Import of MOSS Image models, accepting Comfy's fused proj.qkv
