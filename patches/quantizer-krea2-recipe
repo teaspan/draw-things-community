@@ -1,6 +1,6 @@
-Bottom: c3cd233c9b40d591393fbfcd34c3a6e86156cdc6
-Top:    2bb31170777e9df967b303770e6f019756329729
+Bottom: 8269ee66e64a31dd9d2b9c08a7b1bd90e5b64a51
+Top:    e1147fa70f699b96f83e32af26fb59fa2aa69dd3
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-10-31 11:37:51 +0000
+Date:   2026-10-31 16:00:15 +0000
 
 Match the catalog's tensor precision when quantizing Krea 2
