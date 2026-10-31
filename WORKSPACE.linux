@@ -136,7 +136,7 @@ dflat_deps()
 
 git_repository(
     name = "s4nnc",
-    commit = "23acfb7af599d0bcda77491ffb32f83dd9c4a57c",
+    commit = "1b99f896c32a0ee3113ac8a32cdae776094be166",
     remote = "https://github.com/teaspan/s4nnc.git",
 )
 
