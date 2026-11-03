@@ -1,7 +1,7 @@
-Bottom: 7c480259c9f6750ceecc5d6e99f0c74e839b97af
-Top:    3a4d498aae2368f0710bf2163bc8eb17acf5a76a
+Bottom: 4cb5525ff054fecb8ad292855bd5ded544b4419b
+Top:    22b3d698a8cff51ed04eeeee653940b72c305f76
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-10-31 16:35:15 +0000
+Date:   2026-11-03 09:05:08 +0000
 
 Import and quantize MiniMax H3 models.
 

@@ -1,13 +1,11 @@
 {
   "version": 5,
-  "prev": "db93743fe959d5308a8e79e265b4d4ee63a4f9ac",
-  "head": "19f27f90c1988c7435caf1544e1e8035a77857ea",
+  "prev": "280489957150790fb1ada374ec26e0ccccf3b01a",
+  "head": "6c29d52bba65cfe61b171a84b7b75c08f60c9378",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
-    "mapped-reads"
-  ],
-  "unapplied": [
+    "mapped-reads",
     "linux-portability",
     "raw-video-output",
     "ltx23-import",
@@ -24,61 +22,62 @@
     "quantizer-krea2-recipe",
     "quantizer-product"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
       "oid": "0bda3dccec40ed71e09313a25b8549e03bfc2f2c"
     },
     "linux-portability": {
-      "oid": "5204af1669022a880cbeec82fdd5950b5c62a36f"
+      "oid": "0645caad61bd7577ba472cce8c1fc6d4c7d78447"
     },
     "ltx23-import": {
-      "oid": "2c9439fa6af4cb63712f4f686b2e4fdfdc1ceb2e"
+      "oid": "dbfe15470c5e717aaca17b4ff08861db9bea2167"
     },
     "mapped-reads": {
       "oid": "19f27f90c1988c7435caf1544e1e8035a77857ea"
     },
     "merge-tool": {
-      "oid": "6c835884c7e6f97086c77f85a8c8eee901ec8312"
+      "oid": "dcbdb157d7414f5a3fb4a287ede3dc93e1218bbf"
     },
     "minimax-h3-import": {
-      "oid": "e570861c164f7880c249975dfeb879af162ed1f4"
+      "oid": "9786e1786dd101c7e0336af03f70930e5043d292"
     },
     "moss-image-import": {
-      "oid": "c4521a7f66f7a144b534aaf4fca15f38ab959c81"
+      "oid": "3e2d4ea3d0ce377372a78a9ead2bc998fec3f172"
     },
     "nnc-shared-library": {
-      "oid": "ee882e9b920271a46b129b84e91fad6eea4e40e5"
+      "oid": "98b114f6432e0ec68bfe37eb3aefb9ba740a5885"
     },
     "no-advertising-flag": {
-      "oid": "aec77196a4035290419a8a58d6c04b7cc63b247c"
+      "oid": "0671ee2acda444f2fa7fe298fb418bb16399b726"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "3c7f92e04b73ad88de9a0bd1ca2935d787a39c71"
+      "oid": "ec8d90f22fd5f74387b1e5bd28731fa20bf96ae4"
     },
     "quantizer-codec-flag": {
-      "oid": "478b7d75b25d32c61b4d28c723567825232df987"
+      "oid": "d25a43c71b5310f68264252324190d72381a3707"
     },
     "quantizer-krea2-recipe": {
-      "oid": "bddeeb73f464fc6893738c9b79ba2697d6f97f5f"
+      "oid": "a381db9cdcdfabb414cea2fd6901b33d99efb8cf"
     },
     "quantizer-product": {
-      "oid": "6d0cf6eacbbd424774a2113601c030df1e43663e"
+      "oid": "6c29d52bba65cfe61b171a84b7b75c08f60c9378"
     },
     "qwen-image-2.1-import": {
-      "oid": "33bd7c1ede4fcf2a8119bbd91a5294a3a4d53aed"
+      "oid": "93a10cea6772266859e9febc759d3383ca13e1ac"
     },
     "raw-video-output": {
-      "oid": "518e84ed35975e34fa3240c879c1abb83fd672ab"
+      "oid": "0443ebc58a3e0f19903a16e42cfa4d4c1b0cee9a"
     },
     "scaled-fp8-import": {
       "oid": "2e271c417b151769b39fe63361d32dde74b522ba"
     },
     "separate-lora-flag": {
-      "oid": "1838d95657d05fc3533d035e89e4410503e39bc6"
+      "oid": "aad1ee2e9de1a3a03ddea8156ac673f55f8928c7"
     },
     "spec-json-flag": {
-      "oid": "d4f04f13734afc98bb07f679503b5e96544cc201"
+      "oid": "b0b953416f00625b46588db5afbdb5ea038019c4"
     }
   }
 }

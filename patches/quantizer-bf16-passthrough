@@ -1,7 +1,7 @@
-Bottom: cc771c6f3ae2522e279110044cf0665a1881bdcc
-Top:    467f16be9835a9088c3d1a6af64c316274d74b83
+Bottom: 344b54a74081188bc35791db30b62ff0f3ec4681
+Top:    e83ebadf0c88ae14e9c57605f5dee86cc9e23211
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-10-31 16:35:15 +0000
+Date:   2026-11-03 09:05:08 +0000
 
 Keep BF16 weights BF16 when quantizing
 
