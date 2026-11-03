@@ -1,11 +1,13 @@
 {
   "version": 5,
-  "prev": "a494868b3539ba4b2169d732821a05494969468c",
-  "head": "6d0cf6eacbbd424774a2113601c030df1e43663e",
+  "prev": "7a95faf6899d13d8f4b616c1ef6ac107b8cbfad0",
+  "head": "b1f61e0c307664335f9a5e1a35f4040750eb7814",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
-    "linux-mapped-reads",
+    "linux-mapped-reads"
+  ],
+  "unapplied": [
     "linux-portability",
     "raw-video-output",
     "ltx23-import",
@@ -22,7 +24,6 @@
     "quantizer-krea2-recipe",
     "quantizer-product"
   ],
-  "unapplied": [],
   "hidden": [],
   "patches": {
     "dti-split-tool": {
