@@ -1,5 +1,4 @@
 import Crypto
-import Diffusion
 import Foundation
 import GRPC
 import GRPCImageServiceModels
@@ -32,7 +31,7 @@ public struct GRPCFileUploader {
       throw GRPCFileUploaderError.notConnected
     }
 
-    guard let fileData = try? Data(contentsOf: fileUrl, options: .mappedIfLocal) else {
+    guard let fileData = try? Data(contentsOf: fileUrl, options: .alwaysMapped) else {
       throw GRPCFileUploaderError.cannotReadFile
     }
 
