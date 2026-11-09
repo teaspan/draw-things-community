@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "7ed04991eb0476e4aacd0d4723b9c0d584bc18ee",
-  "head": "2abb54d94f28e7bded6576e7e3de4a4ba4acc5b3",
+  "prev": "e4adbd9fb02e2e8145181e478dbc3e9e4a416c4c",
+  "head": "bc864cd923ed0260148abd97d603d5e64cd6e290",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -18,8 +18,7 @@
     "merge-tool",
     "minimax-h3-import",
     "qwen-image-2.1-import",
-    "moss-image-import",
-    "refresh-temp"
+    "moss-image-import"
   ],
   "unapplied": [
     "quantizer-krea2-recipe",
@@ -46,7 +45,7 @@
       "oid": "9e4ce78666336b933e505000998bc974871f8b6d"
     },
     "moss-image-import": {
-      "oid": "c04d491bc6dfa7fddeb60116f2ebde778e854164"
+      "oid": "bc864cd923ed0260148abd97d603d5e64cd6e290"
     },
     "nnc-shared-library": {
       "oid": "d08d1e44220f86ee0a68a71c95b22452268528f5"
@@ -71,9 +70,6 @@
     },
     "raw-video-output": {
       "oid": "90696d9c9296a2439731f4526e5512c41d4a3a90"
-    },
-    "refresh-temp": {
-      "oid": "2abb54d94f28e7bded6576e7e3de4a4ba4acc5b3"
     },
     "scaled-fp8-import": {
       "oid": "7958a06dc6a5bba8bcbf5f253ccd6866fa3d4a1b"
