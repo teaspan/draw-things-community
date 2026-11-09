@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "ae1cd1bc9533a81b3d12ef872e8aafae4e8c2cf5",
-  "head": "d08d1e44220f86ee0a68a71c95b22452268528f5",
+  "prev": "9328cebd3c8bb81a810f8eb31ee7ad2cd7b53dcd",
+  "head": "95fdc02b1c2717231169b6db42809c04390dde6d",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -9,9 +9,7 @@
     "linux-portability",
     "raw-video-output",
     "ltx23-import",
-    "nnc-shared-library"
-  ],
-  "unapplied": [
+    "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
@@ -19,7 +17,9 @@
     "spec-json-flag",
     "merge-tool",
     "quantizer-krea2-recipe",
-    "quantizer-product",
+    "quantizer-product"
+  ],
+  "unapplied": [
     "minimax-h3-import",
     "qwen-image-2.1-import",
     "moss-image-import"
@@ -39,7 +39,7 @@
       "oid": "aec125f1795fef35c3505d60e1eccb7026ff6368"
     },
     "merge-tool": {
-      "oid": "dcbdb157d7414f5a3fb4a287ede3dc93e1218bbf"
+      "oid": "7977934bc0236f91dfd632fa4c84757fe7234ac8"
     },
     "minimax-h3-import": {
       "oid": "9786e1786dd101c7e0336af03f70930e5043d292"
@@ -51,19 +51,19 @@
       "oid": "d08d1e44220f86ee0a68a71c95b22452268528f5"
     },
     "no-advertising-flag": {
-      "oid": "0671ee2acda444f2fa7fe298fb418bb16399b726"
+      "oid": "9e874b40efe9de7959ccf450cbc2986f61edd38f"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "ec8d90f22fd5f74387b1e5bd28731fa20bf96ae4"
+      "oid": "b2b955aa51d153ccc487de974346d607dec0bdd4"
     },
     "quantizer-codec-flag": {
-      "oid": "d25a43c71b5310f68264252324190d72381a3707"
+      "oid": "8bf3e730c40090da57f1ed776d4079f8afacea51"
     },
     "quantizer-krea2-recipe": {
-      "oid": "e5c4925c35460b2421c44a1fcf92619cec2e21e5"
+      "oid": "1e838039003c116bb79146e0977cd9ab34362e14"
     },
     "quantizer-product": {
-      "oid": "7668eabbff399a90b8846577becfdab23e5f52a9"
+      "oid": "95fdc02b1c2717231169b6db42809c04390dde6d"
     },
     "qwen-image-2.1-import": {
       "oid": "93a10cea6772266859e9febc759d3383ca13e1ac"
@@ -75,10 +75,10 @@
       "oid": "7958a06dc6a5bba8bcbf5f253ccd6866fa3d4a1b"
     },
     "separate-lora-flag": {
-      "oid": "aad1ee2e9de1a3a03ddea8156ac673f55f8928c7"
+      "oid": "2524808b3f1f642b3d1a1b400e802b41d3e5f172"
     },
     "spec-json-flag": {
-      "oid": "b0b953416f00625b46588db5afbdb5ea038019c4"
+      "oid": "85746436b75d774f61848b237895af2b37e7be28"
     }
   }
 }
