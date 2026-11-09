@@ -3,4 +3,4 @@ Top:    a9f8236147d493587b0d83c0adc4e65a9e60c10d
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
 Date:   2026-11-09 22:27:53 +0000
 
-Import of MOSS Image models, accepting Comfy's fused proj.qkv
+Write MOSS Image's time_embedder_2 in FP32 and map Comfy's fused proj.qkv for LoRAs.
