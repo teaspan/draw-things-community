@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "1ac7ab9c15e0c8ae0dc1d0208436ae9b6ac5ba70",
-  "head": "97be4bc8f61f5c09718a0fc055f043b293f3d58f",
+  "prev": "031de1fa21779055a1861ec1013f335bfee225c4",
+  "head": "0526f9f2456330de1d5614e90ac1365b4202e3ca",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -16,10 +16,10 @@
     "separate-lora-flag",
     "spec-json-flag",
     "merge-tool",
-    "minimax-h3-import"
+    "minimax-h3-import",
+    "qwen-image-2.1-import"
   ],
   "unapplied": [
-    "qwen-image-2.1-import",
     "moss-image-import",
     "quantizer-krea2-recipe",
     "quantizer-product"
@@ -66,7 +66,7 @@
       "oid": "c7891e82cfcaf37abd16976f77ef3e835aa668d4"
     },
     "qwen-image-2.1-import": {
-      "oid": "c1564be814a7d4bb6fe0c7e93a4d7aee669c5134"
+      "oid": "0526f9f2456330de1d5614e90ac1365b4202e3ca"
     },
     "raw-video-output": {
       "oid": "90696d9c9296a2439731f4526e5512c41d4a3a90"
