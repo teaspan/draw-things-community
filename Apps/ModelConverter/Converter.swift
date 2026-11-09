@@ -157,12 +157,7 @@ struct Converter: ParsableCommand {
       }
     case .hiDreamI1, .hiDreamO1, .minimaxH3:
       fatalError()
-    case .qwenImage2_1:
-      textEncoder = "qwen_3_vl_8b_instruct_i8x.ckpt"
-      if autoencoder == nil {
-        autoencoder = "qwen_image_2.1_vae_f16.ckpt"
-      }
-    case .qwenImage:
+    case .qwenImage, .qwenImage2_1:
       fatalError()
     case .cosmos2_5_2b, .cosmos2_5_2_9b:
       textEncoder = "qwen_3_0.6b_f16.ckpt"

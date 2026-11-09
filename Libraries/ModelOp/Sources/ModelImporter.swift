@@ -3152,12 +3152,6 @@ extension ModelImporter {
       }
       specification.highPrecisionAutoencoder = true
       specification.objective = .u(conditionScale: 1000)
-      if !fileName.lowercased().contains("turbo") {
-        FileHandle.standardError.write(
-          Data(
-            "assuming base schedule\n"
-              .utf8))
-      }
       // Turbo checkpoints have the same weights as the base model, but sample without the shift terminal.
       specification.noiseDiscretization = .rf(
         .init(
