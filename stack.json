@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "75b511861fd594744da191fcecdd4474a1626d63",
-  "head": "64039a19ff40d9bf5b799f94625052508610d381",
+  "prev": "655330d1772b102f672469d5413f69b1381a63d1",
+  "head": "e90b7ffcabbbf67c706d4683383bed292eb9d1be",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -16,7 +16,8 @@
     "separate-lora-flag",
     "spec-json-flag",
     "merge-tool",
-    "minimax-h3-import"
+    "minimax-h3-import",
+    "refresh-temp"
   ],
   "unapplied": [
     "quantizer-krea2-recipe",
@@ -70,6 +71,9 @@
     },
     "raw-video-output": {
       "oid": "90696d9c9296a2439731f4526e5512c41d4a3a90"
+    },
+    "refresh-temp": {
+      "oid": "e90b7ffcabbbf67c706d4683383bed292eb9d1be"
     },
     "scaled-fp8-import": {
       "oid": "7958a06dc6a5bba8bcbf5f253ccd6866fa3d4a1b"
