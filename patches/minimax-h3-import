@@ -3,4 +3,4 @@ Top:    de57bb8c68aa719e1ca754b4e77aa933c7730a7b
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
 Date:   2026-11-09 23:19:44 +0000
 
-Refuse pruned MiniMax H3 files, warn on an unnamed release, and quantize H3 models.
+Quantize MiniMax H3 models with the catalog's recipe.
