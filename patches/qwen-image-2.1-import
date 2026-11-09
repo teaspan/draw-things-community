@@ -3,9 +3,4 @@ Top:    26c5f5ef2da4b4fba95a88846647c6c35eec5ca0
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
 Date:   2026-11-09 22:27:35 +0000
 
-Import Qwen Image 2.1 models
-
-Accept Comfy's fused img_mlp.gate_up.  Shift the zero-centred
-txt_in.text_norm in the importer rather than in QwenImage2_1's mapper,
-because LoRAImporter writes LoRA deltas through that mapper.  Keep
-context_norm raw in the quantizer, as the catalog's q6p does.
+Shift Qwen Image 2.1's zero-centred text norm, map Comfy's fused gate_up for LoRAs, and quantize 2.1 models.

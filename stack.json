@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "1d3fb6f90639b44b9c08548532bbf00fc2d7b478",
-  "head": "20b9a6d6864b8e2a0f9ce32eace5339e993f4890",
+  "prev": "e5bb900cca2ce8a85b08b17d6bc4f0892940be14",
+  "head": "c8a80306a9df552c95585c0fe68ecfa7b6330149",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -66,7 +66,7 @@
       "oid": "95fdc02b1c2717231169b6db42809c04390dde6d"
     },
     "qwen-image-2.1-import": {
-      "oid": "20b9a6d6864b8e2a0f9ce32eace5339e993f4890"
+      "oid": "c8a80306a9df552c95585c0fe68ecfa7b6330149"
     },
     "raw-video-output": {
       "oid": "90696d9c9296a2439731f4526e5512c41d4a3a90"
