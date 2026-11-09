@@ -1,7 +1,7 @@
 Bottom: ccff19e1d72aa7fb9cadca54468e81f88cf175c8
-Top:    ccff19e1d72aa7fb9cadca54468e81f88cf175c8
+Top:    cd60520c14320d16109e7882bec8b6c8d4932ea8
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-11-09 22:25:55 +0000
+Date:   2026-11-09 22:26:34 +0000
 
 Import and quantize MiniMax H3 models.
 
