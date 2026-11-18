@@ -503,7 +503,7 @@ private func fetchShortTermToken(
 }
 
 struct ModelsDirectoryOptions: ParsableArguments {
-  @Option(name: .long, help: modelsDirectoryHelp)
+  @Option(name: .long, help: modelsDirectoryHelp, completion: .directory)
   var modelsDir: String?
 }
 
@@ -518,7 +518,7 @@ struct GeneratePromptOptions: ParsableArguments {
   @Option(name: .shortAndLong, help: "Prompt text.")
   var prompt: String?
 
-  @Option(name: .long, help: promptFileHelp)
+  @Option(name: .long, help: promptFileHelp, completion: .file())
   var promptFile: String?
 
   @Option(
@@ -528,7 +528,7 @@ struct GeneratePromptOptions: ParsableArguments {
       discussion: "If omitted, recommended settings may provide one."))
   var negativePrompt: String?
 
-  @Option(name: .long, help: negativePromptFileHelp)
+  @Option(name: .long, help: negativePromptFileHelp, completion: .file())
   var negativePromptFile: String?
 }
 
@@ -567,12 +567,12 @@ struct GenerateConfigurationOverrideOptions: ParsableArguments {
   @Option(name: .long, help: generateConfigJSONHelp)
   var configJSON: String?
 
-  @Option(name: .long, help: generateConfigFileHelp)
+  @Option(name: .long, help: generateConfigFileHelp, completion: .file())
   var configFile: String?
 }
 
 struct GenerateImageInputOptions: ParsableArguments {
-  @Option(name: .long, help: generateImageHelp)
+  @Option(name: .long, help: generateImageHelp, completion: .file())
   var image: [String] = []
 
   @Flag(
@@ -597,7 +597,8 @@ struct GenerateImageInputOptions: ParsableArguments {
 
   @Option(
     name: .long,
-    help: "Audio file for LongCat driving audio or MiniMax H3 Ref2VA native audio references.")
+    help: "Audio file for LongCat driving audio or MiniMax H3 Ref2VA native audio references.",
+    completion: .file())
   var audio: String?
 
   @Option(
@@ -615,7 +616,8 @@ struct GenerateOutputOptions: ParsableArguments {
       "Output path (.png, .mov, .mp4, or .nut).",
       discussion:
         "Use .png for image output and .mov/.mp4/.nut for video-capable models. If omitted, the CLI previews the result inline in supported interactive terminals and does not write a file."
-    ))
+    ),
+    completion: .file())
   var output: String?
 
   @Option(name: .long, help: videoFormatHelp)
@@ -746,7 +748,7 @@ struct LoRATrainModelAndDatasetOptions: ParsableArguments {
   @Option(name: .shortAndLong, help: modelReferenceHelp)
   var model: String?
 
-  @Option(name: .long, help: trainDatasetHelp)
+  @Option(name: .long, help: trainDatasetHelp, completion: .directory)
   var dataset: String?
 }
 
@@ -776,7 +778,8 @@ struct LoRATrainOutputOptions: ParsableArguments {
   @Option(name: .long, help: "Display name for LoRA metadata.")
   var name: String?
 
-  @Option(name: .long, help: "Resume from a saved checkpoint filename/path.")
+  @Option(
+    name: .long, help: "Resume from a saved checkpoint filename/path.", completion: .file())
   var resume: String?
 
   @Option(
@@ -5620,7 +5623,7 @@ extension DrawThingsCLI {
 
       @OptionGroup var modelsDirectoryOptions: ModelsDirectoryOptions
 
-      @Argument(help: modelImportArtifactHelp)
+      @Argument(help: modelImportArtifactHelp, completion: .file())
       var artifact: String
 
       @Option(name: .long, help: "Display name for the imported model.")
@@ -5631,19 +5634,22 @@ extension DrawThingsCLI {
       var triggerWord: String?
 
       @Option(
-        name: .long, help: "Optional autoencoder artifact to import alongside the main model.")
+        name: .long, help: "Optional autoencoder artifact to import alongside the main model.",
+        completion: .file())
       var autoencoder: String?
 
       @Option(
         name: .long,
         help:
-          "Optional text encoder artifact to import when the detected model family supports it.")
+          "Optional text encoder artifact to import when the detected model family supports it.",
+        completion: .file())
       var textEncoder: String?
 
       @Option(
         name: .customLong("text-encoder-2"),
         help:
-          "Optional second text encoder artifact for SDXL Base imports.")
+          "Optional second text encoder artifact for SDXL Base imports.",
+        completion: .file())
       var textEncoder2: String?
 
       @Option(name: .long, help: modelImportScaleHelp)
@@ -5879,7 +5885,9 @@ extension DrawThingsCLI {
     @Argument(help: "Shell to generate completions for.")
     var shell: Shell
 
-    @Option(name: .shortAndLong, help: "Write the completion script to a file instead of stdout.")
+    @Option(
+      name: .shortAndLong, help: "Write the completion script to a file instead of stdout.",
+      completion: .file())
     var output: String?
 
     mutating func run(context: DrawThingsCLIContext) throws {
