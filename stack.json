@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "f53baa59c2b1c3c9951564ad0b38e105a5e352b1",
-  "head": "a226b1128a8bd44a882d928bf8bc8453728b2d89",
+  "prev": "83f93a1d82add582d929613426ec2e1fafaeb951",
+  "head": "309ffb647d53d3b491910ace82529e9a5a2085c7",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -21,14 +21,13 @@
     "moss-image-import",
     "quantizer-krea2-recipe",
     "quantizer-product",
-    "cli-path-completions",
-    "refresh-temp"
+    "cli-path-completions"
   ],
   "unapplied": [],
   "hidden": [],
   "patches": {
     "cli-path-completions": {
-      "oid": "9d576005310b97531a6450e36cc56d01cb7d786d"
+      "oid": "309ffb647d53d3b491910ace82529e9a5a2085c7"
     },
     "dti-split-tool": {
       "oid": "a3acf6ea5e81ab96964ab990665a09044a0b5cb6"
@@ -74,9 +73,6 @@
     },
     "raw-video-output": {
       "oid": "90696d9c9296a2439731f4526e5512c41d4a3a90"
-    },
-    "refresh-temp": {
-      "oid": "a226b1128a8bd44a882d928bf8bc8453728b2d89"
     },
     "scaled-fp8-import": {
       "oid": "7958a06dc6a5bba8bcbf5f253ccd6866fa3d4a1b"
