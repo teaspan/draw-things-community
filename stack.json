@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "f9efb4326e3a5a2fdc356c0f3dbfb22426d83c52",
-  "head": "9d576005310b97531a6450e36cc56d01cb7d786d",
+  "prev": "f53baa59c2b1c3c9951564ad0b38e105a5e352b1",
+  "head": "a226b1128a8bd44a882d928bf8bc8453728b2d89",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -21,7 +21,8 @@
     "moss-image-import",
     "quantizer-krea2-recipe",
     "quantizer-product",
-    "cli-path-completions"
+    "cli-path-completions",
+    "refresh-temp"
   ],
   "unapplied": [],
   "hidden": [],
@@ -73,6 +74,9 @@
     },
     "raw-video-output": {
       "oid": "90696d9c9296a2439731f4526e5512c41d4a3a90"
+    },
+    "refresh-temp": {
+      "oid": "a226b1128a8bd44a882d928bf8bc8453728b2d89"
     },
     "scaled-fp8-import": {
       "oid": "7958a06dc6a5bba8bcbf5f253ccd6866fa3d4a1b"
