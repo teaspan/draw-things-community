@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "0da758d35e9dc58ffbb380e0c4ef4d0d726c6fe1",
-  "head": "4570bb4d9827848d81e0be2bd7cb091261057676",
+  "prev": "f9efb4326e3a5a2fdc356c0f3dbfb22426d83c52",
+  "head": "9d576005310b97531a6450e36cc56d01cb7d786d",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -20,11 +20,15 @@
     "qwen-image-2.1-import",
     "moss-image-import",
     "quantizer-krea2-recipe",
-    "quantizer-product"
+    "quantizer-product",
+    "cli-path-completions"
   ],
   "unapplied": [],
   "hidden": [],
   "patches": {
+    "cli-path-completions": {
+      "oid": "9d576005310b97531a6450e36cc56d01cb7d786d"
+    },
     "dti-split-tool": {
       "oid": "a3acf6ea5e81ab96964ab990665a09044a0b5cb6"
     },

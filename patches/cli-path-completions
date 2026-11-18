@@ -1,0 +1,9 @@
+Bottom: cb5db17728946949ed2a3f91a6a9351738d1b44e
+Top:    cb5db17728946949ed2a3f91a6a9351738d1b44e
+Author: Teaspan <314463419+teaspan@users.noreply.github.com>
+Date:   2026-11-18 05:48:38 +0000
+
+Complete paths for DrawThingsCLI's file and directory arguments
+
+No argument declared a completion kind, so the generated bash, zsh, and fish
+scripts offered no candidates where a path was expected.
