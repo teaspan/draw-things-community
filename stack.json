@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "08ad161c0a3573cb3c85310de1b1a6bcb21db9af",
-  "head": "5f0fe818b7c6ca9708ac93064deecc3b2a83df73",
+  "prev": "d7298a847a6a069f2e4113978160079017577171",
+  "head": "f45e54de6fbea6a4ab997fb021d1ba718260b2b1",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -9,9 +9,7 @@
     "linux-portability",
     "raw-video-output",
     "ltx23-import",
-    "nnc-shared-library"
-  ],
-  "unapplied": [
+    "nnc-shared-library",
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
@@ -25,10 +23,11 @@
     "quantizer-product",
     "cli-path-completions"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "cli-path-completions": {
-      "oid": "727b89525311e51b9c687c75f937d59da8a84139"
+      "oid": "f45e54de6fbea6a4ab997fb021d1ba718260b2b1"
     },
     "dti-split-tool": {
       "oid": "fb464b726be57ea9e78b03fcb41795dc88787d8c"
@@ -43,34 +42,34 @@
       "oid": "b4c68ca52e0dbd52e208bf132a3c54423416d392"
     },
     "merge-tool": {
-      "oid": "dd759a09947711e699dd4109533d7d31daf53c8a"
+      "oid": "133a59e4d6b6dd8637fd284a6cff6ca29bdc55e1"
     },
     "minimax-h3-import": {
-      "oid": "770eb9ed4e3cd2abb1fe3195050bad996abf927d"
+      "oid": "fb63362c6af0c150f35449558f4ed82fb78c4837"
     },
     "moss-image-import": {
-      "oid": "25b3e07734e7e2a3df3e209bf84abcf469e37c33"
+      "oid": "832f40308ab5a7ac31a072e093d7895fae8633d7"
     },
     "nnc-shared-library": {
       "oid": "5f0fe818b7c6ca9708ac93064deecc3b2a83df73"
     },
     "no-advertising-flag": {
-      "oid": "f9598677cad248fa99bb42bb0942f3bc6b3d6c67"
+      "oid": "2b799505802de913d7a7f63fef02f8c01fe2be63"
     },
     "quantizer-bf16-passthrough": {
-      "oid": "70e866eae2b5d0713217aaaa96f79b04f7197919"
+      "oid": "de32d181b206bbcae029c2ebff549718909e41cb"
     },
     "quantizer-codec-flag": {
-      "oid": "a7ff4095e82b96946db86062e91a8ef8ba9b7cfe"
+      "oid": "a71aefa3a41bbbd7b695b85dfd3d4ef9666e4f8f"
     },
     "quantizer-krea2-recipe": {
-      "oid": "a455b2eaae2155cedb2b886b94ee377658ea2bcd"
+      "oid": "4b927ab8f602e57f295650a9125896c6a11e4cfc"
     },
     "quantizer-product": {
-      "oid": "ad2947784d19810ab06f3f8ae42c79102b296a2c"
+      "oid": "6ef8e8776603f8c99fbf789908e9ce04f05bc3f4"
     },
     "qwen-image-2.1-import": {
-      "oid": "759e95c52d73daa07b756101a8739096eb6f02c5"
+      "oid": "7d0b3492642527b80d73a0e633f42a8067fb5e60"
     },
     "raw-video-output": {
       "oid": "87baccf4eff4c7d38144a507ccad004baad9eeae"
@@ -79,10 +78,10 @@
       "oid": "562eec5bcf7ebdb2b523f66192fd47a63860bd69"
     },
     "separate-lora-flag": {
-      "oid": "942c45cec0cf0b35f783d4670d69e5a3c21f0020"
+      "oid": "12d048df579a12c1e222fd4485c0d39b9c98371d"
     },
     "spec-json-flag": {
-      "oid": "326de35e82d29f66d33d84b9fdeb293f1ab038ee"
+      "oid": "203c3958073b19df3e62a09e68e7a3623263428b"
     }
   }
 }
