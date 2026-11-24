@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "8ae039457cd77339cd799499e6696b934d8e1a6f",
-  "head": "727b89525311e51b9c687c75f937d59da8a84139",
+  "prev": "97021e878b1fe562aa95ad9b4dcadff0ec8dfe07",
+  "head": "f6280acbb913c470b82823cfb360ad60decbc1a8",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -9,7 +9,9 @@
     "linux-portability",
     "raw-video-output",
     "ltx23-import",
-    "nnc-shared-library",
+    "nnc-shared-library"
+  ],
+  "unapplied": [
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
@@ -23,7 +25,6 @@
     "quantizer-product",
     "cli-path-completions"
   ],
-  "unapplied": [],
   "hidden": [],
   "patches": {
     "cli-path-completions": {
