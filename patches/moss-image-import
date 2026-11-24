@@ -1,6 +1,6 @@
-Bottom: 066777bfb73b6a81665d55a40a71da8d2f4257b5
-Top:    f2bf4e105e22473ec7136113c6f643904276244d
+Bottom: 04187e36a524442c3738d629203a7d5463929ae0
+Top:    9505baa0cc2b172f97b8cd87b25d453bb042419a
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-11-09 23:27:29 +0000
+Date:   2026-11-24 05:19:55 +0000
 
 Write MOSS Image's time_embedder_2 in FP32 and map Comfy's fused proj.qkv for LoRAs.

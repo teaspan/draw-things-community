@@ -1,6 +1,6 @@
-Bottom: f4425e76a143a48f1409bbe96975e666370d9971
-Top:    c0abebdd922b484d46cf90e9c3291729ac6f018f
+Bottom: 57a06d63caaea4ef3a1ae722b8c3cb30519df5a3
+Top:    2734ba11ead96ee82ad6a8dadcb7fc4ff77ced93
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-11-09 23:27:29 +0000
+Date:   2026-11-24 05:19:55 +0000
 
 Quantize MiniMax H3 models with the catalog's recipe.
