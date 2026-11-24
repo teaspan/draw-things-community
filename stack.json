@@ -1,17 +1,17 @@
 {
   "version": 5,
-  "prev": "a7ae2adf1e65b2a73db7b7797c3622d26ecd7816",
-  "head": "b4c68ca52e0dbd52e208bf132a3c54423416d392",
+  "prev": "1065af1912d52210b8be437f650537da0e60065d",
+  "head": "5e1198bd3989f692b30d20be8eee4b71324f5ee9",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
-    "mapped-reads"
-  ],
-  "unapplied": [
+    "mapped-reads",
     "linux-portability",
     "raw-video-output",
     "ltx23-import",
-    "nnc-shared-library",
+    "nnc-shared-library"
+  ],
+  "unapplied": [
     "no-advertising-flag",
     "quantizer-bf16-passthrough",
     "quantizer-codec-flag",
@@ -34,10 +34,10 @@
       "oid": "fb464b726be57ea9e78b03fcb41795dc88787d8c"
     },
     "linux-portability": {
-      "oid": "1db9ce1e5f56fc0a428d8c30bb6342d1bab07202"
+      "oid": "c139a039b070ebc5df2062a5f7c107daf98ee06b"
     },
     "ltx23-import": {
-      "oid": "2394db17c6cf37195325d126324d0054d50b2531"
+      "oid": "5c20ffe2f14e504fc6a88c1d1440297bfa5895f5"
     },
     "mapped-reads": {
       "oid": "b4c68ca52e0dbd52e208bf132a3c54423416d392"
@@ -52,7 +52,7 @@
       "oid": "ce518d1513e8facec79d917fc47eff8e9a275fd7"
     },
     "nnc-shared-library": {
-      "oid": "71ecf79de4003f339b7650874c901bb34b19e534"
+      "oid": "5e1198bd3989f692b30d20be8eee4b71324f5ee9"
     },
     "no-advertising-flag": {
       "oid": "a048be9f0b0520998c70901d0a4d8c82f667fa2c"
@@ -73,7 +73,7 @@
       "oid": "bde481b845d9508114906fe85a6c33120ebdbea5"
     },
     "raw-video-output": {
-      "oid": "90696d9c9296a2439731f4526e5512c41d4a3a90"
+      "oid": "87baccf4eff4c7d38144a507ccad004baad9eeae"
     },
     "scaled-fp8-import": {
       "oid": "562eec5bcf7ebdb2b523f66192fd47a63860bd69"
