@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "5c884a16ff79600829c9244d8c48c8d088d127d0",
-  "head": "e1e19acf16b11fb982602107b653376e64b3992a",
+  "prev": "978d571cc0ecc5a33d42f960f090a0b9868c534c",
+  "head": "27435d99d08c305ab61b9fa5d4007ed6825a5df1",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -17,7 +17,8 @@
     "spec-json-flag",
     "merge-tool",
     "minimax-h3-import",
-    "minimax-h3-image-import"
+    "minimax-h3-image-import",
+    "refresh-temp"
   ],
   "unapplied": [
     "qwen-image-2.1-import",
@@ -78,6 +79,9 @@
     },
     "raw-video-output": {
       "oid": "c647e023135c4a15fb11ccc259ec80dbb5f3b673"
+    },
+    "refresh-temp": {
+      "oid": "27435d99d08c305ab61b9fa5d4007ed6825a5df1"
     },
     "scaled-fp8-import": {
       "oid": "16f1ed217b7db0a82a21034d5519fc900cc2a043"
