@@ -1,0 +1,11 @@
+Bottom: d50c911a12b6ab8b1af0fd724f71a2933b593064
+Top:    d50c911a12b6ab8b1af0fd724f71a2933b593064
+Author: Teaspan <314463419+teaspan@users.noreply.github.com>
+Date:   2026-11-26 10:25:39 +0000
+
+Import MiniMax H3 Image base models.
+
+inspect() never recognised an H3 Image checkpoint, because the H3 test asks
+for an audio patch embedder, and every minimaxH3Image import arm was
+fatalError(). The six stacked output heads identify it, and the arms follow
+LoRAImporter's shared H3 arms without the audio branch.
