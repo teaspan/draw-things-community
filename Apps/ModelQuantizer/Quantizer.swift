@@ -309,9 +309,7 @@ struct Quantizer: ParsableCommand {
                 $0.write(key, tensor: fp16, codec: .ezm7)
               }
             }
-          case .minimaxH3Image:
-            fatalError()
-          case .minimaxH3:
+          case .minimaxH3, .minimaxH3Image:
             if !key.hasPrefix("__dit__") {
               $0.write(key, tensor: tensor)
             } else if key.contains("refiner_") || key.contains("embedder")
