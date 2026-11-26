@@ -1,7 +1,7 @@
 {
   "version": 5,
-  "prev": "8b465d2e4c394923f7f2128257e6e2ad2a0b9171",
-  "head": "ccc1723c019596a43ee5c9f5674eeadc570d8a65",
+  "prev": "f231ee04beed7b4e58ceebe5717591f206feab36",
+  "head": "844d02571d1f5b54786994015d30cdfd21627051",
   "applied": [
     "dti-split-tool",
     "scaled-fp8-import",
@@ -16,19 +16,18 @@
     "separate-lora-flag",
     "spec-json-flag",
     "merge-tool",
-    "minimax-h3-import"
-  ],
-  "unapplied": [
+    "minimax-h3-import",
     "qwen-image-2.1-import",
     "moss-image-import",
     "quantizer-krea2-recipe",
     "quantizer-product",
     "cli-path-completions"
   ],
+  "unapplied": [],
   "hidden": [],
   "patches": {
     "cli-path-completions": {
-      "oid": "f45e54de6fbea6a4ab997fb021d1ba718260b2b1"
+      "oid": "844d02571d1f5b54786994015d30cdfd21627051"
     },
     "dti-split-tool": {
       "oid": "cb75badcddeb26c01aa82b361bac3085e680b040"
@@ -49,7 +48,7 @@
       "oid": "ccc1723c019596a43ee5c9f5674eeadc570d8a65"
     },
     "moss-image-import": {
-      "oid": "832f40308ab5a7ac31a072e093d7895fae8633d7"
+      "oid": "587f3d300638185dbbbf318830edaf56c805d191"
     },
     "nnc-shared-library": {
       "oid": "81f924dacd23379b045b37b6b96ddecd85ddb991"
@@ -64,13 +63,13 @@
       "oid": "b80d977e88bb151d386225f70fad9c0b7f2a24ea"
     },
     "quantizer-krea2-recipe": {
-      "oid": "4b927ab8f602e57f295650a9125896c6a11e4cfc"
+      "oid": "dffc06b2f872eaa9e30e1cdc63ec54277f2c2fb9"
     },
     "quantizer-product": {
-      "oid": "6ef8e8776603f8c99fbf789908e9ce04f05bc3f4"
+      "oid": "80ed96005353347295126fa01a4a8e1d43b1b315"
     },
     "qwen-image-2.1-import": {
-      "oid": "7d0b3492642527b80d73a0e633f42a8067fb5e60"
+      "oid": "a20657343d74b2502f74675b291da59c6b1b8ed1"
     },
     "raw-video-output": {
       "oid": "c647e023135c4a15fb11ccc259ec80dbb5f3b673"
