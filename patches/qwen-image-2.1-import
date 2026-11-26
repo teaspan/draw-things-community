@@ -1,6 +1,6 @@
-Bottom: 8aa8d13a1a9aecbef46618e1edf121b4cc4587c3
-Top:    10e54fca496773726ef14743d68241c0e5af3d7a
+Bottom: 07943650ad8e1a941759bca30d5b1a3a040072a9
+Top:    5e631a074ba5fbf7bf29d7b7a323aa4e4b8bba9d
 Author: Teaspan <314463419+teaspan@users.noreply.github.com>
-Date:   2026-11-26 06:23:27 +0000
+Date:   2026-11-26 07:58:50 +0000
 
 Shift Qwen Image 2.1's zero-centred text norm, map Comfy's fused gate_up for LoRAs, and quantize 2.1 models.
